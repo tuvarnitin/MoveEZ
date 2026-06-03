@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: supercharge3d;
+  src: url(./assets/fonts/Supercharge3D-GO79P.woff);
+}
+
+@font-face {
+  font-family: supercharge;
+  src: url(./assets/fonts/SuperchargeCondensed-jE5KO.woff);
+}
+@font-face {
+  font-family: avenis;
+  src: url(./assets/fonts/Avenis.otf);
+}
+@font-face {
+  font-family: avenis-light;
+  src: url(./assets/fonts/Avenis-Light.otf);
+}
+
+*{
+  box-sizing: border-box;
+}
+
+html,
+body {
+  @apply bg-background text-white ;
+}
+
+@theme {
+  --color-background: oklch(17.4% 0.005 285.823);
+}
