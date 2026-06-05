@@ -26,7 +26,7 @@ const Navbar = ({ setIsAuthModalOpen,isLogin }) => {
     const [username, setUsername] = useState("")
 
     useEffect(() => {
-            setUsername(localStorage.getItem("name"))
+            setUsername(localStorage.getItem("name") || "U")
     }, [localStorage.getItem("name")])
 
     return (
