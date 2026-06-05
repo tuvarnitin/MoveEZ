@@ -93,6 +93,7 @@ const LoginModal = ({ isLogin, setIsLogin, setIsAuthModalOpen }) => {
         setIsLogin(true)
         setIsAuthModalOpen(false)
         localStorage.setItem("name", response.user.name)
+        localStorage.setItem("token", response.token)
         naviagte("/")
       }
     } catch (error) {
@@ -125,6 +126,7 @@ const LoginModal = ({ isLogin, setIsLogin, setIsAuthModalOpen }) => {
         setResponseErrors("")
         setIsAuthModalOpen(false)
         localStorage.setItem("name", response.user.name)
+        localStorage.setItem("token", response.token)
         naviagte("/")
       }
     } catch (error) {
