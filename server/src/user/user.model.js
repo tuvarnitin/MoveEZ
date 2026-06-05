@@ -28,8 +28,10 @@ const userShcema = new mongoose.Schema({
 })
 
 userShcema.pre("save",async function() {
-    if(!this.isModified("password")) return
-    this.password = bcrypt.hash(this.password,8)
+    if(!this.isModified("password")){
+        return
+    }
+    this.password = await bcrypt.hash(this.password,8)
 })
 
 userShcema.methods.comparePassword = async function(password){

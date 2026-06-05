@@ -6,9 +6,9 @@ import { Link, NavLink } from "react-router-dom";
 import { FaCarSide, FaBusSimple } from "react-icons/fa6";
 import { FaMotorcycle, FaTruck } from "react-icons/fa";
 
-import Navbar from '../components/Navbar';
+import Navbar from './Navbar';
 
-const Hero = () => {
+const Hero = ({ setIsAuthModalOpen, isLogin }) => {
 
     const VEHICLE_LIST = [
         {
@@ -47,7 +47,9 @@ const Hero = () => {
                         ))
                     }
                 </div>
-                <button className="px-4 py-2 text-background bg-white rounded-full cursor-pointer hover:bg-white/90">Book Now</button>
+                <button className="px-4 py-2 text-background bg-white rounded-full cursor-pointer hover:bg-white/90" onClick={()=>{
+                    if(!isLogin) setIsAuthModalOpen(true)
+                }}>Book Now</button>
             </main>
         </div>
     )

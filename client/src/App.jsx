@@ -1,20 +1,21 @@
 import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
-import LoginModal from "./components/LoginModal";
-import { useState } from "react";
+import AuthModal from "./components/AuthModal";
+import { useEffect, useState } from "react";
 
 function App() {
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+   const [isLogin,setIsLogin] = useState(false)
 
   return (
     <div className="w-full min-h-screen ">
-      <Navbar setIsLoginModalOpen={setIsLoginModalOpen} />
+      <Navbar isLogin={isLogin} setIsAuthModalOpen={setIsAuthModalOpen} />
       {
-        isLoginModalOpen && <LoginModal setIsLoginModalOpen={setIsLoginModalOpen} />
+        isAuthModalOpen  && <AuthModal isLogin={isLogin} setIsLogin={setIsLogin} setIsAuthModalOpen={setIsAuthModalOpen} />
       }
-    <Routes>
-        <Route path="/" element={<Home />} />
+      <Routes>
+        <Route path="/" element={<Home isLogin={isLogin} setIsAuthModalOpen={setIsAuthModalOpen} />} />
       </Routes>
     </div>
   );

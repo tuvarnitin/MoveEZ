@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 
-const Navbar = ({ setIsLoginModalOpen }) => {
+const Navbar = ({ setIsAuthModalOpen,isLogin }) => {
 
     const NAV_LINKS = [
         {
@@ -23,7 +23,11 @@ const Navbar = ({ setIsLoginModalOpen }) => {
         },
     ]
     const [currPath, setCurrpath] = useState(window.location.pathname)
-    const [isLogin, setIsLogin] = useState(false)
+    const [username, setUsername] = useState("")
+
+    useEffect(() => {
+            setUsername(localStorage.getItem("name"))
+    }, [localStorage.getItem("name")])
 
     return (
         <nav className="w-full flex justify-between items-center p-4 sm:px-6 md:px-16 lg:px-50">
@@ -47,10 +51,10 @@ const Navbar = ({ setIsLoginModalOpen }) => {
             <div className='sm:block hidden'>
                 {
                     isLogin ?
-                        <div className="hidden sm:flex w-10 h-10 border-2 rounded-full items-center justify-center text-xl">N</div>
+                        <div className="hidden sm:flex w-10 h-10 border-2 rounded-full items-center justify-center text-xl">{username.slice(0,1).toUpperCase()}</div>
                         :
                         <button
-                            onClick={() => setIsLoginModalOpen(true)}
+                            onClick={() => setIsAuthModalOpen(true)}
                             className=' px-4 py-0.5 border-white/50 border rounded-full cursor-pointer font-[avenis-light]'
                         >Login</button>
                 }
