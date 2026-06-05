@@ -1,4 +1,8 @@
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
+
+dotenv.config()
 
 import User from "../user/user.model.js"
 import { register } from "./auth.service.js"
@@ -28,7 +32,7 @@ export const registerUser = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,
             secure: true,
-            sameSite: "lax",
+            sameSite: "none",
         })
 
         return res.status(201).json({
@@ -38,7 +42,8 @@ export const registerUser = async (req, res) => {
                 email: user.email,
                 role: user.role
             },
-            message: "User registered successfully."
+            message: "User registered successfully.",
+            token
         })
 
     } catch (error) {
@@ -91,7 +96,7 @@ export const loginUser = async (req, res) => {
     res.cookie("token", token, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "none",
     })
 
     return res.status(200).json({
@@ -100,7 +105,35 @@ export const loginUser = async (req, res) => {
             name: user.name,
             email: user.email
         },
+        token,
         message: "Login successfully."
     })
 
 }
+
+export const getMe = async (req,res) => {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if(!token){
+        return res.status(401).json({
+            success:false,
+            message:"Token not provided"
+        })
+    }
+    try {
+        const {id} = await jwt.verify(token,process.env.JWT_SECRET)
+        const user = await User.findById(id)
+        
+        if(!user){
+            return res.status(401).json({
+                success: false,
+                message: "Invalid Token"
+            })
+        }
+        res.status(200).json({
+            success:true
+        })
+    } catch (error) {
+        console.log(error)
+    }
+} 
