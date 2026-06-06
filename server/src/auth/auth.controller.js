@@ -6,6 +6,7 @@ dotenv.config()
 
 import User from "../user/user.model.js"
 import { register } from "./auth.service.js"
+import { sendOtp } from "../services/mail.service.js"
 
 export const registerUser = async (req, res) => {
     try {
@@ -32,18 +33,31 @@ export const registerUser = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,
             secure: true,
-            sameSite: "none",
+            sameSite: "strict",
         })
+
+        const otp = Math.floor(1000 + Math.random() * 9000);
+
+        user.otp = otp;
+        await user.save()
+
+        sendOtp(user.name, user.email, otp)
+            .then((response) => {
+                console.log("Mail response : ", response)
+            })
+            .catch((error) => {
+                console.log("Mail error : ", error)
+            })
 
         return res.status(201).json({
             success: true,
             user: {
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                emailVerified: user.emailVerified
             },
-            message: "User registered successfully.",
-            token
+            message: "Registered successfully."
         })
 
     } catch (error) {
@@ -64,76 +78,165 @@ export const registerUser = async (req, res) => {
 
 export const loginUser = async (req, res) => {
 
-    const { email, password } = req.body;
+    try {
+        const { email, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "email and password are required."
+            })
+        }
+
+        const user = await User.findOne({ email }).select("+password")
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password."
+            })
+        }
+
+        const isValidPassword = await user.comparePassword(password)
+
+        if (!isValidPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid email or password."
+            })
+        }
+
+        if (!user.emailVerified) {
+            sendOtp(user.name, user.email)
+        }
+
+        const token = await user.generateToken()
+
+        res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+        })
+
+        return res.status(200).json({
+            success: true,
+            user: {
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                emailVerified: user.emailVerified
+            },
+            message: "Login successfully."
+        })
+    } catch (error) {
+        return res.status(500).json({
             success: false,
-            message: "email and password are required."
+            message: error.message || "Internal server error"
         })
     }
-
-    const user = await User.findOne({ email }).select("+password")
-
-    if (!user) {
-        return res.status(401).json({
-            success: false,
-            message: "Invalid email or password."
-        })
-    }
-
-    const isValidPassword = await user.comparePassword(password)
-
-    if (!isValidPassword) {
-        return res.status(400).json({
-            success: false,
-            message: "Invalid email or password."
-        })
-    }
-
-    const token = await user.generateToken()
-
-    res.cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-    })
-
-    return res.status(200).json({
-        success: true,
-        user: {
-            name: user.name,
-            email: user.email
-        },
-        token,
-        message: "Login successfully."
-    })
 
 }
 
-export const getMe = async (req,res) => {
-    const token = req.headers.authorization?.split(" ")[1];
+export const logout = async (req, res) => {
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict",
+    })
+    
+    return res.status(200).json({
+        success:true
+    })
+}
 
-    if(!token){
-        return res.status(401).json({
-            success:false,
-            message:"Token not provided"
+export const getMe = async (req, res) => {
+
+    const token = req.headers.authorization?.split(" ")[1] || req.cookies.token
+
+    if (!token) {
+        return res.status(200).json({
+            success: false
         })
     }
+
     try {
-        const {id} = await jwt.verify(token,process.env.JWT_SECRET)
+        const { id } = await jwt.verify(token, process.env.JWT_SECRET)
         const user = await User.findById(id)
-        
-        if(!user){
-            return res.status(401).json({
-                success: false,
-                message: "Invalid Token"
+
+        if (!user) {
+            return res.status(200).json({
+                success: false
             })
         }
-        res.status(200).json({
-            success:true
+        return res.status(200).json({
+            success: true,
+            user
         })
     } catch (error) {
-        console.log(error)
+        return res.status(500).json({
+            success: false,
+        })
     }
-} 
+}
+
+export const verifyOtp = async (req, res) => {
+    try {
+        const { otp } = req.body
+        const token = req.headers.authorization?.split(" ")[1] || req.cookies.token;
+
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                message: "Token not provided"
+            })
+        }
+
+        const { id } = await jwt.verify(token, process.env.JWT_SECRET)
+
+        const user = await User.findById(id)
+
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorize"
+            })
+        }
+
+        if (!otp) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide otp"
+            })
+        }
+
+        if (otp === user.otp) {
+
+            user.otp = ""
+            user.emailVerified = true
+            await user.save()
+
+            return res.status(200).json({
+                success: true,
+                message: "OTP verified successfully",
+                user: {
+                    email: user.email,
+                    name: user.name,
+                    emailVerified: user.emailVerified,
+                    role: user.role,
+                    token
+                }
+            })
+
+        }
+        return res.status(400).json({
+            success: false,
+            message: "Wrong otp"
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal server error"
+        })
+    }
+}
