@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import AuthModal from "./components/auth/AuthModal.jsx";
 
 import { authService } from "./services/auth.service.js"
+
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, onLogout } from "./redux/features/authSlice.js";
 
@@ -15,9 +16,8 @@ function App() {
   
   const [isLoading, setIsLoading] = useState(true)
 
-  useLayoutEffect(() => {
-    (
-      async () => {
+  useEffect(() => {
+     const getUser = async () => {
         try {
           const response = await authService.getMe()
           if (response.success) {
@@ -26,12 +26,12 @@ function App() {
             }))
           }
         } catch (error) {
-          disptach(logout({}))
+          disptach(onLogout({}))
         }finally{
           setIsLoading(false)
         }
       }
-    )()
+      getUser()
   }, [])
 
   const isAuthModalOpen = useSelector(state => state.auth.isAuthModalOpen)
