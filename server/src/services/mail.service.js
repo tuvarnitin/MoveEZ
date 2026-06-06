@@ -25,60 +25,241 @@ export const sendOtp = async (name, email, otp) => {
     to: email,
     subject: `Your code - ${otp}`,
     html: `<!DOCTYPE html>
-
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>OTP Verification</title>
+  <meta charset="UTF-8" />
+  <title>MoveEZ OTP Verification</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0">
+
+<body style="
+  margin:0;
+  padding:0;
+  background:#0f172a;
+  font-family:Arial, Helvetica, sans-serif;
+">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
     <tr>
       <td align="center" style="padding:40px 20px;">
-        <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;">
+
+        <!-- Main Card -->
+        <table
+          width="600"
+          cellpadding="0"
+          cellspacing="0"
+          border="0"
+          style="
+            background:#111827;
+            border:1px solid #1f2937;
+            border-radius:20px;
+            overflow:hidden;
+          "
+        >
+
+          <!-- Top Accent -->
           <tr>
-            <td style="padding:40px;text-align:center;">
-              <h2 style="margin:0;color:#333333;">
+            <td
+              style="
+                height:6px;
+                background:linear-gradient(
+                  90deg,
+                  #f97316,
+                  #fb923c,
+                  #f97316
+                );
+              "
+            ></td>
+          </tr>
+
+          <!-- Logo -->
+          <tr>
+            <td align="center" style="padding:35px 40px 15px;">
+              <img
+                src="https://res.cloudinary.com/dhm3xypip/image/upload/v1780738057/logo_kwvwtc.png"
+                alt="MoveEZ"
+                width="240"
+                style="display:block;max-width:240px;"
+              />
+            </td>
+          </tr>
+
+          <!-- Heading -->
+          <tr>
+            <td align="center" style="padding:0 40px;">
+              <h1
+                style="
+                  margin:0;
+                  color:#ffffff;
+                  font-size:32px;
+                  font-weight:700;
+                "
+              >
                 Verify Your Account
-              </h2>
-            < p style="margin:20px 0;color:#666666;font-size:16px;line-height:1.6;" >
-            Dear ${name},
-          </p >
-            < p style="margin:20px 0;color:#666666;font-size:16px;line-height:1.6;" >
-            Your account is created successfully.
-          </p >
-            < p style="margin:20px 0;color:#666666;font-size:16px;line-height:1.6;" >
-            Use the following One- Time Password(OTP) to complete your verification.
-          </p >
+              </h1>
 
-          <div style="margin:30px 0;">
-            <span style="display:inline-block;padding:15px 30px;font-size:32px;font-weight:bold;letter-spacing:8px;background:#f3f4f6;border-radius:8px;color:#111827;">
-              ${ otp }
-            </span>
-          </div>
+              <p
+                style="
+                  margin-top:12px;
+                  color:#94a3b8;
+                  font-size:15px;
+                  line-height:24px;
+                "
+              >
+                Complete your registration using the verification code below.
+              </p>
+            </td>
+          </tr>
 
-          <p style="color:#666666;font-size:14px;">
-            This OTP is valid for <strong>5 minutes</strong>.
-          </p>
+          <!-- Content -->
+          <tr>
+            <td style="padding:10px 40px 0;">
 
-          <p style="margin-top:25px;color:#999999;font-size:14px;">
-            If you did not request this OTP, you can safely ignore this email.
-          </p>
+              <p
+                style="
+                  color:#e5e7eb;
+                  font-size:16px;
+                  line-height:28px;
+                  margin:0;
+                "
+              >
+                Hi <strong>${name}</strong>,
+              </p>
 
-          <hr style="margin:30px 0;border:none;border-top:1px solid #e5e7eb;">
+              <p
+                style="
+                  color:#94a3b8;
+                  font-size:15px;
+                  line-height:28px;
+                  margin-top:15px;
+                "
+              >
+                Your MoveEZ account has been created successfully.
+                Use the OTP below to verify your email address.
+              </p>
 
-          <p style="color:#9ca3af;font-size:12px;">
-            © MoveEZ. All rights reserved.
-          </p>
-        </td>
-      </tr >
-    </table >
-  </td >
-</tr >
+            </td>
+          </tr>
+
+          <!-- OTP Box -->
+          <tr>
+            <td align="center" style="padding:30px 40px;">
+
+              <table
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="
+                  background:#0f172a;
+                  border:1px solid #334155;
+                  border-radius:16px;
+                "
+              >
+                <tr>
+                  <td
+                    style="
+                      padding:20px 40px;
+                      color:#f97316;
+                      font-size:40px;
+                      font-weight:700;
+                      letter-spacing:10px;
+                    "
+                  >
+                    ${otp}
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Info -->
+          <tr>
+            <td align="center" style="padding:0 40px;">
+
+              <p
+                style="
+                  margin:0;
+                  color:#cbd5e1;
+                  font-size:15px;
+                "
+              >
+                This OTP is valid for
+                <span
+                  style="
+                    color:#f97316;
+                    font-weight:bold;
+                  "
+                >
+                  5 minutes
+                </span>.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- Security Note -->
+          <tr>
+            <td style="padding:30px 40px;">
+
+              <table
+                width="100%"
+                cellpadding="0"
+                cellspacing="0"
+                style="
+                  background:#0f172a;
+                  border:1px solid #1e293b;
+                  border-radius:12px;
+                "
+              >
+                <tr>
+                  <td
+                    style="
+                      padding:18px;
+                      color:#94a3b8;
+                      font-size:14px;
+                      line-height:24px;
+                    "
+                  >
+                    If you didn't request this verification code,
+                    you can safely ignore this email.
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td
+              align="center"
+              style="
+                border-top:1px solid #1f2937;
+                padding:25px 40px;
+              "
+            >
+
+              <p
+                style="
+                  margin:0;
+                  color:#64748b;
+                  font-size:13px;
+                "
+              >
+                © 2026 MoveEZ. All rights reserved.
+              </p>
+
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
   </table>
+
 </body>
-</html>
-`
+</html>`
   },
     function (error, info) {
       if (error) {

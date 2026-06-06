@@ -4,6 +4,7 @@ import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
 
 import authRoute from "./auth/auth.route.js"
+import { sendOtp } from "./services/mail.service.js"
 
 const app = express()
 
