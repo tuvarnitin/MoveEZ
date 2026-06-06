@@ -23,12 +23,13 @@ const authModel = () => {
 
   const currState = useSelector(state => state.auth.currState)
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+  const user = useSelector(state => state.auth.user)
 
   const dispatch = useDispatch()
 
   const naviagte = useNavigate()
 
-  if (isAuthenticated) {
+  if (isAuthenticated && user.emailVerified) {
     dispatch(closeAuthModal())
     naviagte("/")
   }
@@ -45,21 +46,21 @@ const authModel = () => {
   const [responseError, setResponseErrors] = useState("")
 
   return (
-    <div className='fixed inset-0 overflow-y-hidden left-0 z-10 bg-background/90 flex items-center justify-center transition-all overflow-hidden px-3' ref={pageRef} onClick={(e) => (e.target == pageRef.current) && setIsAuthModalOpen(false)}>
+    <div className='fixed inset-0 overflow-y-hidden left-0 z-10 bg-background/90 flex items-center justify-center transition-all overflow-hidden px-3' ref={pageRef} onClick={(e) => (e.target == pageRef.current) && dispatch(closeAuthModal())}>
 
-      <div className='w-full sm:w-[62vw] md:w-[40vw] max-w-90 relative bg-white text-background p-6 pt-10 rounded-md flex flex-col gap-4 items-center' ref={modelRef}>
+      <div className='w-full sm:w-[62vw] md:w-[40vw] max-w-90 relative bg-white text-background pt-10 px-4 pb-6 rounded-md flex flex-col gap-4 items-center' ref={modelRef}>
 
         {/* Close Icon */}
         <IoMdClose
           className='absolute right-2 top-2 text-[max(1.7vw,28px)] cursor-pointer text-background/70'
           onClick={() =>
-            setIsAuthModalOpen(false)
+            dispatch(closeAuthModal())
           }
         />
         {/* Title  */}
-        <div className=' flex flex-col gap-3 items-center'>
+        <div className=' flex flex-col gap-2 items-center'>
           <h1 className='font-[supercharge] text-[max(28px,1.8vw)] leading-1 '>Move<span className='text-[max(36px,2.3vw)] text-orange-500'>EZ</span></h1>
-          <p className='text-[max(16px,1vw)] text-background/50'>Easy vehicle bookings</p>
+          <p className='text-[max(12px,.9vw)] text-background/50'>Easy vehicle bookings</p>
         </div>
 
         {/* Button - Continue wiht Google */}

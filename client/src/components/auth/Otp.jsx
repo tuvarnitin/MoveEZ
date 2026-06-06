@@ -1,37 +1,52 @@
 import React, { useRef, useState } from 'react'
+import Button from '../Button'
+import { authService } from '../../services/auth.service'
+import { useDispatch, useSelector } from 'react-redux'
+import { closeAuthModal, loginSuccess } from '../../redux/features/authSlice'
+import { useNavigate } from 'react-router-dom'
 
 const OtpInput = ({}) => {
 
     const LENGTH = 4
-    const [otp, setOtp] = useState(Array(LENGTH).fill(""))
+    const [otp, setOtp] = useState([...Array(LENGTH).fill("")])
     const [otpError, setOtpError] = useState([])
 
+    const [isLoading,setLoading] = useState(false)
+
     const inputRefs = useRef([])
+
+    const [responseError,setResponseErrors] = useState("")
+
+    const dispatch = useDispatch()
+    const user = useSelector(state => state.auth.user)
+
+    const navigate = useNavigate()
 
     const focusElem = (index) => {
         inputRefs.current[index]?.focus();
     }
 
     const handleChange = (value, index) => {
+        
         if (!/^\d*$/.test(value)) {
             setOtpError([...otpError, index])
             return
         } else {
             setOtpError([])
         }
-
+        
         const newOtp = [...otp]
         newOtp[index] = value.slice(-1)
         setOtp(newOtp)
-
+        
         if (index > 0 && !otp[index]) {
             focusElem(index - 1)
         }
-
-        if (value && index < length - 1) {
+        
+        if (value && index < LENGTH - 1) {
             focusElem(index + 1)
         }
-        if (index === length - 1) {
+        if (index === LENGTH - 1) {
             focusElem(index)
         }
     };
@@ -43,7 +58,7 @@ const OtpInput = ({}) => {
     };
 
     const handlePaste = (e) => {
-        const pasted = e.clipboardData.getData("text").slice(0, length)
+        const pasted = e.clipboardData.getData("text").slice(0, LENGTH)
 
         if (!/^\d*$/.test(pasted)) {
             setOtpError([...otpError, 0])
@@ -58,7 +73,7 @@ const OtpInput = ({}) => {
         });
         setOtp(newOtp)
 
-        const nextIndex = Math.min(pasted.length, length - 1);
+        const nextIndex = Math.min(pasted.LENGTH, LENGTH - 1);
         focusElem(nextIndex);
     }
 
@@ -68,37 +83,42 @@ const OtpInput = ({}) => {
             const otpValue = otp.reduce((acc, curr) => acc + curr);
             const response = await authService.verifyOtp({ otp: otpValue })
             if (response.success) {
-                setIsLogin(true)
-                setIsAuthModalOpen(false)
-                localStorage.setItem("name", response.user.name)
-                localStorage.setItem("token", response.token)
+                dispatch(loginSuccess({
+                    user:{
+                        ...user,
+                        emailVerified:true
+                    }
+                }))
+                dispatch(closeAuthModal())
                 naviagte("/")
             }
         } catch (error) {
             console.log(error)
             setResponseErrors(error.message)
-            setOtpError([...Array(OTP_LENGTH).map((_, index) => index)])
+            setOtpError([...Array(LENGTH).map((_, index) => index)])
         }
 
     }
 
     return (
-        <div className='flex justify-center gap-1'>
-            {
-                otp.map((value, index) => (
-                    <div key={`${index}-`}
-                        className={`border border-background/30 w-8 rounded-md flex items-center p-1 ${otpError.includes(index) ? "border-red-400" : "border-background/30"}`}>
-                        <input
-                            value={value}
-                            onChange={(e) => handleChange(e.target.value, index)}
-                            onKeyDown={(e) => handleKeyPress(e, index)}
-                            onPaste={handlePaste}
-                            maxLength={1}
-                            ref={(e) => (inputRefs.current[index] = e)}
-                            className='text-xl w-full text-center outline-none rounded-lg' />
-                    </div>
-                ))
-            }
+        <div className='w-full flex flex-col justify-center gap-1'>
+           <div className='w-full flex items-center justify-center gap-2'>
+                {
+                    otp.map((value, index) => (
+                        <div key={index}
+                            className={`border border-background/30 w-8 rounded-md flex items-center p-1 ${otpError.includes(index) ? "border-red-400" : "border-background/30"}`}>
+                            <input
+                                value={value}
+                                onChange={(e) => handleChange(e.target.value, index)}
+                                onKeyDown={(e) => handleKeyPress(e, index)}
+                                onPaste={handlePaste}
+                                maxLength={1}
+                                ref={(e) => (inputRefs.current[index] = e)}
+                                className='text-xl w-full text-center outline-none rounded-lg' />
+                        </div>
+                    ))
+                }
+           </div>
             <p
                 className='text-[max(12px,0.4vw)] text-center leading-1 text-red-500'
             >{responseError}</p>

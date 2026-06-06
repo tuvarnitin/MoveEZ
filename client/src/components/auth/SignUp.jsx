@@ -5,9 +5,11 @@ import Button from '../Button'
 import Input from '../Input'
 import { RiUser6Line } from 'react-icons/ri'
 import { useDispatch } from 'react-redux'
-import { loginSuccess } from '../../redux/features/authSlice'
+import { loginSuccess, setCurrState } from '../../redux/features/authSlice'
+import { validateFiels } from '../../utils/validateFields'
+import { authService } from '../../services/auth.service'
 
-const SignUp = ({ setCurrState }) => {
+const SignUp = () => {
 
   const [isLoading, setLoading] = useState(false)
 
@@ -64,13 +66,15 @@ const SignUp = ({ setCurrState }) => {
     }
 
     try {
-      const {user,token,success} = await authService.register({ name: name.current?.value, email: email.current?.value, password: password.current?.value })
+      const { user, token, success } = await authService.register({ name: name.current?.value, email: email.current?.value, password: password.current?.value })
       if (success) {
         dispatch(loginSuccess({
           user,
           token
         }))
-        setState("otp")
+        dispatch(setCurrState({
+          state:"otp"
+        }))
         setResponseErrors("")
       }
     } catch (error) {
@@ -96,11 +100,17 @@ const SignUp = ({ setCurrState }) => {
             />
             {fieldsErrors[name] &&
               <p
-                className='text-[max(12px,0.4vw)] leading-1 text-red-500'
+                className='text-[max(12px,0.4vw)] text-red-500'
               >{fieldsErrors[name]}</p>
             }
           </div>
         ))
+      }
+      {
+        responseError &&
+        <p
+          className='text-[max(12px,0.4vw)] text-red-500'
+        >{responseError}</p>
       }
       {/* Button - Continue */}
       <Button text={"Send OTP"} isLoading={isLoading} onClick={handleRegister} fill={true} />
@@ -109,7 +119,9 @@ const SignUp = ({ setCurrState }) => {
       >Already have an account? &nbsp;
         <span
           className='text-background text-[max(16px,1vw)] underline font-semibold cursor-pointer'
-          onClick={() => setCurrState("login")}
+          onClick={() => dispatch(setCurrState({
+            state: "login"
+          }))}
         >Login</span>
       </p>
     </div>

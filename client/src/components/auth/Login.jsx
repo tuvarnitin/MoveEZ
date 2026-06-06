@@ -100,6 +100,12 @@ const Login = () => {
           </div>
         ))
       }
+     {
+      responseError && 
+       <p
+        className='text-[max(12px,0.4vw)] text-red-500'
+      >{responseError}</p>
+     }
       <a href="#" className='text-[max(12px,0.9vw)] text-purple-950 hover:underline block text-right'>forgot password</a>
       {/* Button - Continue */}
     <Button text={"Continue"} isLoading={isLoading} onClick={handleLogin} fill={true} />

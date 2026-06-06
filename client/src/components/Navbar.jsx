@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { closeAuthModal } from '../redux/features/authSlice'
+import { closeAuthModal, openAuthModal } from '../redux/features/authSlice'
 
 
 const Navbar = () => {
@@ -28,6 +28,7 @@ const Navbar = () => {
 
     const user = useSelector(state => state.auth.user)
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+
     const dispatch = useDispatch()
 
     return (
@@ -55,7 +56,7 @@ const Navbar = () => {
                         <div className="hidden sm:flex w-10 h-10 border-2 rounded-full items-center justify-center text-xl">{user.name.slice(0,1).toUpperCase()}</div>
                         :
                         <button
-                            onClick={() => dispatch(closeAuthModal())}
+                            onClick={() => dispatch(openAuthModal())}
                             className=' px-4 py-0.5 border-white/50 border rounded-full cursor-pointer font-[avenis-light]'
                         >Login</button>
                 }
