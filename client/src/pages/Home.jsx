@@ -4,7 +4,7 @@ import Hero from '../components/Hero'
 const Home = ({ setIsAuthModalOpen ,isLogin}) => {
   return (
     <>
-    <Hero isLogin={isLogin} setIsAuthModalOpen={setIsAuthModalOpen} />
+    <Hero />
     </>
   )
 }

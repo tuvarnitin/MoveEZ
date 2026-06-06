@@ -3,31 +3,38 @@ import { useEffect, useLayoutEffect, useState } from "react";
 
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
-import AuthModal from "./components/AuthModal";
+import AuthModal from "./components/auth/AuthModal.jsx";
 
-import {authService} from "./services/auth.service.js"
+import { authService } from "./services/auth.service.js"
+import { useDispatch, useSelector } from "react-redux";
+import { loginSuccess, onLogout } from "./redux/features/authSlice.js";
 
 function App() {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
-   const [isLogin,setIsLogin] = useState(false)
-   const [isLoading,setIsLoading] = useState(true)
 
-   useLayoutEffect(()=>{
+  const disptach = useDispatch()
+  
+  const [isLoading, setIsLoading] = useState(true)
+
+  useLayoutEffect(() => {
     (
       async () => {
-       try {
-         const response = await authService.getMe()
-         if (response.success) {
-           setIsLogin(true)
-           setIsLoading(false)
-         }
+        try {
+          const response = await authService.getMe()
+          if (response.success) {
+            disptach(loginSuccess({
+              user:response.user
+            }))
+          }
         } catch (error) {
-         setIsLogin(false)
-        setIsLoading(false)
-       }
+          disptach(logout({}))
+        }finally{
+          setIsLoading(false)
+        }
       }
     )()
-   },[])
+  }, [])
+
+  const isAuthModalOpen = useSelector(state => state.auth.isAuthModalOpen)
 
   return (
     <div className={`w-full min-h-screen`}>
@@ -37,12 +44,12 @@ function App() {
           <div className="w-10 h-10 border-4 rounded-full border-t-transparent animate-spin border-white"></div>
         </div>
       }
-      <Navbar isLogin={isLogin} setIsAuthModalOpen={setIsAuthModalOpen} />
+      <Navbar />
       {
-        isAuthModalOpen  && <AuthModal isLogin={isLogin} setIsLogin={setIsLogin} setIsAuthModalOpen={setIsAuthModalOpen} />
+        isAuthModalOpen && <AuthModal />
       }
       <Routes>
-        <Route path="/" element={<Home isLogin={isLogin} setIsAuthModalOpen={setIsAuthModalOpen} />} />
+        <Route path="/" element={<Home/>} />
       </Routes>
     </div>
   );

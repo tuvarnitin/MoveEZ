@@ -7,8 +7,15 @@ import { FaCarSide, FaBusSimple } from "react-icons/fa6";
 import { FaMotorcycle, FaTruck } from "react-icons/fa";
 
 import Navbar from './Navbar';
+import { useDispatch, useSelector } from 'react-redux';
+import { onLogout, openAuthModal } from '../redux/features/authSlice';
+
+import {authService} from '../services/auth.service.js';
 
 const Hero = ({ setIsAuthModalOpen, isLogin }) => {
+
+    const dispatch = useDispatch()
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
 
     const VEHICLE_LIST = [
         {
@@ -29,6 +36,11 @@ const Hero = ({ setIsAuthModalOpen, isLogin }) => {
         },
     ]
 
+    const handleLogout = async () => {
+        const res = await authService.logout();
+        dispatch(onLogout())
+    }
+
 
     return (
         <div className='overflow-x-hidden'>
@@ -48,8 +60,9 @@ const Hero = ({ setIsAuthModalOpen, isLogin }) => {
                     }
                 </div>
                 <button className="px-4 py-2 text-background bg-white rounded-full cursor-pointer hover:bg-white/90" onClick={()=>{
-                    if(!isLogin) setIsAuthModalOpen(true)
+                   dispatch(openAuthModal({}))
                 }}>Book Now</button>
+                <button className="px-4 py-2 text-background bg-white rounded-full cursor-pointer hover:bg-white/90" onClick={handleLogout}>Logout</button>
             </main>
         </div>
     )

@@ -1,21 +1,22 @@
 import React, { useRef, useState } from 'react'
 
-const OtpInput = ({ length = 4 }) => {
+const OtpInput = ({}) => {
 
-    const [otp, setOtp] = useState(Array(length).fill(""))
-    const [otpError,setOtpError] = useState([])
+    const LENGTH = 4
+    const [otp, setOtp] = useState(Array(LENGTH).fill(""))
+    const [otpError, setOtpError] = useState([])
 
     const inputRefs = useRef([])
 
     const focusElem = (index) => {
-       inputRefs.current[index]?.focus();
+        inputRefs.current[index]?.focus();
     }
 
     const handleChange = (value, index) => {
-        if (!/^\d*$/.test(value)){
-            setOtpError([...otpError,index])
+        if (!/^\d*$/.test(value)) {
+            setOtpError([...otpError, index])
             return
-        }else{
+        } else {
             setOtpError([])
         }
 
@@ -23,14 +24,14 @@ const OtpInput = ({ length = 4 }) => {
         newOtp[index] = value.slice(-1)
         setOtp(newOtp)
 
-        if (index > 0 && !otp[index]){
-            focusElem(index-1)
+        if (index > 0 && !otp[index]) {
+            focusElem(index - 1)
         }
 
         if (value && index < length - 1) {
             focusElem(index + 1)
         }
-        if(index === length-1){
+        if (index === length - 1) {
             focusElem(index)
         }
     };
@@ -42,7 +43,7 @@ const OtpInput = ({ length = 4 }) => {
     };
 
     const handlePaste = (e) => {
-        const pasted = e.clipboardData.getData("text").slice(0,length)
+        const pasted = e.clipboardData.getData("text").slice(0, length)
 
         if (!/^\d*$/.test(pasted)) {
             setOtpError([...otpError, 0])
@@ -52,16 +53,34 @@ const OtpInput = ({ length = 4 }) => {
         }
         const newOtp = [...otp]
 
-        pasted.split("").forEach((char,i) => {
+        pasted.split("").forEach((char, i) => {
             newOtp[i] = char
         });
         setOtp(newOtp)
 
-        console.log(pasted,newOtp)
         const nextIndex = Math.min(pasted.length, length - 1);
         focusElem(nextIndex);
     }
 
+    const VerifyOtp = async () => {
+        setResponseErrors("")
+        try {
+            const otpValue = otp.reduce((acc, curr) => acc + curr);
+            const response = await authService.verifyOtp({ otp: otpValue })
+            if (response.success) {
+                setIsLogin(true)
+                setIsAuthModalOpen(false)
+                localStorage.setItem("name", response.user.name)
+                localStorage.setItem("token", response.token)
+                naviagte("/")
+            }
+        } catch (error) {
+            console.log(error)
+            setResponseErrors(error.message)
+            setOtpError([...Array(OTP_LENGTH).map((_, index) => index)])
+        }
+
+    }
 
     return (
         <div className='flex justify-center gap-1'>
@@ -72,7 +91,7 @@ const OtpInput = ({ length = 4 }) => {
                         <input
                             value={value}
                             onChange={(e) => handleChange(e.target.value, index)}
-                            onKeyDown={(e)=>handleKeyPress(e,index)}
+                            onKeyDown={(e) => handleKeyPress(e, index)}
                             onPaste={handlePaste}
                             maxLength={1}
                             ref={(e) => (inputRefs.current[index] = e)}
@@ -80,6 +99,14 @@ const OtpInput = ({ length = 4 }) => {
                     </div>
                 ))
             }
+            <p
+                className='text-[max(12px,0.4vw)] text-center leading-1 text-red-500'
+            >{responseError}</p>
+            <Button
+                isLoading={isLoading}
+                onClick={VerifyOtp}
+                text="Verify OTP"
+            />
         </div>
     )
 }

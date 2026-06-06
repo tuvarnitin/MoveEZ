@@ -13,12 +13,6 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
     async (config) => {
-        const token = await localStorage.getItem("token")
-
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`
-        }
-
         return config
     },
     (error) => { 
@@ -34,7 +28,6 @@ apiClient.interceptors.response.use(
         const message = error.response?.data?.message ||
         error?.message ||
         "Something went wrong"
-
         return Promise.reject(message)
     }
 )

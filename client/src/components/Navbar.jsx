@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { closeAuthModal } from '../redux/features/authSlice'
 
 
-const Navbar = ({ setIsAuthModalOpen,isLogin }) => {
+const Navbar = () => {
 
     const NAV_LINKS = [
         {
@@ -23,11 +25,10 @@ const Navbar = ({ setIsAuthModalOpen,isLogin }) => {
         },
     ]
     const [currPath, setCurrpath] = useState(window.location.pathname)
-    const [username, setUsername] = useState("")
 
-    useEffect(() => {
-            setUsername(localStorage.getItem("name") || "U")
-    }, [localStorage.getItem("name")])
+    const user = useSelector(state => state.auth.user)
+    const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+    const dispatch = useDispatch()
 
     return (
         <nav className="w-full flex justify-between items-center p-4 sm:px-6 md:px-16 lg:px-50">
@@ -50,11 +51,11 @@ const Navbar = ({ setIsAuthModalOpen,isLogin }) => {
             </div>
             <div className='sm:block hidden'>
                 {
-                    isLogin ?
-                        <div className="hidden sm:flex w-10 h-10 border-2 rounded-full items-center justify-center text-xl">{username.slice(0,1).toUpperCase()}</div>
+                    isAuthenticated ?
+                        <div className="hidden sm:flex w-10 h-10 border-2 rounded-full items-center justify-center text-xl">{user.name.slice(0,1).toUpperCase()}</div>
                         :
                         <button
-                            onClick={() => setIsAuthModalOpen(true)}
+                            onClick={() => dispatch(closeAuthModal())}
                             className=' px-4 py-0.5 border-white/50 border rounded-full cursor-pointer font-[avenis-light]'
                         >Login</button>
                 }
