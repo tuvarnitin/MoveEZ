@@ -24,6 +24,13 @@ const userShcema = new mongoose.Schema({
         type: String,
         minLength: [6, "Password must be of 6 characters."],
         select: false
+    },
+    otp:{
+        type:String
+    },
+    emailVerified:{
+        type:Boolean,
+        default:false
     }
 })
 
