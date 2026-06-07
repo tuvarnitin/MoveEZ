@@ -19,18 +19,7 @@ app.use(cookieParser())
 
 
 app.use(cors({
-    origin: (origin, callback) => {
-        const allowedOrigins = [
-            "http://localhost:5173",
-            "https://moveezzz.vercel.app"
-        ];
-        
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error("Not allowed by CORS"));
-        }
-    },
+    origin: ["https://moveezzz.vercel.app", "http://localhost:5173"],
     credentials: true
 }));
 
