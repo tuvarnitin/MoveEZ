@@ -4,7 +4,10 @@ import dotenv from "dotenv"
 dotenv.config()
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  family: 4,
   auth: {
     user: process.env.EMAIL,
     pass: process.env.EMAIL_PASS,
@@ -263,7 +266,7 @@ export const sendOtp = async (name, email, otp) => {
   },
     function (error, info) {
       if (error) {
-        if(error.message === "No recipients defined"){
+        if (error.message === "No recipients defined") {
           throw new Error("Email not exists")
         }
         return error

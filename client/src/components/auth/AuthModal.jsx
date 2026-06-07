@@ -19,6 +19,7 @@ import { authService } from "../../services/auth.service.js"
 
 import { useDispatch, useSelector } from 'react-redux';
 import { closeAuthModal } from '../../redux/features/authSlice.js';
+import Google from './Google.jsx';
 
 const BACKEND_URL = import.meta.env.VITE_API_BACKEND_URL
 
@@ -67,11 +68,7 @@ const authModel = () => {
         </div>
 
         {/* Button - Continue wiht Google */}
-        <Button
-          onClick={() => window.open(`${BACKEND_URL}/api/auth/google`,"_self")}
-          text={`Continue with Google`}
-          icon={<GoogleIcon />}
-        />
+        <Google />
 
         {/* Separator */}
         <OrDivider />
