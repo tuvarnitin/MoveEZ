@@ -42,12 +42,6 @@ export const registerUser = async (req, res) => {
         await user.save()
 
         sendOtp(user.name, user.email, otp)
-            .then((response) => {
-                console.log("Mail response : ", response)
-            })
-            .catch((error) => {
-                console.log("Mail error : ", error)
-            })
 
         return res.status(201).json({
             success: true,
@@ -55,7 +49,8 @@ export const registerUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                emailVerified: user.emailVerified
+                emailVerified: user.emailVerified,
+                avatar: user.avatar,
             },
             message: "Registered successfully."
         })
@@ -97,7 +92,16 @@ export const loginUser = async (req, res) => {
             })
         }
 
-        const isValidPassword = await user.comparePassword(password)
+        let isValidPassword;
+        if (user.authProvider === "local") {
+            isValidPassword = await user.comparePassword(password)
+        } else {
+            return res.status(401).json({
+                success: false,
+                message: "Invalid email or password"
+            })
+        }
+
 
         if (!isValidPassword) {
             return res.status(400).json({
@@ -124,7 +128,8 @@ export const loginUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                emailVerified: user.emailVerified
+                emailVerified: user.emailVerified,
+                avatar: user.avatar,
             },
             message: "Login successfully."
         })
@@ -143,40 +148,23 @@ export const logout = async (req, res) => {
         secure: true,
         sameSite: "strict",
     })
-    
+
     return res.status(200).json({
-        success:true
+        success: true
     })
 }
 
 export const getMe = async (req, res) => {
-
-    const token = req.headers.authorization?.split(" ")[1] || req.cookies.token
-
-    if (!token) {
-        return res.status(200).json({
-            success: false
-        })
-    }
-
-    try {
-        const { id } = await jwt.verify(token, process.env.JWT_SECRET)
-        const user = await User.findById(id)
-
-        if (!user) {
-            return res.status(200).json({
-                success: false
-            })
+    return res.json({
+        success: true,
+        user: {
+            name: req.user.name,
+            email: req.user.email,
+            role: req.user.role,
+            emailVerified: req.user.emailVerified,
+            avatar: req.user.avatar
         }
-        return res.status(200).json({
-            success: true,
-            user
-        })
-    } catch (error) {
-        return res.status(500).json({
-            success: false,
-        })
-    }
+    })
 }
 
 export const verifyOtp = async (req, res) => {

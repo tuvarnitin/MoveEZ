@@ -7,7 +7,7 @@ const authRoute = express.Router()
 authRoute.post("/register", registerUser)
 authRoute.post('/login', loginUser)
 authRoute.post('/verify-otp' , verifyOtp)
-authRoute.get('/me', getMe)
+authRoute.get('/me', authMiddleware,getMe)
 authRoute.get('/logout', logout)
 
 export default authRoute

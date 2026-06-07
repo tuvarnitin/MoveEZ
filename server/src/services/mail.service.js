@@ -265,12 +265,9 @@ export const sendOtp = async (name, email, otp) => {
       if (error) {
         if(error.message === "No recipients defined"){
           throw new Error("Email not exists")
-        }else{
-          console.log(error)
         }
         return error
       } else {
-        console.log(`Mail sent ${info.response}`)
         return info
       }
     })
