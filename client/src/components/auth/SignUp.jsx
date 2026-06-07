@@ -1,17 +1,21 @@
 import React, { useRef, useState } from 'react'
+
 import { CiLock } from 'react-icons/ci'
 import { MdOutlineMail } from 'react-icons/md'
+import { RiUser6Line } from 'react-icons/ri'
+
 import Button from '../Button'
 import Input from '../Input'
-import { RiUser6Line } from 'react-icons/ri'
+
+import { authService } from '../../services/auth.service'
+import { validateFiels } from '../../utils/validateFields'
+
 import { useDispatch } from 'react-redux'
 import { loginSuccess, setCurrState } from '../../redux/features/authSlice'
-import { validateFiels } from '../../utils/validateFields'
-import { authService } from '../../services/auth.service'
 
 const SignUp = () => {
 
-  const [isLoading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const name = useRef(null)
   const email = useRef(null)
@@ -50,22 +54,21 @@ const SignUp = () => {
   ]
 
   const handleRegister = async () => {
-
-    setFieldsErrors({})
-    setResponseErrors("")
-
-    const error = validateFiels({
-      name: name.current?.value,
-      email: email.current?.value,
-      password: password.current?.value,
-    })
-
-    if (Object.keys(error).length) {
-      setFieldsErrors(error)
-      return
-    }
-
     try {
+      setFieldsErrors({})
+      setResponseErrors("")
+  
+      const error = validateFiels({
+        name: name.current?.value,
+        email: email.current?.value,
+        password: password.current?.value,
+      })
+  
+      if (Object.keys(error).length) {
+        setFieldsErrors(error)
+        return
+      }
+      setIsLoading(true)
       const { user, token, success } = await authService.register({ name: name.current?.value, email: email.current?.value, password: password.current?.value })
       if (success) {
         dispatch(loginSuccess({
@@ -78,9 +81,10 @@ const SignUp = () => {
         setResponseErrors("")
       }
     } catch (error) {
-      console.log(error)
       setFieldsErrors({})
       setResponseErrors(error)
+    } finally{
+      setIsLoading(false)
     }
   }
   return (

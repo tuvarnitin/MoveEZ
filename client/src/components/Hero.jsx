@@ -7,10 +7,12 @@ import { FaCarSide, FaBusSimple } from "react-icons/fa6";
 import { FaMotorcycle, FaTruck } from "react-icons/fa";
 
 import Navbar from './Navbar';
+
+import {authService} from '../services/auth.service.js';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { onLogout, openAuthModal } from '../redux/features/authSlice';
 
-import {authService} from '../services/auth.service.js';
 
 const Hero = ({ setIsAuthModalOpen, isLogin }) => {
 
@@ -38,9 +40,8 @@ const Hero = ({ setIsAuthModalOpen, isLogin }) => {
 
     const handleLogout = async () => {
         const res = await authService.logout();
-        dispatch(onLogout())
+        dispatch(onLogout({}))
     }
-
 
     return (
         <div className='overflow-x-hidden'>

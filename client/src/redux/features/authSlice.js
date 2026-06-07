@@ -19,6 +19,7 @@ const authSlice = createSlice({
         onLogout:(state,action)=>{
             state.user = null
             state.isAuthenticated = false
+            localStorage.clear()
         },
         openAuthModal:(state)=>{
             state.isAuthModalOpen = true

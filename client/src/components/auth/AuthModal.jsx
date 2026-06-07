@@ -9,15 +9,18 @@ import { RiUser6Line } from "react-icons/ri";
 
 import GoogleIcon from "../GoogleIcon.jsx"
 import Input from '../Input.jsx';
-import OtpInput from './Otp.jsx';
+import Otp from './Otp.jsx';
 import Button from '../Button.jsx';
 import OrDivider from '../OrDivider.jsx';
+import SignUp from './SignUp.jsx';
+import Login from './Login.jsx';
 
 import { authService } from "../../services/auth.service.js"
-import Login from './Login.jsx';
-import SignUp from './SignUp.jsx';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { closeAuthModal } from '../../redux/features/authSlice.js';
+
+const BACKEND_URL = import.meta.env.VITE_API_BACKEND_URL
 
 const authModel = () => {
 
@@ -65,6 +68,7 @@ const authModel = () => {
 
         {/* Button - Continue wiht Google */}
         <Button
+          onClick={() => window.open(`${BACKEND_URL}/api/auth/google`,"_self")}
           text={`Continue with Google`}
           icon={<GoogleIcon />}
         />
@@ -78,7 +82,7 @@ const authModel = () => {
               currState === "sign-up" ?
                 <SignUp />
                 :
-                <OtpInput />
+                <Otp />
             )
         }
       </div>

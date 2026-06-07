@@ -2,11 +2,12 @@ import React, { useRef, useState } from 'react'
 
 import {validateFiels} from "../../utils/validateFields.js"
 import Input from '../Input'
+import Button from '../Button.jsx'
+import { authService } from '../../services/auth.service.js'
 
 import { MdOutlineMail } from 'react-icons/md'
 import { CiLock } from 'react-icons/ci'
-import Button from '../Button.jsx'
-import { authService } from '../../services/auth.service.js'
+
 import { useDispatch, useSelector } from 'react-redux'
 import { closeAuthModal, loginSuccess, setCurrState } from '../../redux/features/authSlice.js'
 
@@ -53,7 +54,6 @@ const Login = () => {
     
     if (Object.keys(error).length) {
       setFieldsErrors(error)
-      console.log("Error")
       return
     }
     

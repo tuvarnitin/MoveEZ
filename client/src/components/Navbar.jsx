@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+
+import { useDispatch, useSelector } from 'react-redux'
 import { closeAuthModal, openAuthModal } from '../redux/features/authSlice'
 
 
@@ -53,7 +54,9 @@ const Navbar = () => {
             <div className='sm:block hidden'>
                 {
                     isAuthenticated ?
-                        <div className="hidden sm:flex w-10 h-10 border-2 rounded-full items-center justify-center text-xl">{user.name.slice(0,1).toUpperCase()}</div>
+                        <div className="hidden sm:flex w-10 h-10 border-2 rounded-full items-center justify-center text-xl overflow-hidden">
+                          <img className='w-full h-full' src={user.avatar} alt="Avatar" />
+                        </div>
                         :
                         <button
                             onClick={() => dispatch(openAuthModal())}

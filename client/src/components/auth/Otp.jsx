@@ -1,12 +1,15 @@
 import React, { useRef, useState } from 'react'
-import Button from '../Button'
-import { authService } from '../../services/auth.service'
-import { useDispatch, useSelector } from 'react-redux'
-import { closeAuthModal, loginSuccess } from '../../redux/features/authSlice'
 import { useNavigate } from 'react-router-dom'
 
-const OtpInput = ({}) => {
+import Button from '../Button'
 
+import { authService } from '../../services/auth.service'
+
+import { useDispatch, useSelector } from 'react-redux'
+import { closeAuthModal, loginSuccess, setCurrState } from '../../redux/features/authSlice'
+
+const OtpInput = ({}) => {
+    
     const LENGTH = 4
     const [otp, setOtp] = useState([...Array(LENGTH).fill("")])
     const [otpError, setOtpError] = useState([])
@@ -27,7 +30,8 @@ const OtpInput = ({}) => {
     }
 
     const handleChange = (value, index) => {
-        
+        setOtpError([])
+        setResponseErrors("")
         if (!/^\d*$/.test(value)) {
             setOtpError([...otpError, index])
             return
@@ -81,6 +85,11 @@ const OtpInput = ({}) => {
         setResponseErrors("")
         try {
             const otpValue = otp.reduce((acc, curr) => acc + curr);
+            if(otpValue.length < 4){
+                setOtpError(otp.map((num,index)=> num === "" && index))
+                focusElem(otp.indexOf(otp.find((num, index) => num === "")))
+                return
+            }
             const response = await authService.verifyOtp({ otp: otpValue })
             if (response.success) {
                 dispatch(loginSuccess({
@@ -90,12 +99,15 @@ const OtpInput = ({}) => {
                     }
                 }))
                 dispatch(closeAuthModal())
+                dispatch(setCurrState({
+                    state:"login"
+                }))
                 naviagte("/")
             }
         } catch (error) {
-            console.log(error)
-            setResponseErrors(error.message)
-            setOtpError([...Array(LENGTH).map((_, index) => index)])
+            setResponseErrors(error)
+            setOtpError([...Array.from({ length: LENGTH }, (_, i) => i)])
+            focusElem(LENGTH-1)
         }
 
     }
@@ -106,7 +118,7 @@ const OtpInput = ({}) => {
                 {
                     otp.map((value, index) => (
                         <div key={index}
-                            className={`border border-background/30 w-8 rounded-md flex items-center p-1 ${otpError.includes(index) ? "border-red-400" : "border-background/30"}`}>
+                            className={`border border-background/30 w-8 rounded-md flex items-center p-1 ${otpError.includes(index) ? "border-2 border-red-400" : "border-background/30"}`}>
                             <input
                                 value={value}
                                 onChange={(e) => handleChange(e.target.value, index)}
@@ -119,13 +131,18 @@ const OtpInput = ({}) => {
                     ))
                 }
            </div>
-            <p
-                className='text-[max(12px,0.4vw)] text-center leading-1 text-red-500'
-            >{responseError}</p>
+            {
+                responseError &&
+                <p
+                    className='text-[max(12px,0.4vw)] my-2 text-center leading-1 text-red-500'
+                >{responseError}</p>
+            }
             <Button
                 isLoading={isLoading}
                 onClick={VerifyOtp}
+                className="mt-2"
                 text="Verify OTP"
+                fill={true}
             />
         </div>
     )
