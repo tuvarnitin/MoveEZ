@@ -41,7 +41,7 @@ export const registerUser = async (req, res) => {
         user.otp = otp;
         await user.save()
 
-        sendOtp(user.name, user.email, otp)
+        await sendOtp(user.name, user.email, otp);
 
         return res.status(201).json({
             success: true,

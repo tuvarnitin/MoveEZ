@@ -20,7 +20,7 @@ try {
 }
 
 export const sendOtp = async (name, email, otp) => {
-  transporter.sendMail({
+  return transporter.sendMail({
     from: process.env.EMAIL,
     to: email,
     subject: `Your code - ${otp}`,
