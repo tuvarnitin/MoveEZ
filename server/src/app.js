@@ -7,7 +7,6 @@ import googleRouter from "./passport/google-auth.route.js"
 import "./passport/passport.js"
 
 import authRoute from "./auth/auth.route.js"
-import { sendOtp } from "./services/mail.service.js"
 
 const app = express()
 app.use(cors({
@@ -20,6 +19,10 @@ dotenv.config()
 //Middlewares
 app.use(express.json())
 app.use(cookieParser())
+
+app.get("/",(req,res)=>{
+    res.send("Server is running properly")
+})
 
 app.use('/api/auth/google', googleRouter);
 app.use("/api/auth",authRoute)
