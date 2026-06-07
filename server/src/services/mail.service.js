@@ -15,12 +15,13 @@ const transporter = nodemailer.createTransport({
 
 })
 
-try {
-  await transporter.verify();
-  console.log("SMTP connection successful");
-} catch (err) {
-  console.error("SMTP connection failed:", err);
-}
+transporter.verify()
+  .then(() => console.log("SMTP connection successful"))
+  .catch(err => {
+    console.error("FULL ERROR:", err);
+    console.error("CODE:", err.code);
+    console.error("MESSAGE:", err.message);
+  });
 
 export const sendOtp = async (name, email, otp) => {
   return transporter.sendMail({

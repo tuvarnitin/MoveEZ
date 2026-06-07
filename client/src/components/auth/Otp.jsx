@@ -105,6 +105,7 @@ const OtpInput = ({}) => {
                 naviagte("/")
             }
         } catch (error) {
+            console.log(error)
             setResponseErrors(error)
             setOtpError([...Array.from({ length: LENGTH }, (_, i) => i)])
             focusElem(LENGTH-1)
