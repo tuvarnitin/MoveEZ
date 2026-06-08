@@ -9,6 +9,7 @@ import "./passport/passport.js"
 import authRoute from "./auth/auth.route.js"
 
 const app = express()
+
 app.use(cors({
     origin: true,
     credentials: true
