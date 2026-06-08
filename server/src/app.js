@@ -13,7 +13,6 @@ const app = express()
 
 await connectDB()
 
-
 app.use(cors({
     origin: true,
     credentials: true

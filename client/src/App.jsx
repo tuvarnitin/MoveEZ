@@ -1,6 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import { useEffect, useLayoutEffect, useState } from "react";
 
+import { AnimatePresence } from "motion/react";
+
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import AuthModal from "./components/auth/AuthModal.jsx";
@@ -45,9 +47,11 @@ function App() {
         </div>
       }
       <Navbar />
-      {
-        isAuthModalOpen && <AuthModal />
-      }
+      <AnimatePresence>
+        {
+          isAuthModalOpen && <AuthModal />
+        }
+      </AnimatePresence>
       <Routes>
         <Route path="/" element={<Home/>} />
       </Routes>

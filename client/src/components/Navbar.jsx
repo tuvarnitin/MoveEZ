@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
+import { motion } from "motion/react"
+
 import { useDispatch, useSelector } from 'react-redux'
 import { closeAuthModal, openAuthModal } from '../redux/features/authSlice'
 
@@ -33,7 +35,12 @@ const Navbar = () => {
     const dispatch = useDispatch()
 
     return (
-        <nav className="w-full flex justify-between items-center p-4 sm:px-6 md:px-16 lg:px-50">
+        <motion.nav
+        initial={{y:-20,opacity:0}}
+        animate={{y:0,opacity:1}}
+        transition={{duration:.4}}
+         className="w-full flex justify-between items-center p-4 sm:px-6 md:px-16 lg:px-50"
+         >
             <Link to={"/"} className="">
                 <img src="/logo.png" alt="MoveEZ Logo" width={80} />
             </Link>
@@ -69,7 +76,7 @@ const Navbar = () => {
                 <div className="w-6 h-0.5 bg-white" />
                 <div className="w-6 h-0.5 bg-white" />
             </div>
-        </nav>
+        </motion.nav>
     )
 }
 
