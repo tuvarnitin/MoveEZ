@@ -102,7 +102,7 @@ const OtpInput = ({}) => {
                 dispatch(setCurrState({
                     state:"login"
                 }))
-                naviagte("/")
+                navigate("/")
             }
         } catch (error) {
             console.log(error)
