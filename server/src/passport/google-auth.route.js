@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 const googleRouter = express.Router()
 
 googleRouter.get("/",
-    passport.authenticate('google', { scope: ['profile', "email"] })
+    passport.authenticate('google', { scope: ['profile',"email"] })
 )
 
 googleRouter.get("/callback",
@@ -19,14 +19,13 @@ googleRouter.get("/callback",
             },
                 process.env.JWT_SECRET,
                 {
-                    expiresIn: "7d"
+                    expiresIn:"7d"
                 }
             )
-
             res.cookie("token", token, {
                 httpOnly: true,
                 secure: true,
-                sameSite: "none",
+                sameSite: "strict",
             })
             res.redirect(`${process.env.FRONTEND_URL}`);
         } catch (error) {
