@@ -7,8 +7,12 @@ import googleRouter from "./passport/google-auth.route.js"
 import "./passport/passport.js"
 
 import authRoute from "./auth/auth.route.js"
+import connectDB from "./config/db.js"
 
 const app = express()
+
+await connectDB()
+
 
 app.use(cors({
     origin: true,
