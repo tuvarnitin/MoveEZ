@@ -57,7 +57,7 @@ const authModel = () => {
         animate={{ opacity:1,y: 0}}
         transition={{ ease: "backInOut", duration: .4 }}
         exit={{ opacity:0}}
-        className='fixed inset-0 overflow-y-hidden left-0 z-10 bg-background/90 flex items-center justify-center transition-all overflow-hidden px-3' ref={pageRef} onClick={(e) => (e.target == pageRef.current) && dispatch(closeAuthModal())}>
+        className='fixed inset-0 overflow-y-hidden left-0 z-100 bg-background/90 flex items-center justify-center transition-all overflow-hidden px-3' ref={pageRef} onClick={(e) => (e.target == pageRef.current) && dispatch(closeAuthModal())}>
 
         <div className='w-full sm:w-[62vw] md:w-[40vw] max-w-90 relative bg-white text-background pt-10 px-4 pb-6 rounded-md flex flex-col gap-4 items-center' ref={modelRef}>
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { useEffect, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 
 import { motion } from "motion/react"
 
@@ -19,6 +19,8 @@ const Hero = ({ setIsAuthModalOpen, isLogin }) => {
 
     const dispatch = useDispatch()
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+
+    const navigate = useNavigate()
 
     const VEHICLE_LIST = [
         {
@@ -46,7 +48,7 @@ const Hero = ({ setIsAuthModalOpen, isLogin }) => {
 
     return (
         <div className='overflow-x-hidden'>
-            <main className="w-full min-h-160 sm:min-h-130 flex flex-col justify-center items-center gap-6">
+            <main className="w-full min-h-165 flex flex-col pt-40 items-center gap-6">
                 <div className='flex flex-col items-center'>
                     <motion.div
                     initial={{opacity:0,y:20}}
@@ -77,8 +79,9 @@ const Hero = ({ setIsAuthModalOpen, isLogin }) => {
                     initial={{ opacity: 0}}
                     animate={{ opacity: 1 }}
                     transition={{ duration: .5, delay: .5 }}
-                className="px-4 py-2 text-background bg-white rounded-full cursor-pointer hover:bg-white/90" onClick={() => {
-                    dispatch(openAuthModal({}))
+                className="px-4 py-2 text-background bg-white rounded-full cursor-pointer hover:bg-white/90 hover:-translate-y-0.5 transition duration-150"
+                 onClick={() => {
+                    isAuthenticated ? navigate("/vehicle/book") : dispatch(openAuthModal())
                 }}>Book Now</motion.button>
             </main>
         </div>
