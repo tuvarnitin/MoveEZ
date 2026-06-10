@@ -6,10 +6,12 @@ import { AnimatePresence, motion } from "motion/react"
 import { GiCarWheel } from "react-icons/gi";
 
 import { useDispatch, useSelector } from 'react-redux'
-import { closeAuthModal, openAuthModal } from '../redux/features/authSlice'
+import { closeAuthModal, onLogout, openAuthModal } from '../redux/features/authSlice'
 import { FaAngleRight, FaArrowRight, FaBus, FaCar } from 'react-icons/fa6';
 import { MdArrowRight } from 'react-icons/md';
 import { RiArrowRightLine, RiBikeLine } from 'react-icons/ri';
+import { IoLogOut, IoLogOutOutline } from 'react-icons/io5';
+import { authService } from '../services/auth.service';
 
 
 const Navbar = ({ setIsSidebarOpen }) => {
@@ -38,6 +40,17 @@ const Navbar = ({ setIsSidebarOpen }) => {
     const user = useSelector(state => state.auth.user)
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
     const dispatch = useDispatch()
+
+    const handleLogout = async () => {
+        try {
+            const res = await authService.logout()
+            if(res.success){
+                dispatch(onLogout())
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <motion.nav
@@ -92,7 +105,7 @@ const Navbar = ({ setIsSidebarOpen }) => {
                     showProfileModal && (
                         <motion.div
                             initial={{ y: 60, opacity: 0 }}
-                            animate={{ y: 90, opacity: 1 }}
+                            animate={{ y: 115, opacity: 1 }}
                             exit={{ y: 60, opacity: 0 }}
                             transition={{ duration: .2 }}
                             onMouseEnter={() => setShowProfileModal(true)}
@@ -125,6 +138,9 @@ const Navbar = ({ setIsSidebarOpen }) => {
                                     <FaAngleRight />
                                 </motion.div>
                             </button>
+                            <button
+                            onClick={handleLogout}
+                            className='w-full flex justify-between items-center px-4 text-[14px] py-3 hover:bg-zinc-800 bg-zinc-900 rounded-lg cursor-pointer font-semibold tracking-wide'>Logout <IoLogOutOutline size={20} /></button>
                         </motion.div>
                     )
                 }
