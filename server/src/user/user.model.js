@@ -65,6 +65,6 @@ userShcema.methods.generateToken = async function(){
 }
 
 
-const userModel = mongoose.models.user || mongoose.model("user",userShcema)
+const userModel = mongoose.models.users || mongoose.model("user",userShcema)
 
 export default userModel
