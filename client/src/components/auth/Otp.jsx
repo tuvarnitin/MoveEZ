@@ -21,7 +21,7 @@ const OtpInput = ({}) => {
     const [responseError,setResponseErrors] = useState("")
 
     const dispatch = useDispatch()
-    const user = useSelector(state => state.auth.user)
+    const user = useSelector(state => state.user.data)
 
     const navigate = useNavigate()
 

@@ -8,7 +8,7 @@ import { authService } from '../../services/auth.service.js'
 import { MdOutlineMail } from 'react-icons/md'
 import { CiLock } from 'react-icons/ci'
 
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { closeAuthModal, loginSuccess, setCurrState } from '../../redux/features/authSlice.js'
 
 const Login = () => {

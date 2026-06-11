@@ -14,7 +14,7 @@ import { loginSuccess, onLogout } from "./redux/features/authSlice.js";
 import SideBar from "./components/SideBar.jsx";
 import Login from "./components/auth/Login.jsx";
 import BecomePartner from "./pages/BecomePartner.jsx";
-import ProtectedRoute from "./components/protectedRoutes/ProtectedRoute.jsx";
+import AuthCheckerRoute from "./components/protectedRoutes/AuthCheckerRoute.jsx";
 import { clearUserData, setUserData } from "./redux/features/userSlice.js";
 
 function App() {
@@ -71,7 +71,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home setIsSidebarOpen={setIsSidebarOpen} />} />
         <Route path="/auth" element={<AuthModal />} />
-        <Route element={<ProtectedRoute />}>
+        <Route element={<AuthCheckerRoute />}>
           <Route path="/partner/become-partner" element={<BecomePartner />} />
         </Route>
       </Routes>

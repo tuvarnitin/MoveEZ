@@ -29,7 +29,7 @@ const authModel = () => {
 
   const currState = useSelector(state => state.auth.currState)
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
-  const user = useSelector(state => state.auth.user)
+  const user = useSelector(state => state.user.data)
 
   const dispatch = useDispatch()
 

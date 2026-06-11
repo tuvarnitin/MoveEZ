@@ -37,7 +37,7 @@ const Navbar = ({ setIsSidebarOpen }) => {
     const [currPath, setCurrpath] = useState(window.location.pathname)
     const [showProfileModal, setShowProfileModal] = useState(false)
 
-    const user = useSelector(state => state.auth.user)
+    const user = useSelector(state => state.user.data)
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
     const dispatch = useDispatch()
 

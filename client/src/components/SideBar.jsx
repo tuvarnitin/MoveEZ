@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 
 const SideBar = ({ setIsSidebarOpen }) => {
 
-    const user = useSelector(state => state.auth.user)
+    const user = useSelector(state => state.user.data)
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
     const dispatch = useDispatch()
 

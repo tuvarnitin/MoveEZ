@@ -6,6 +6,7 @@ import Button from './Button'
 
 import { FaBus, FaCar, FaMotorcycle, FaTruck } from 'react-icons/fa6'
 import { MdBikeScooter } from 'react-icons/md'
+import { vehicleService } from '../services/vehicle.service'
 
 const VehicleDetails = ({ nextStep, step, prevStep }) => {
 
@@ -14,11 +15,13 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
     const vehicleModelRef = useRef(null)
     const maxPassengersRef = useRef(null)
 
+    const [isLoading, setIsLoading] = useState(false)
+
     const [errors, setErrors] = useState({
         type: "",
         number: "",
         model: "",
-        maxPassengers:""
+        maxPassengers: ""
     })
 
     const VEHICLE_CATEGORIES = [
@@ -61,50 +64,51 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
     ];
 
     const handleNextStep = async () => {
-        setErrors({
+        setIsLoading(true)
+        const newErrors = {
             type: "",
             number: "",
             model: "",
             maxPassengers: ""
-        })
+        };
+
         if (!vehicleType) {
-            setErrors(prev => ({
-                ...prev,
-                type: "Vehicle type required"
-            }))
-            return
+            newErrors.type = "Vehicle type required";
         }
 
-        if (!vehicleNumberRef.current.value) {
-            setErrors(prev => ({
-                ...prev,
-                number: "Model number required"
-            }))
-            console.log(errors)
-            return
+        if (!vehicleNumberRef.current?.value) {
+            newErrors.number = "Vehicle number required";
         }
-        if (!vehicleModelRef.current.value) {
-            setErrors(prev => ({
-                ...prev,
-                model: "Model number required"
-            }))
-            console.log(errors)
-            return
+
+        if (!vehicleModelRef.current?.value) {
+            newErrors.model = "Model required";
         }
-        if (!maxPassengersRef.current.value) {
-            setErrors(prev => ({
-                ...prev,
-                maxPassengers: "Passenger capacity required"
-            }))
-            console.log(errors)
-            return
+
+        if (!maxPassengersRef.current?.value) {
+            newErrors.maxPassengers = "Passenger capacity required";
         }
-        console.log(
-            vehicleModelRef.current.value,
-            vehicleNumberRef.current.value,
-            vehicleType
-        )
-        nextStep()
+
+        setErrors(newErrors);
+
+        try {
+            const hasErrors = Object.values(newErrors).some(Boolean);
+
+            if (hasErrors) return;
+
+            const response = await vehicleService.register({
+                vehicleType,
+                vehicleModel: vehicleModelRef.current.value,
+                vehicleNumber: vehicleNumberRef.current.value,
+                maxPassengers: maxPassengersRef.current.value
+            })
+            if(response.success){
+                nextStep()
+            }
+        } catch (error) {
+            console.log(error)
+        } finally{
+            setIsLoading(false)
+        }
     }
 
     useEffect(() => {
@@ -112,7 +116,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
             type: "",
             number: "",
             model: "",
-            maxPassengers:""
+            maxPassengers: ""
         })
     }, [vehicleType, vehicleModelRef?.current?.value, vehicleNumberRef?.current?.value, maxPassengersRef?.current?.value])
 
@@ -171,7 +175,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                         type: "",
                         number: "",
                         model: "",
-                        maxPassengers:""
+                        maxPassengers: ""
                     })}
                     type="text"
                     id='vehicleNumber'
@@ -192,7 +196,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                         type: "",
                         number: "",
                         model: "",
-                        maxPassengers:""
+                        maxPassengers: ""
                     })}
                     type="text"
                     id='vehicleModel'
@@ -213,7 +217,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                         type: "",
                         number: "",
                         model: "",
-                        maxPassengers:""
+                        maxPassengers: ""
                     })}
                     type="text"
                     id='maxPassengers'
@@ -226,7 +230,12 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                     <p className='text-xs text-red-500 mt-2'>{errors.maxPassengers}</p>
                 }
             </div>
-            <Button className="mt-4 text-xl" text={"Continue"} onClick={handleNextStep} fill={true} />
+            <Button
+             className="mt-4 text-xl" text={"Continue"} 
+             fill={true}
+             isLoading={isLoading}
+             onClick={handleNextStep}
+               />
         </div>
     )
 }
