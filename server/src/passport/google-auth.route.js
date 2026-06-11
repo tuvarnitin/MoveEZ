@@ -5,27 +5,31 @@ import jwt from 'jsonwebtoken'
 const googleRouter = express.Router()
 
 googleRouter.get("/",
-    passport.authenticate('google', { scope: ['profile',"email"] })
+    passport.authenticate('google', { scope: ['profile', "email"] })
 )
 
 googleRouter.get("/callback",
     passport.authenticate('google', { session: false }),
     async (req, res) => {
         try {
-            const token = await jwt.sign({
+            const accessToken = await jwt.sign({
                 id: req.user._id,
                 name: req.user.name,
                 email: req.user.email
-            },
-                process.env.JWT_SECRET,
-                {
-                    expiresIn:"7d"
-                }
-            )
-            res.cookie("token", token, {
+            }, process.env.JWT_SECRET, { expiresIn: "15m" })
+            const refreshToken = await jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })
+
+            res.cookie("token", accessToken, {
                 httpOnly: true,
                 secure: true,
                 sameSite: "none",
+                maxAge: 15 * 60 * 1000
+            })
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none",
+                maxAge: 7 * 24 * 60 * 60 * 1000
             })
             res.redirect(`${process.env.FRONTEND_URL}`);
         } catch (error) {

@@ -41,6 +41,14 @@ const vehicleSchema = new mongoose.Schema({
     isActive:{
         type:Boolean,
         default:false
+    },
+    maxPassengers:{
+        type:Number,
+        required:true
+    },
+    luggageCapacity:{
+        type:Number,
+        default:0
     }
 },{
     timestamps:true

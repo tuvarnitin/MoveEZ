@@ -22,7 +22,7 @@ passport.use(new GoogleStrategy({
                     emailVerified: true,
                     authProvider: "google"
                 },{
-                    new:true
+                    returnDocument: "after"
                 });
                 
             if (!user) {

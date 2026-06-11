@@ -12,11 +12,13 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
     const [vehicleType, setVehicleType] = useState(null)
     const vehicleNumberRef = useRef(null)
     const vehicleModelRef = useRef(null)
+    const maxPassengersRef = useRef(null)
 
     const [errors, setErrors] = useState({
         type: "",
         number: "",
-        model: ""
+        model: "",
+        maxPassengers:""
     })
 
     const VEHICLE_CATEGORIES = [
@@ -26,6 +28,8 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
             description: "2 Wheeler",
             Icon: FaMotorcycle,
             badge: "Quick",
+            maxPassengers: 1,
+            luggageCapacity: 0
         },
         {
             id: "auto",
@@ -33,6 +37,8 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
             description: "3 Wheeler",
             Icon: MdBikeScooter,
             badge: "Local",
+            maxPassengers: 3,
+            luggageCapacity: 4
         },
         {
             id: "car",
@@ -40,6 +46,8 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
             description: "4 Wheeler",
             Icon: FaCar,
             badge: "Comfort",
+            maxPassengers: 4,
+            luggageCapacity: 4
         },
         {
             id: "bus",
@@ -47,6 +55,8 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
             description: "Group travel",
             Icon: FaBus,
             badge: "Spacious",
+            maxPassengers: 20,
+            luggageCapacity: 100
         }
     ];
 
@@ -54,7 +64,8 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
         setErrors({
             type: "",
             number: "",
-            model: ""
+            model: "",
+            maxPassengers: ""
         })
         if (!vehicleType) {
             setErrors(prev => ({
@@ -80,6 +91,14 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
             console.log(errors)
             return
         }
+        if (!maxPassengersRef.current.value) {
+            setErrors(prev => ({
+                ...prev,
+                maxPassengers: "Passenger capacity required"
+            }))
+            console.log(errors)
+            return
+        }
         console.log(
             vehicleModelRef.current.value,
             vehicleNumberRef.current.value,
@@ -92,9 +111,10 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
         setErrors({
             type: "",
             number: "",
-            model: ""
+            model: "",
+            maxPassengers:""
         })
-    }, [vehicleType, vehicleModelRef?.current?.value, vehicleNumberRef?.current?.value])
+    }, [vehicleType, vehicleModelRef?.current?.value, vehicleNumberRef?.current?.value, maxPassengersRef?.current?.value])
 
     return (
         <div>
@@ -108,7 +128,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
             <p className='text-[max(14px)] font-extrabold sm:font-medium text-gray-500 mt-4'>Select Vehicle Type</p>
             <div className='grid grid-cols-2 sm:grid-cols-4 gap-4 p-2'>
                 {
-                    VEHICLE_CATEGORIES.map(({ id, name, Icon, description, badge }, index) => {
+                    VEHICLE_CATEGORIES.map(({ id, name, Icon, description, badge, maxPassengers }, index) => {
                         const isActive = vehicleType === id
                         return (
                             <motion.div
@@ -150,7 +170,8 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                     onChange={() => setErrors({
                         type: "",
                         number: "",
-                        model: ""
+                        model: "",
+                        maxPassengers:""
                     })}
                     type="text"
                     id='vehicleNumber'
@@ -170,7 +191,8 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                     onChange={() => setErrors({
                         type: "",
                         number: "",
-                        model: ""
+                        model: "",
+                        maxPassengers:""
                     })}
                     type="text"
                     id='vehicleModel'
@@ -181,6 +203,27 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                     errors["model"]
                     &&
                     <p className='text-xs text-red-500 mt-2'>{errors.model}</p>
+                }
+            </div>
+            <div className='mt-4'>
+                <label htmlFor="maxPassengers" className='font-extrabold sm:font-medium text-gray-500 text-[14px]'>Passenger capacity</label>
+                <input
+                    ref={maxPassengersRef}
+                    onChange={() => setErrors({
+                        type: "",
+                        number: "",
+                        model: "",
+                        maxPassengers:""
+                    })}
+                    type="text"
+                    id='maxPassengers'
+                    placeholder='2'
+                    className={`w-full mt-2 border-b pb-2 text-[max(16px)] focus:outline-none focus:border-background transition ${errors["model"] ? "border-red-500 text-red-700" : "text-background border-gray-300"
+                        }`} />
+                {
+                    errors["maxPassengers"]
+                    &&
+                    <p className='text-xs text-red-500 mt-2'>{errors.maxPassengers}</p>
                 }
             </div>
             <Button className="mt-4 text-xl" text={"Continue"} onClick={handleNextStep} fill={true} />

@@ -24,6 +24,11 @@ function App() {
   useEffect(() => {
     const getUser = async () => {
       try {
+        try {
+          await authService.refresh()
+        } catch (e) {
+        }
+
         const response = await authService.getMe()
         if (response.success) {
           disptach(loginSuccess({

@@ -22,6 +22,8 @@ const VehicleCategories = () => {
             description: "Fast & affordable rides",
             Icon: FaMotorcycle,
             badge: "Quick",
+            maxPassengers:1,
+            luggageCapacity:0
         },
         {
             id: "car",
@@ -29,6 +31,8 @@ const VehicleCategories = () => {
             description: "Comfortable city travel",
             Icon: FaCar,
             badge: "Comfort",
+            maxPassengers: 4,
+            luggageCapacity: 2
         },
         {
             id: "suv",
@@ -36,6 +40,8 @@ const VehicleCategories = () => {
             description: "Premium & spacious",
             Icon: FaCar,
             badge: "Premium",
+            maxPassengers: 7,
+            luggageCapacity: 4
         },
         {
             id: "van",
@@ -43,6 +49,7 @@ const VehicleCategories = () => {
             description: "Family & group transport",
             Icon: FaBus,
             badge: "Family",
+            maxPassengers: 6
         },
         {
             id: "truck",
@@ -50,6 +57,8 @@ const VehicleCategories = () => {
             description: "Heavy & commercial transport",
             Icon: FaTruck,
             badge: "Cargo",
+            maxPassengers: 2,
+            luggageCapacity: 1000
         },
     ];
     const STATS = [
@@ -110,6 +119,7 @@ const VehicleCategories = () => {
                             VEHICLE_CATEGORIES.map((vehicle, index) => {
                                 return (
                                     <VehicleCard
+                                    key={index}
                                         vehicle={vehicle}
                                         index={index}
                                         hoveredCard={hoveredCard}

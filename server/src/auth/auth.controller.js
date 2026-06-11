@@ -28,12 +28,23 @@ export const registerUser = async (req, res) => {
             })
         }
 
-        const { user, token } = await register(name, email, password)
+        const { user } = await register(name, email, password)
 
-        res.cookie("token", token, {
+        // create short lived access token and long lived refresh token
+        const accessToken = await jwt.sign({ id: user._id, name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" })
+        const refreshToken = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })
+
+        res.cookie("token", accessToken, {
             httpOnly: true,
             secure: true,
             sameSite: "none",
+            maxAge: 15 * 60 * 1000 // 15 minutes
+        })
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         })
 
         const otp = Math.floor(1000 + Math.random() * 9000);
@@ -114,12 +125,21 @@ export const loginUser = async (req, res) => {
             sendOtp(user.name, user.email)
         }
 
-        const token = await user.generateToken()
+        // issue short lived access token and long lived refresh token
+        const accessToken = await jwt.sign({ id: user._id, name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" })
+        const refreshToken = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
-        res.cookie("token", token, {
+        res.cookie("token", accessToken, {
             httpOnly: true,
             secure: true,
             sameSite: "none",
+            maxAge: 15 * 60 * 1000 // 15 minutes
+        })
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
         })
 
         return res.status(200).json({
@@ -144,6 +164,11 @@ export const loginUser = async (req, res) => {
 
 export const logout = async (req, res) => {
     res.clearCookie("token", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+    })
+    res.clearCookie("refreshToken", {
         httpOnly: true,
         secure: true,
         sameSite: "none",
@@ -226,5 +251,34 @@ export const verifyOtp = async (req, res) => {
             success: false,
             message: error.message || "Internal server error"
         })
+    }
+}
+
+export const refreshToken = async (req, res) => {
+    try {
+        const refresh = req.cookies.refreshToken
+        if (!refresh) {
+            return res.status(401).json({ success: false, message: "Refresh token not provided" })
+        }
+
+        const payload = await jwt.verify(refresh, process.env.JWT_SECRET)
+        const user = await User.findById(payload.id)
+        if (!user) {
+            return res.status(401).json({ success: false, message: "Unauthorize" })
+        }
+
+        // issue new access token
+        const accessToken = await jwt.sign({ id: user._id, name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" })
+
+        res.cookie("token", accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: 15 * 60 * 1000
+        })
+
+        return res.status(200).json({ success: true })
+    } catch (error) {
+        return res.status(401).json({ success: false, message: "Invalid refresh token" })
     }
 }
