@@ -52,45 +52,45 @@ const authModel = () => {
   const [responseError, setResponseErrors] = useState("")
 
   return (
+    <motion.div
+      className='fixed inset-0 overflow-y-hidden left-0 z-100 bg-background/90 flex items-center justify-center transition-all overflow-hidden px-3' ref={pageRef} onClick={(e) => (e.target == pageRef.current) && dispatch(closeAuthModal())}>
+
       <motion.div
-        initial={{ opacity: 0,y:10 }}
-        animate={{ opacity:1,y: 0}}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ ease: "backInOut", duration: .4 }}
-        exit={{ opacity:0}}
-        className='fixed inset-0 overflow-y-hidden left-0 z-100 bg-background/90 flex items-center justify-center transition-all overflow-hidden px-3' ref={pageRef} onClick={(e) => (e.target == pageRef.current) && dispatch(closeAuthModal())}>
+        exit={{ opacity: 0,y:10 }} className='w-full sm:w-[62vw] md:w-[40vw] max-w-90 relative bg-white text-background pt-10 px-4 pb-6 rounded-md flex flex-col gap-4 items-center' ref={modelRef}>
 
-        <div className='w-full sm:w-[62vw] md:w-[40vw] max-w-90 relative bg-white text-background pt-10 px-4 pb-6 rounded-md flex flex-col gap-4 items-center' ref={modelRef}>
-
-          {/* Close Icon */}
-          <IoMdClose
-            className='absolute right-2 top-2 text-[max(1.7vw,28px)] cursor-pointer text-background/70'
-            onClick={() =>
-              dispatch(closeAuthModal())
-            }
-          />
-          {/* Title  */}
-          <div className=' flex flex-col gap-2 items-center'>
-            <h1 className='font-[supercharge] text-[max(28px,1.8vw)] leading-1 '>Move<span className='text-[max(36px,2.3vw)] text-orange-500'>EZ</span></h1>
-            <p className='text-[max(12px,.9vw)] text-background/50'>Easy vehicle bookings</p>
-          </div>
-
-          {/* Button - Continue wiht Google */}
-          <Google />
-
-          {/* Separator */}
-          <OrDivider />
-          {
-            currState === "login" ?
-              <Login />
-              : (
-                currState === "sign-up" ?
-                  <SignUp />
-                  :
-                  <Otp />
-              )
+        {/* Close Icon */}
+        <IoMdClose
+          className='absolute right-2 top-2 text-[max(1.7vw,28px)] cursor-pointer text-background/70'
+          onClick={() =>
+            dispatch(closeAuthModal())
           }
+        />
+        {/* Title  */}
+        <div className=' flex flex-col gap-2 items-center'>
+          <h1 className='font-[supercharge] text-[max(28px,1.8vw)] leading-1 '>Move<span className='text-[max(36px,2.3vw)] text-orange-500'>EZ</span></h1>
+          <p className='text-[max(12px,.9vw)] text-background/50'>Easy vehicle bookings</p>
         </div>
+
+        {/* Button - Continue wiht Google */}
+        <Google />
+
+        {/* Separator */}
+        <OrDivider />
+        {
+          currState === "login" ?
+            <Login />
+            : (
+              currState === "sign-up" ?
+                <SignUp />
+                :
+                <Otp />
+            )
+        }
       </motion.div>
+    </motion.div>
   )
 }
 

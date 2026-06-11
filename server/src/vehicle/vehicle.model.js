@@ -8,7 +8,7 @@ const vehicleSchema = new mongoose.Schema({
     },
     type:{
         type:String,
-        enum:["bike","car","suv","bus","truck"],
+        enum:["bike","car","auto","bus","truck"],
         required:true
     },
     vehicleModel:{

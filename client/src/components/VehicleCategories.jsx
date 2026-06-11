@@ -14,10 +14,6 @@ const VehicleCategories = () => {
             description: "Browse the full fleet",
             Icon: FaCar,
             badge: "Popular",
-            baseFare: 20,
-            farePerKm: 8,
-            maxPassengers: 1,
-            luggageCapacity: 0,
         },
         {
             id: "bike",
@@ -25,10 +21,6 @@ const VehicleCategories = () => {
             description: "Fast & affordable rides",
             Icon: FaMotorcycle,
             badge: "Quick",
-            baseFare: 20,
-            farePerKm: 8,
-            maxPassengers: 1,
-            luggageCapacity: 0,
         },
         {
             id: "car",
@@ -36,10 +28,6 @@ const VehicleCategories = () => {
             description: "Comfortable city travel",
             Icon: FaCar,
             badge: "Comfort",
-            baseFare: 50,
-            farePerKm: 15,
-            maxPassengers: 4,
-            luggageCapacity: 2,
         },
         {
             id: "suv",
@@ -47,10 +35,6 @@ const VehicleCategories = () => {
             description: "Premium & spacious",
             Icon: FaCar,
             badge: "Premium",
-            baseFare: 80,
-            farePerKm: 22,
-            maxPassengers: 7,
-            luggageCapacity: 4,
         },
         {
             id: "van",
@@ -58,10 +42,6 @@ const VehicleCategories = () => {
             description: "Family & group transport",
             Icon: FaBus,
             badge: "Family",
-            baseFare: 100,
-            farePerKm: 25,
-            maxPassengers: 12,
-            luggageCapacity: 6,
         },
         {
             id: "truck",
@@ -69,10 +49,6 @@ const VehicleCategories = () => {
             description: "Heavy & commercial transport",
             Icon: FaTruck,
             badge: "Cargo",
-            baseFare: 150,
-            farePerKm: 30,
-            maxPassengers: 2,
-            luggageCapacity: 1000, // kg
         },
     ];
     const STATS = [
@@ -156,7 +132,7 @@ const VehicleCategories = () => {
                     >
 
                         {
-                            VEHICLE_CATEGORIES.map(({ id, name, description, Icon, badge, baseFare, farePerKm, maxPassengers, luggageCapacity }, index) => {
+                            VEHICLE_CATEGORIES.map(({ id, name, description, Icon, badge }, index) => {
                                 const isHover = hoveredCard == index
                                 return (
                                     <motion.div

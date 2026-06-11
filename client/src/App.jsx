@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, onLogout } from "./redux/features/authSlice.js";
 import SideBar from "./components/SideBar.jsx";
 import Login from "./components/auth/Login.jsx";
+import BecomePartner from "./pages/BecomePartner.jsx";
 
 function App() {
 
@@ -50,7 +51,6 @@ function App() {
           <div className="w-10 h-10 border-4 rounded-full border-t-transparent animate-spin border-white"></div>
         </div>
       }
-      <Navbar setIsSidebarOpen={setIsSidebarOpen} />
       <AnimatePresence>
         {isSidebarOpen && <SideBar setIsSidebarOpen={setIsSidebarOpen} />}
       </AnimatePresence>
@@ -60,8 +60,9 @@ function App() {
         }
       </AnimatePresence>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home setIsSidebarOpen={setIsSidebarOpen} />} />
         <Route path="/auth" element={<AuthModal />} />
+        <Route path="/partner/become-partner" element={<BecomePartner />} />
       </Routes>
     </div>
   );
