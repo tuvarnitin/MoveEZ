@@ -42,7 +42,7 @@ const BecomePartner = () => {
 
 
     return (
-        <div className='w-full h-full bg-background flex justify-center pt-8 p-2'>
+        <div className='w-full h-dvh sm:h-full bg-background flex justify-center sm:p-2'>
             <AnimatePresence mode='wait' custom={direction}>
                 <motion.div
                     key={step}
@@ -55,8 +55,8 @@ const BecomePartner = () => {
                         duration: 0.1,
                         ease: "linear",
                     }}
-                    className='w-full max-w-xl bg-white rounded-2xl border border-gray-200 shadow-[0_20px_70px_rgba(255,255,255,0.15)] text-background'>
-                    <div className='relative p-6 sm:p-8'>
+                    className='w-full max-w-xl sm:mt-20 h-full bg-white sm:rounded-2xl border border-gray-200 shadow-[0_20px_70px_rgba(255,255,255,0.15)] text-background'>
+                    <div className='relative p-6 pt-2 sm:p-8 my-auto'>
                         <button
                             onClick={prevStep}
                             className='absolute left-4 top-4 w-9 h-9  rounded-full border border-gray-300 flex items-center justify-center text-background hover:bg-gray-100 cursor-pointer hover:scale-90 transition'>

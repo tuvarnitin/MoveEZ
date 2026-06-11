@@ -64,7 +64,7 @@ const BankingInfo = ({ step, setStep, nextStep }) => {
             <div className='-space-y-0.5 text-center'>
                 <p className='text-xs text-gray-500 font-medium'>Step {step} of 3</p>
                 <h1 className='text-xl font-bold'>Banking Information</h1>
-                <p className='text-xs text-gray-500 '>Fill you Banking information</p>
+                <p className='text-xs text-gray-500 border-b border-gray-300 sm:border-0 pb-2 sm:pb-0'>Fill you Banking information</p>
             </div>
             <div className='space-y-8 mt-6'>
                 <BankInfoInput

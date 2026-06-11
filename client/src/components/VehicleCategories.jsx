@@ -72,7 +72,7 @@ const VehicleCategories = () => {
         hidden: {},
         show: {
             transition: {
-                staggerChildren: 0.1,
+                staggerChildren: 0.14,
             },
         },
     };
@@ -103,7 +103,6 @@ const VehicleCategories = () => {
                         variants={container}
                         initial="hidden"
                         whileInView="show"
-                        viewport={{ once: true, amount: 0.2 }}
                         className='w-full flex gap-10 px-4 py-8 mt-10 overflow-x-auto scroll-smooth rounded-2xl'
                         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
                     >
@@ -135,21 +134,22 @@ const VehicleCategories = () => {
                     ><FaAngleRight className='font-extrabold text-lg' /></motion.button>
                 </div>
                 {/* Stats box */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    transition={{ delay: 0.7 }}
+                <div
                     className='grid grid-cols-2 md:grid-cols-4 place-items-center gap-4 py-6 flex-wrap border-y border-zinc-200 mt-10'
                 >
                     {
                         STATS.map(({ value, title }, index) => (
-                            <div key={index} className='flex items-center gap-3'>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                transition={{ delay: 0.2*index }}
+                                key={index} className='flex items-center gap-3'>
                                 <p className='text-background text-[max(14px,1.3vw)] font-black tracking-tight'>{value}</p>
                                 <p className='text-zinc-400 text-[max(12px,0.95vw)] font-medium '>{title}</p>
-                            </div>
+                            </motion.div>
                         ))
                     }
-                </motion.div>
+                </div>
             </div>
         </div>
     )

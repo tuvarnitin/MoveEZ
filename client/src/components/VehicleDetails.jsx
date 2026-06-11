@@ -44,7 +44,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
         {
             id: "bus",
             name: "Bus",
-            description: "Group & long-distance travel",
+            description: "Group travel",
             Icon: FaBus,
             badge: "Spacious",
         }
@@ -98,13 +98,15 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
 
     return (
         <div>
-            <div className='-space-y-0.5 text-center'>
-                <p className='text-xs text-gray-500 font-medium'>Step {step} of 3</p>
-                <h1 className='text-xl font-bold'>Vehicle Details</h1>
-                <p className='text-xs text-gray-500 '>Fill you Vehicle details</p>
+            <div className=' text-center'>
+                <p className='text-[max(14px,1vw)] text-gray-500 font-medium'>Step {step} of 3</p>
+                <div className='-space-y-0.5 sm:-space-y-1 border-b border-gray-300 sm:border-0 pb-2 sm:pb-0'>
+                    <h1 className='text-[max(22px,1.5vw)] font-bold'>Vehicle Details</h1>
+                    <p className='text-[12px] text-gray-500'>Fill you Vehicle details</p>
+                </div>
             </div>
-            <p className='text-xs font-semibold text-gray-500'>Vehicle Type</p>
-            <div className='grid grid-cols-2 sm:grid-cols-4 gap-4 p-3 pb-0'>
+            <p className='text-[max(14px)] font-extrabold sm:font-medium text-gray-500 mt-4'>Select Vehicle Type</p>
+            <div className='grid grid-cols-2 sm:grid-cols-4 gap-4 p-2'>
                 {
                     VEHICLE_CATEGORIES.map(({ id, name, Icon, description, badge }, index) => {
                         const isActive = vehicleType === id
@@ -114,7 +116,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.96 }}
                                 onClick={() => setVehicleType(id)}
-                                className={`rounded-2xl border p-2 flex flex-col items-center gap-2 transition cursor-pointer ${isActive ?
+                                className={`rounded-2xl border p-2 pt-4 flex flex-col items-center gap-2 transition cursor-pointer ${isActive ?
                                     "bg-background text-white border-background"
                                     :
                                     "border-gray-200 hover:border-background"
@@ -127,10 +129,10 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                                     }`}>
                                     <Icon />
                                 </div>
-                                <div className='text-sm font-semibold'>
+                                <div className='text-md font-extrabold sm:font-semibold'>
                                     {name}
                                 </div>
-                                <p className={`text-xs text-center ${isActive ? "text-gray-300" : "text-gray-500"}`}>{description}</p>
+                                <p className={`text-[max(12px)] font-black sm:font-semibold text-center ${isActive ? "text-gray-300" : "text-gray-400"}`}>{description}</p>
                             </motion.div>
                         )
                     })
@@ -142,7 +144,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                 <p className='text-xs text-red-500 mt-2 ml-4 mb-4'>{errors.type}</p>
             }
             <div>
-                <label htmlFor="vehicleNumber" className='font-semibold text-gray-500 text-xs'>Vehicle Number </label>
+                <label htmlFor="vehicleNumber" className='font-extrabold sm:font-medium text-gray-500 text-[14px]'>Vehicle Number </label>
                 <input
                     ref={vehicleNumberRef}
                     onChange={() => setErrors({
@@ -153,7 +155,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                     type="text"
                     id='vehicleNumber'
                     placeholder='HR06AB1234'
-                    className={`w-full mt-2 border-b pb-2 text-sm focus:outline-none focus:border-background transition ${errors["number"] ? "border-red-500 text-red-700" : "text-background border-gray-300"
+                    className={`w-full mt-2 border-b pb-2 text-[max(16px)] focus:outline-none focus:border-background transition ${errors["number"] ? "border-red-500 text-red-700" : "text-background border-gray-300"
                         }`} />
                 {
                     errors["number"]
@@ -162,7 +164,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                 }
             </div>
             <div className='mt-4'>
-                <label htmlFor="vehicleModel" className='font-semibold text-gray-500 text-xs'>Vehicle Model </label>
+                <label htmlFor="vehicleModel" className='font-extrabold sm:font-medium text-gray-500 text-[14px]'>Vehicle Model</label>
                 <input
                     ref={vehicleModelRef}
                     onChange={() => setErrors({
@@ -173,7 +175,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                     type="text"
                     id='vehicleModel'
                     placeholder='Alto 800'
-                    className={`w-full mt-2 border-b pb-2 text-sm focus:outline-none focus:border-background transition ${errors["model"] ? "border-red-500 text-red-700" : "text-background border-gray-300"
+                    className={`w-full mt-2 border-b pb-2 text-[max(16px)] focus:outline-none focus:border-background transition ${errors["model"] ? "border-red-500 text-red-700" : "text-background border-gray-300"
                         }`} />
                 {
                     errors["model"]
@@ -181,7 +183,7 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                     <p className='text-xs text-red-500 mt-2'>{errors.model}</p>
                 }
             </div>
-            <Button className="mt-4" text={"Continue"} onClick={handleNextStep} fill={true} />
+            <Button className="mt-4 text-xl" text={"Continue"} onClick={handleNextStep} fill={true} />
         </div>
     )
 }

@@ -11,8 +11,8 @@ const DocsFileInput = ({ title, subTitle, onChange, name, errors }) => {
                 flex items-center justify-between p-4 rounded-xl border cursor-pointer hover:border-background  transition`}
         >
             <div>
-                <h1 className='font-semibold text-start'>{title}</h1>
-                <p className='text-xs text-gray-500'>{subTitle}</p>
+                <h1 className='font-bold sm:font-semibold text-start'>{title}</h1>
+                <p className='text-xs text-start text-gray-500'>{subTitle}</p>
             </div>
             <div className='w-10 h-10 bg-background rounded-full text-white flex items-center justify-center'>
                 <RiUploadCloud2Line />

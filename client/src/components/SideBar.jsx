@@ -65,7 +65,7 @@ const SideBar = ({ setIsSidebarOpen }) => {
                         </div>
                     </div>
                 }
-                <div className='flex flex-col'>
+                <div className={`flex flex-col ${isAuthenticated ? "pt-0" : "pt-4"}`}>
                     <AnimatePresence>
                         {
                             NAV_LINKS.map(({ title, to }, index) => (
