@@ -2,7 +2,6 @@ import {createSlice} from "@reduxjs/toolkit"
 import {authService} from "../../services/auth.service"
 
 const initialState = {
-    user:null,
     isAuthenticated:false,
     isAuthModalOpen:false,
     currState:"login"
@@ -13,12 +12,9 @@ const authSlice = createSlice({
     initialState,
     reducers:{
         loginSuccess:(state,action)=>{
-            state.user = action.payload.user
             state.isAuthenticated = true
-            localStorage.setItem("name",action.payload.user.name)
         },
         onLogout:(state,action)=>{
-            state.user = null
             state.isAuthenticated = false
             localStorage.clear()
         },
