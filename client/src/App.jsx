@@ -14,6 +14,8 @@ import { loginSuccess, onLogout } from "./redux/features/authSlice.js";
 import SideBar from "./components/SideBar.jsx";
 import Login from "./components/auth/Login.jsx";
 import BecomePartner from "./pages/BecomePartner.jsx";
+import ProtectedRoute from "./components/protectedRoutes/ProtectedRoute.jsx";
+import { clearUserData, setUserData } from "./redux/features/userSlice.js";
 
 function App() {
 
@@ -31,12 +33,14 @@ function App() {
 
         const response = await authService.getMe()
         if (response.success) {
-          disptach(loginSuccess({
-            user: response.user
+          disptach(loginSuccess())
+          disptach(setUserData({
+            user:response.user
           }))
         }
       } catch (error) {
         disptach(onLogout({}))
+        dispatch(clearUserData())
       } finally {
         setIsLoading(false)
       }
@@ -67,7 +71,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Home setIsSidebarOpen={setIsSidebarOpen} />} />
         <Route path="/auth" element={<AuthModal />} />
-        <Route path="/partner/become-partner" element={<BecomePartner />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/partner/become-partner" element={<BecomePartner />} />
+        </Route>
       </Routes>
     </div>
   );
