@@ -48,41 +48,43 @@ const Hero = ({ setIsAuthModalOpen, isLogin }) => {
 
     return (
         <div className='overflow-x-hidden'>
-            <main className="w-full min-h-165 flex flex-col pt-40 items-center gap-6">
-                <div className='flex flex-col items-center'>
+            <main className="w-full min-h-screen flex flex-col justify-center items-center gap-6">
+                <div className='flex flex-col items-center gap-4 transform sm:-translate-y-1/2 -translate-y-full'>
+                    <div className='flex flex-col items-center'>
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: .5 }}
+                            className="w-full flex justify-center items-baseline gap-2 sm:gap-4">
+                            <h1 className="text-[max(2.5vw,16px)] sm:leading-0 font-[supercharge] select-none pointer-events-none text-nowrap">Start Your Journey With</h1>
+                            <img src="/logo.png" alt="" className="w-[max(100px,16vw)] select-none pointer-events-none" height={100} />
+                        </motion.div>
+                        <motion.h1
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: .5, delay: .5 }}
+                            className="font-[avenis] tracking-wider sm:mt-4 text-[max(1.4vw,14px)]">Seamless vehicle booking, anytime, anywhere.</motion.h1>
+                    </div>
                     <motion.div
-                    initial={{opacity:0,y:20}}
-                    animate={{opacity:1,y:0}}
-                    transition={{duration:.5}}
-                    className="w-full flex justify-center items-baseline gap-2 sm:gap-4">
-                        <h1 className="text-[max(2.5vw,16px)] sm:leading-0 font-[supercharge] select-none pointer-events-none text-nowrap">Start Your Journey With</h1>
-                        <img src="/logo.png" alt="" className="w-[max(100px,16vw)] select-none pointer-events-none" height={100} />
-                    </motion.div>
-                    <motion.h1
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: .5,delay:.5 }}
-                    className="font-[avenis] tracking-wider sm:mt-4 text-[max(1.4vw,14px)]">Seamless vehicle booking, anytime, anywhere.</motion.h1>
+                        transition={{ duration: .5, delay: .5 }}
+                        className="flex gap-[max(30px,10vw)] sm:gap-14 items-center">
+                        {
+                            VEHICLE_LIST.map(({ name, icon }) => (
+                                <div key={`${name}`} className='flex flex-col items-center'>{icon} <h1 className='text-[max(1.4vw,12px)]'>{name}</h1></div>
+                            ))
+                        }
+                    </motion.div>
+                    <motion.button
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: .5, delay: .5 }}
+                        className="px-4 py-2 text-background bg-white rounded-full cursor-pointer hover:bg-white/90 hover:-translate-y-0.5 transition duration-150"
+                        onClick={() => {
+                            isAuthenticated ? navigate("/vehicle/book") : dispatch(openAuthModal())
+                        }}>Book Now</motion.button>
                 </div>
-                <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: .5, delay: .5 }}
-                className="flex gap-[max(30px,10vw)] sm:gap-14 items-center">
-                    {
-                        VEHICLE_LIST.map(({ name, icon }) => (
-                            <div key={`${name}`} className='flex flex-col items-center'>{icon} <h1 className='text-[max(1.4vw,12px)]'>{name}</h1></div>
-                        ))
-                    }
-                </motion.div>
-                <motion.button
-                    initial={{ opacity: 0}}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: .5, delay: .5 }}
-                className="px-4 py-2 text-background bg-white rounded-full cursor-pointer hover:bg-white/90 hover:-translate-y-0.5 transition duration-150"
-                 onClick={() => {
-                    isAuthenticated ? navigate("/vehicle/book") : dispatch(openAuthModal())
-                }}>Book Now</motion.button>
             </main>
         </div>
     )

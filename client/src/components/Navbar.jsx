@@ -63,9 +63,11 @@ const Navbar = ({ setIsSidebarOpen }) => {
             className="relative w-full p-4 sm:px-6 md:px-16 lg:px-50 z-2"
         >
             <div className='max-w-7xl flex justify-between items-center border border-zinc-900 rounded-full p-2 bg-zinc-900'>
+                {/* Logo */}
                 <Link to={"/"} className='ml-1'>
                     <img src="/logo.png" alt="MoveEZ Logo" width={80} />
                 </Link>
+                {/* Center links */}
                 <div className="hidden sm:flex w-full sm:w-fit  justify-center gap-6  transition-all duration-200 px-4 py-1 rounded-full">
                     {
                         NAV_LINKS.map(({ title, to }) => (
@@ -80,6 +82,7 @@ const Navbar = ({ setIsSidebarOpen }) => {
                         ))
                     }
                 </div>
+                {/* Navbar right - profile or login button */}
                 <div className='flex items-center gap-3'>
                     {
                         isAuthenticated ?
@@ -102,6 +105,7 @@ const Navbar = ({ setIsSidebarOpen }) => {
                     }
                     <GiCarWheel onClick={() => setIsSidebarOpen(true)} size={32} className='flex sm:hidden animate-spin duration-1000 cursor-pointer sm:animate-none' />
                 </div>
+                {/* Profile modal */}
                 <AnimatePresence>
                     {
                         showProfileModal && (
@@ -137,14 +141,20 @@ const Navbar = ({ setIsSidebarOpen }) => {
                                     <motion.div
                                         initial={{ x: -10, opacity: 0 }}
                                         animate={{ x: 0, opacity: 1 }}
-                                        transition={{ delay: .25 }}
+                                        whileHover={{ x: 4 }}
                                     >
                                         <FaAngleRight />
                                     </motion.div>
                                 </button>
                                 <button
                                     onClick={handleLogout}
-                                    className='w-full flex justify-between items-center px-4 text-[14px] py-3 hover:bg-zinc-800 bg-zinc-900 rounded-lg cursor-pointer font-semibold tracking-wide'>Logout <IoLogOutOutline size={20} /></button>
+                                    className='w-full flex justify-between items-center px-4 text-[14px] py-3 hover:bg-zinc-800 bg-zinc-900 rounded-lg cursor-pointer font-semibold tracking-wide'>Logout
+                                    <motion.div
+                                        initial={{ x: -10, opacity: 0 }}
+                                        whileHover={{ x: 4 }}
+                                        animate={{ x: 0, opacity: 1 }}
+                                    ><IoLogOutOutline size={20} /></motion.div>
+                                </button>
                             </motion.div>
                         )
                     }
