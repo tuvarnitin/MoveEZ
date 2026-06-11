@@ -25,12 +25,10 @@ const vehicleSchema = new mongoose.Schema({
         type:Number,
     },
     pricePerKM:{
-        type:Number,
-        required:true
+        type:Number
     },
     waitingCharge:{
-        type:Number,
-        required:true
+        type:Number
     },
     status:{
         type:String,

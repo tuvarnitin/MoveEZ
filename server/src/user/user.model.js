@@ -45,6 +45,10 @@ const userShcema = new mongoose.Schema({
     authProvider:{
         type:"String",
         default:"local"
+    },
+    onboardingStep:{
+        type:Number,
+        default:0
     }
 })
 
