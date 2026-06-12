@@ -10,6 +10,9 @@ import authRoute from "./auth/auth.route.js"
 import connectDB from "./config/db.js"
 import vehicleRouter from "./vehicle/vehicle.route.js"
 import { authMiddleware } from "./auth/auth.middleware.js"
+import userRoute from "./user/user.route.js"
+import { upload } from "./multer/multer.js"
+import multer from "multer"
 
 const app = express()
 
@@ -26,6 +29,12 @@ dotenv.config()
 app.use(express.json())
 app.use(cookieParser())
 
+const FIELDS = [
+    { name: "aadhar", maxCount: 1 },
+    { name: "license", maxCount: 1 },
+    { name: "rc", maxCount: 1 },
+]
+
 app.get("/", (req, res) => {
     res.send("Server is running properly")
 })
@@ -33,5 +42,19 @@ app.get("/", (req, res) => {
 app.use('/api/auth/google', googleRouter);
 app.use("/api/auth", authRoute)
 app.use("/api/vehicle", authMiddleware, vehicleRouter)
+app.use("/api/user",authMiddleware,upload.fields(FIELDS),userRoute)
+
+app.use((err, req, res, next) => {
+    if (err instanceof multer.MulterError) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+            return res.status(400).json({
+                success: false,
+                message: "File size exceeds 5MB"
+            });
+        }
+    }
+
+    next(err);
+});
 
 export default app

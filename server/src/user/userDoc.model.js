@@ -6,7 +6,7 @@ const userDocSchema = new mongoose.Schema({
         ref:"user",
         required:true
     },
-    adharUrl:{
+    aadharUrl:{
         type:String,
         required:true
     },
@@ -23,7 +23,10 @@ const userDocSchema = new mongoose.Schema({
         enum:["pending","approved","rejected"],
         default:"pending"
     },
-    rejectionReason:String
+    rejectionReason:{
+        type:String,
+        default:""
+    }
 },{
     timestamps:true
 })

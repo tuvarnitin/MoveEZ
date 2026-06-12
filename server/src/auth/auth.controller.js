@@ -30,7 +30,6 @@ export const registerUser = async (req, res) => {
 
         const { user } = await register(name, email, password)
 
-        // create short lived access token and long lived refresh token
         const accessToken = await jwt.sign({ id: user._id, name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" })
         const refreshToken = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
@@ -38,13 +37,13 @@ export const registerUser = async (req, res) => {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 15 * 60 * 1000 // 15 minutes
+            maxAge: 15 * 60 * 1000 
         })
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
         const otp = Math.floor(1000 + Math.random() * 9000);
@@ -121,11 +120,6 @@ export const loginUser = async (req, res) => {
             })
         }
 
-        if (!user.emailVerified) {
-            sendOtp(user.name, user.email)
-        }
-
-        // issue short lived access token and long lived refresh token
         const accessToken = await jwt.sign({ id: user._id, name: user.name, email: user.email }, process.env.JWT_SECRET, { expiresIn: "15m" })
         const refreshToken = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "7d" })
 
@@ -133,13 +127,13 @@ export const loginUser = async (req, res) => {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 15 * 60 * 1000 // 15 minutes
+            maxAge: 15 * 60 * 1000
         })
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             secure: true,
             sameSite: "none",
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            maxAge: 7 * 24 * 60 * 60 * 1000 
         })
 
         return res.status(200).json({
@@ -187,7 +181,8 @@ export const getMe = async (req, res) => {
             email: req.user.email,
             role: req.user.role,
             emailVerified: req.user.emailVerified,
-            avatar: req.user.avatar
+            avatar: req.user.avatar,
+            onboardingStep: req.user.onboardingStep
         }
     })
 }
