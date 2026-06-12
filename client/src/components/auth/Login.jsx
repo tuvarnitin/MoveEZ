@@ -10,6 +10,7 @@ import { CiLock } from 'react-icons/ci'
 
 import { useDispatch } from 'react-redux'
 import { closeAuthModal, loginSuccess, setCurrState } from '../../redux/features/authSlice.js'
+import { useNavigate } from 'react-router-dom'
 
 const Login = () => {
 
@@ -22,6 +23,8 @@ const Login = () => {
   const [responseError, setResponseErrors] = useState("")
 
   const dispatch = useDispatch()
+
+  const navigate = useNavigate()
 
   const INPUT_FIELDS = [
     {
@@ -68,10 +71,10 @@ const Login = () => {
           token:response.token
         }))
         dispatch(closeAuthModal({}))
-        naviagte("/")
+        navigate("/")
       }
     } catch (error) {
-      setResponseErrors(error)
+      setResponseErrors(error.message)
     } finally {
       setFieldsErrors({})
       setLoading(false)

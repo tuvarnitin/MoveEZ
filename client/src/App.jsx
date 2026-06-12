@@ -19,7 +19,7 @@ import { clearUserData, setUserData } from "./redux/features/userSlice.js";
 
 function App() {
 
-  const disptach = useDispatch()
+  const dispatch = useDispatch()
 
   const [isLoading, setIsLoading] = useState(true)
 
@@ -33,13 +33,13 @@ function App() {
 
         const response = await authService.getMe()
         if (response.success) {
-          disptach(loginSuccess())
-          disptach(setUserData({
+          dispatch(loginSuccess())
+          dispatch(setUserData({
             user:response.user
           }))
         }
       } catch (error) {
-        disptach(onLogout({}))
+        dispatch(onLogout({}))
         dispatch(clearUserData())
       } finally {
         setIsLoading(false)

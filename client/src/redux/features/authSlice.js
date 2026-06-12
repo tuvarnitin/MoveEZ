@@ -16,6 +16,7 @@ const authSlice = createSlice({
         },
         onLogout:(state,action)=>{
             state.isAuthenticated = false
+            state.currState = "login"
             localStorage.clear()
         },
         openAuthModal:(state)=>{

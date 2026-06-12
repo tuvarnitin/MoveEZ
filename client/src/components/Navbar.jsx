@@ -47,6 +47,7 @@ const Navbar = ({ setIsSidebarOpen }) => {
         try {
             const res = await authService.logout()
             if (res.success) {
+                setShowProfileModal(false)
                 dispatch(onLogout())
                 navigate("/")
             }

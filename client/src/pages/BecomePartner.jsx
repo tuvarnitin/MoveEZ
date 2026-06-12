@@ -1,16 +1,21 @@
 import React, { Activity, useCallback, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+
 import { AnimatePresence, motion, press } from "motion/react"
+
 import { MdBikeScooter } from 'react-icons/md'
-import Button from '../components/Button'
 import { FaArrowLeft, FaBus, FaCar, FaMotorcycle, FaTruck } from 'react-icons/fa6'
+
+import Button from '../components/Button'
 import VehicleDetails from '../components/VehicleDetails'
 import UploadDocuments from '../components/UploadDocuments'
 import BankingInfo from '../components/BankingInfo'
-import { useNavigate } from 'react-router-dom'
+
+import { useSelector } from "react-redux"
 
 const BecomePartner = () => {
 
-    const [step, setStep] = useState(1)
+    const [step, setStep] = useState(3)
     const [direction, setDirection] = useState(3);
 
     const navigate = useNavigate()

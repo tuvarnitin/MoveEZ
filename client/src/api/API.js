@@ -24,11 +24,8 @@ apiClient.interceptors.response.use(
     (response) => {
         return response.data
     },
-    (error) => {
-        const message = error.response?.data?.message ||
-        error?.message ||
-        "Something went wrong"
-        return Promise.reject(message)
+    (error)=>{
+        return Promise.reject(error?.response?.data || error || "Internal server error")
     }
 )
 

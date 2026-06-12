@@ -13,6 +13,7 @@ const userSlice = createSlice({
             localStorage.setItem("name", action.payload.user.name)
         },
         clearUserData:(state,action) => {
+            state.data = null
             localStorage.clear()
         }
     }
