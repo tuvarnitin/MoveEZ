@@ -35,7 +35,7 @@ const authModel = () => {
 
   const naviagte = useNavigate()
 
-  if (isAuthenticated && user.emailVerified) {
+  if (user && isAuthenticated && user.emailVerified) {
     dispatch(closeAuthModal())
     naviagte("/")
   }
@@ -59,7 +59,7 @@ const authModel = () => {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ ease: "backInOut", duration: .4 }}
-        exit={{ opacity: 0,y:10 }} className='w-full sm:w-[62vw] md:w-[40vw] max-w-90 relative bg-white text-background pt-10 px-4 pb-6 rounded-md flex flex-col gap-4 items-center' ref={modelRef}>
+        exit={{ opacity: 0, y: 10 }} className='w-full sm:w-[62vw] md:w-[40vw] max-w-90 relative bg-white text-background pt-10 px-4 pb-6 rounded-md flex flex-col gap-4 items-center' ref={modelRef}>
 
         {/* Close Icon */}
         <IoMdClose

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect, useCallback } from 'react'
 import Button from './Button'
 
 import BankInfoInput from "./BankInfoInput"
@@ -6,58 +6,158 @@ import BankInfoInput from "./BankInfoInput"
 import { PiBank, PiCreditCardLight } from "react-icons/pi";
 import { RiVerifiedBadgeLine } from 'react-icons/ri'
 import { MdOutlinePhone } from 'react-icons/md';
+import { userService } from '../services/user.service';
+import { useNavigate } from 'react-router-dom';
 
 const BankingInfo = ({ step, setStep, nextStep }) => {
+    const [accountHolder, setAccountHolder] = useState("")
+    const [accountNumber, setAccountNumber] = useState("")
+    const [ifscCode, setIfscCode] = useState("")
+    const [mobileNumber, setMobileNumber] = useState("")
+    const [upiId, setUpiId] = useState("")
 
-    const holderName = useRef(null)
-    const accountNumber = useRef(null)
-    const ifscCode = useRef(null)
-    const mobileNumber = useRef(null)
-    const upiId = useRef(null)
+    const [isLoading, setIsLoading] = useState(false)
+    const navigate = useNavigate()
+
+    const [responseError, setResponseError] = useState("")
 
     const [errors, setErrors] = useState({
-        holderName: "",
+        accountHolder: "",
         accountNumber: "",
         ifscCode: "",
-        mobileNumber: "",
-        upiId: ""
+        mobileNumber: ""
     })
 
-    const handleSubmit = () => {
-        setErrors({
-            holderName: "",
-            accountNumber: "",
-            ifscCode: "",
-            mobileNumber: "",
-            upiId: ""
-        })
-        if (!holderName.current.value) {
-            setErrors(prev => ({
-                ...prev,
-                holderName: "Account holder name is required"
-            }))
+    const hanldeAccountHolderChange = useCallback((e) => {
+        setErrors(prev => ({
+            ...prev,
+            accountHolder: ""
+        }));
+        setAccountHolder(e.target.value);
+    }, [accountHolder])
+
+    const hanldeAccountNumberChange = useCallback((e) => {
+        setErrors(prev => ({
+            ...prev,
+            accountNumber: ""
+        }));
+        setAccountNumber(e.target.value);
+    }, [accountNumber])
+
+    const hanldeIfcsCodeChange = useCallback((e) => {
+        setErrors(prev => ({
+            ...prev,
+            ifscCode: ""
+        }));
+        setIfscCode(e.target.value.toUpperCase());
+    }, [ifscCode])
+
+    const hanldeMobileNumberChange = useCallback((e) => {
+        if (isNaN(Number(e.target.value))) return
+        setErrors(prev => ({
+            ...prev,
+            mobileNumber: ""
+        }));
+        setMobileNumber(e.target.value);
+    }, [mobileNumber])
+
+    const hanldeUpiIdChange = useCallback((e) => {
+        setUpiId(e.target.value);
+    }, [upiId])
+
+    const handleSubmit = async () => {
+        const newError = {}
+        if (!accountHolder) {
+            newError.accountHolder = "Account holder name is required"
         }
-        if (!accountNumber.current.value) {
-            setErrors(prev => ({
-                ...prev,
-                accountNumber: "Account number is required"
-            }))
+        if (!accountNumber) {
+            newError.accountNumber = "Account number is required"
         }
-        if (!ifscCode.current.value) {
-            setErrors(prev => ({
-                ...prev,
-                ifscCode: "Account number is required"
-            }))
+        if (!ifscCode) {
+            newError.ifscCode = "IFSC code is required"
         }
-        if (!mobileNumber.current.value) {
-            setErrors(prev => ({
-                ...prev,
-                mobileNumber: "Account number is required"
-            }))
+        if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
+            newError.ifscCode = "Invalid IFCS code"
+        }
+        if (!mobileNumber || mobileNumber.length !== 10) {
+            newError.mobileNumber = "Invalid mobile number"
+        }
+        console.log(newError)
+        if (Object.entries(newError).length) {
+            setErrors(newError)
             return
+        }
+        try {
+            setIsLoading(true)
+            const response = await userService.hadnleUserBank({
+                accountHolder,
+                accountNumber,
+                ifscCode,
+                mobileNumber,
+                upiId
+            })
+            if (response.success) {
+                navigate("/partner/dashboard")
+            }
+        } catch (error) {
+            if (error.message == "All fields are required") {
+                setErrors(error.errors)
+            }
+            setResponseError(error.message)
+        } finally {
+            setIsLoading(false)
         }
 
     }
+
+    const BANK_FIELDS = [
+        {
+            label: "Account holder name",
+            Icon: RiVerifiedBadgeLine,
+            value: accountHolder,
+            id: "accountHolder",
+            placeholder: "Enter account holder name",
+            onChange: hanldeAccountHolderChange,
+            error: errors.accountHolder
+        },
+        {
+            label: "Bank account number",
+            Icon: PiCreditCardLight,
+            value: accountNumber,
+            id: "accountNumber",
+            placeholder: "Enter account number",
+            onChange: hanldeAccountNumberChange,
+            error: errors.accountNumber
+        },
+        {
+            label: "IFSC code",
+            Icon: PiBank,
+            value: ifscCode,
+            id: "ifscCode",
+            placeholder: "PNBO000C010",
+            onChange: hanldeIfcsCodeChange,
+            maxLength: 11,
+            error: errors.ifscCode
+        },
+        {
+            label: "Mobile number",
+            Icon: MdOutlinePhone,
+            value: mobileNumber,
+            id: "mobileNumber",
+            placeholder: "+91 9876543210",
+            onChange: hanldeMobileNumberChange,
+            maxLength: 10,
+            error: errors.mobileNumber
+        },
+        {
+            label: "UPI id (Optional)",
+            value: upiId,
+            id: "upiId",
+            placeholder: "name@upi",
+            onChange: hanldeUpiIdChange,
+            error: errors.upiId
+        }
+    ]
 
     return (
         <div>
@@ -67,48 +167,26 @@ const BankingInfo = ({ step, setStep, nextStep }) => {
                 <p className='text-xs text-gray-500 border-b border-gray-300 sm:border-0 pb-2 sm:pb-0'>Fill you Banking information</p>
             </div>
             <div className='space-y-8 mt-6'>
-                <BankInfoInput
-                    ref={holderName}
-                    label="Account holder name"
-                    Icon={RiVerifiedBadgeLine}
-                    inputId="holderName"
-                    placeholder="Enter account holder name"
-                    errors={errors}
-                />
-                <BankInfoInput
-                    ref={accountNumber}
-                    label="Bank account number"
-                    Icon={PiCreditCardLight}
-                    inputId="accountNumber"
-                    placeholder="Enter account number"
-                    errors={errors}
-                />
-                <BankInfoInput
-                    ref={ifscCode}
-                    label="IFSC code"
-                    Icon={PiBank}
-                    inputId="ifscCode"
-                    placeholder="PNB000123"
-                    errors={errors}
-                />
-                <BankInfoInput
-                    ref={mobileNumber}
-                    label="Mobile number"
-                    Icon={MdOutlinePhone}
-                    inputId="mobileNumber"
-                    placeholder="10 digit mobile number"
-                    errors={errors}
-                />
-                <BankInfoInput
-                    ref={upiId}
-                    label="UPI Id (Optional)"
-                    inputId="upiId"
-                    placeholder="name@upi"
-                    errors={errors}
-                />
-
+                {
+                    BANK_FIELDS.map(({ label, Icon, value, id, placeholder, onChange, maxLength, error }, index) => (
+                        <BankInfoInput
+                            label={label}
+                            Icon={Icon}
+                            value={value}
+                            id={id}
+                            placeholder={placeholder}
+                            onChange={onChange}
+                            maxLength={maxLength}
+                            error={error}
+                        />
+                    ))
+                }
             </div>
-            <Button className="mt-4" text={"Continue"} onClick={handleSubmit} fill={true} />
+            {
+                responseError &&
+                <p className='text-xs text-left ml-2 mt-0.5 text-red-500'>{responseError}</p>
+            }
+            <Button isLoading={isLoading} className="mt-4" onClick={handleSubmit} text={"Continue"} fill={true} />
         </div>
     )
 }

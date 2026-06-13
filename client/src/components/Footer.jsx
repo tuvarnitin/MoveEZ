@@ -49,7 +49,6 @@ const Footer = () => {
         { icon: FaInstagram, x: -35 },
         { icon: FaLinkedinIn, x: 35 },
         { icon: FaXTwitter, x: 110 },
-
     ];
 
     return (
@@ -93,7 +92,7 @@ const Footer = () => {
                 </div>
 
                 <div className='border-t border-white/20'>
-                {/* Social media icons */}
+                    {/* Social media icons */}
                     <div className='relative flex justify-center items-center h-22'>
                         {SOCIALS.map(({ icon: Icon, x }, index) => (
                             <motion.div
@@ -111,7 +110,7 @@ const Footer = () => {
                                     delay: index * 0.02 + 0.15,
                                     ease: "linear",
                                 }}
-                                className="absolute w-10 h-10 rounded-full bg-white text-background shadow-lg flex items-center justify-center cursor-pointer hover:-translate-y-1 transition-transform "
+                                className="absolute w-10 h-10 rounded-full bg-white text-background shadow-lg flex items-center justify-center cursor-pointer hover:-translate-y-1 hover:bg-background hover:text-white transition-all hover:border border-zinc-700 "
                             >
                                 <Icon />
                             </motion.div>

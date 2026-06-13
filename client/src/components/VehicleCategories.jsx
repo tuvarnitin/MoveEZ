@@ -22,8 +22,8 @@ const VehicleCategories = () => {
             description: "Fast & affordable rides",
             Icon: FaMotorcycle,
             badge: "Quick",
-            maxPassengers:1,
-            luggageCapacity:0
+            maxPassengers: 1,
+            luggageCapacity: 0
         },
         {
             id: "car",
@@ -119,7 +119,7 @@ const VehicleCategories = () => {
                             VEHICLE_CATEGORIES.map((vehicle, index) => {
                                 return (
                                     <VehicleCard
-                                    key={index}
+                                        key={index}
                                         vehicle={vehicle}
                                         index={index}
                                         hoveredCard={hoveredCard}
@@ -152,7 +152,7 @@ const VehicleCategories = () => {
                             <motion.div
                                 initial={{ opacity: 0 }}
                                 whileInView={{ opacity: 1 }}
-                                transition={{ delay: 0.2*index }}
+                                transition={{ delay: 0.2 * index }}
                                 key={index} className='flex items-center gap-3'>
                                 <p className='text-background text-[max(14px,1.3vw)] font-black tracking-tight'>{value}</p>
                                 <p className='text-zinc-400 text-[max(12px,0.95vw)] font-medium '>{title}</p>

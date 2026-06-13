@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react'
 
-import {validateFiels} from "../../utils/validateFields.js"
+import { validateFiels } from "../../utils/validateFields.js"
 import Input from '../Input'
 import Button from '../Button.jsx'
 import { authService } from '../../services/auth.service.js'
@@ -49,26 +49,26 @@ const Login = () => {
 
     setFieldsErrors({})
     setResponseErrors("")
-    
+
     const error = validateFiels({
       email: email.current?.value,
       password: password.current?.value,
     })
-    
+
     if (Object.keys(error).length) {
       setFieldsErrors(error)
       return
     }
-    
+
     setLoading(true)
-    
+
     try {
-      
+
       const response = await authService.login({ email: email.current?.value, password: password.current?.value })
       if (response.success) {
         dispatch(loginSuccess({
-          user:response.user,
-          token:response.token
+          user: response.user,
+          token: response.token
         }))
         dispatch(closeAuthModal({}))
         navigate("/")
@@ -103,22 +103,22 @@ const Login = () => {
           </div>
         ))
       }
-     {
-      responseError && 
-       <p
-        className='text-[max(12px,0.4vw)] text-red-500'
-      >{responseError}</p>
-     }
+      {
+        responseError &&
+        <p
+          className='text-[max(12px,0.4vw)] text-red-500'
+        >{responseError}</p>
+      }
       <a href="#" className='text-[max(12px,0.9vw)] text-purple-950 hover:underline block text-right'>forgot password</a>
       {/* Button - Continue */}
-    <Button text={"Continue"} isLoading={isLoading} onClick={handleLogin} fill={true} />
+      <Button text={"Continue"} isLoading={isLoading} onClick={handleLogin} fill={true} />
       <p
         className='text-[max(14px,0.8vw)] text-background/60 text-center'
       >Don't have an account? &nbsp;
         <span
           className='text-background text-[max(16px,1vw)] underline font-semibold cursor-pointer'
           onClick={() => dispatch(setCurrState({
-            state:"sign-up"
+            state: "sign-up"
           }))}
         >Sign Up</span>
       </p>

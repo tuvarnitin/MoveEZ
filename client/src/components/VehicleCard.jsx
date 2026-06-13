@@ -89,7 +89,7 @@ const VehicleCard = ({ vehicle: { id, Icon, badge, description }, hoveredCard, s
                     {name}
                 </motion.h3>
                 <motion.p
-                    animate={{ color: isHover ? "rgba(255,255,255,0.5)" : "#a1a1aa" }}
+                    animate={{ color: isHover ? "rgba(255,255,255,0.8)" : "#a1a1aa" }}
                     transition={{ duration: 0.2 }}
                     className='text-[max(12px,0.95vw)] font-medium leading-relaxed'
                 >

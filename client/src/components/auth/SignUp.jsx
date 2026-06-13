@@ -57,13 +57,13 @@ const SignUp = () => {
     try {
       setFieldsErrors({})
       setResponseErrors("")
-  
+
       const error = validateFiels({
         name: name.current?.value,
         email: email.current?.value,
         password: password.current?.value,
       })
-  
+
       if (Object.keys(error).length) {
         setFieldsErrors(error)
         return
@@ -76,14 +76,14 @@ const SignUp = () => {
           token
         }))
         dispatch(setCurrState({
-          state:"otp"
+          state: "otp"
         }))
         setResponseErrors("")
       }
     } catch (error) {
       setFieldsErrors({})
       setResponseErrors(error)
-    } finally{
+    } finally {
       setIsLoading(false)
     }
   }
