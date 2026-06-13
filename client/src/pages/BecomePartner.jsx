@@ -11,8 +11,6 @@ import VehicleDetails from '../components/VehicleDetails'
 import UploadDocuments from '../components/UploadDocuments'
 import BankingInfo from '../components/BankingInfo'
 
-import { useSelector } from "react-redux"
-
 const BecomePartner = () => {
 
     const [step, setStep] = useState(3)
@@ -38,13 +36,12 @@ const BecomePartner = () => {
     const nextStep = useCallback(() => {
         setDirection(1);
         setStep(prev => prev + 1);
-    })
+    }, [direction])
 
     const prevStep = useCallback(() => {
         setDirection(-1);
         setStep(prev => prev - 1);
-    })
-
+    }, [direction])
 
     return (
         <div className='w-full h-dvh sm:h-full bg-background flex justify-center sm:p-2'>
