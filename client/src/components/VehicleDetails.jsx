@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 import { motion } from "motion/react"
 
@@ -7,6 +7,47 @@ import Button from './Button'
 import { FaBus, FaCar, FaMotorcycle, FaTruck } from 'react-icons/fa6'
 import { MdBikeScooter } from 'react-icons/md'
 import { vehicleService } from '../services/vehicle.service'
+
+const VEHICLE_CATEGORIES = [
+    {
+        id: "bike",
+        name: "Bike",
+        description: "2 Wheeler",
+        Icon: FaMotorcycle,
+        badge: "Quick",
+        maxPassengers: 1,
+        luggageCapacity: 0
+    },
+    {
+        id: "auto",
+        name: "Auto",
+        description: "3 Wheeler",
+        Icon: MdBikeScooter,
+        badge: "Local",
+        maxPassengers: 3,
+        luggageCapacity: 4
+    },
+    {
+        id: "car",
+        name: "Car",
+        description: "4 Wheeler",
+        Icon: FaCar,
+        badge: "Comfort",
+        maxPassengers: 4,
+        luggageCapacity: 4
+    },
+    {
+        id: "bus",
+        name: "Bus",
+        description: "Group travel",
+        Icon: FaBus,
+        badge: "Spacious",
+        maxPassengers: 20,
+        luggageCapacity: 100
+    }
+];
+
+const vehicleRegex = /^[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{4}$/;
 
 const VehicleDetails = ({ nextStep, step, prevStep }) => {
 
@@ -24,70 +65,25 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
         maxPassengers: ""
     })
 
-    const VEHICLE_CATEGORIES = [
-        {
-            id: "bike",
-            name: "Bike",
-            description: "2 Wheeler",
-            Icon: FaMotorcycle,
-            badge: "Quick",
-            maxPassengers: 1,
-            luggageCapacity: 0
-        },
-        {
-            id: "auto",
-            name: "Auto",
-            description: "3 Wheeler",
-            Icon: MdBikeScooter,
-            badge: "Local",
-            maxPassengers: 3,
-            luggageCapacity: 4
-        },
-        {
-            id: "car",
-            name: "Car",
-            description: "4 Wheeler",
-            Icon: FaCar,
-            badge: "Comfort",
-            maxPassengers: 4,
-            luggageCapacity: 4
-        },
-        {
-            id: "bus",
-            name: "Bus",
-            description: "Group travel",
-            Icon: FaBus,
-            badge: "Spacious",
-            maxPassengers: 20,
-            luggageCapacity: 100
-        }
-    ];
-
     const handleNextStep = async () => {
         setIsLoading(true)
-        const newErrors = {
-            type: "",
-            number: "",
-            model: "",
-            maxPassengers: ""
-        };
+        const newErrors = {};
 
         if (!vehicleType) {
             newErrors.type = "Vehicle type required";
         }
-
         if (!vehicleNumberRef.current?.value) {
             newErrors.number = "Vehicle number required";
         }
-
+        if (!vehicleRegex.test(vehicleNumberRef.current?.value?.toUpperCase())) {
+            newErrors.number = "Invalid vehicle number"
+        }
         if (!vehicleModelRef.current?.value) {
             newErrors.model = "Model required";
         }
-
         if (!maxPassengersRef.current?.value) {
             newErrors.maxPassengers = "Passenger capacity required";
         }
-
         setErrors(newErrors);
 
         try {
@@ -101,24 +97,15 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                 vehicleNumber: vehicleNumberRef.current.value,
                 maxPassengers: maxPassengersRef.current.value
             })
-            if(response.success){
+            if (response.success) {
                 nextStep()
             }
         } catch (error) {
             console.log(error)
-        } finally{
+        } finally {
             setIsLoading(false)
         }
     }
-
-    useEffect(() => {
-        setErrors({
-            type: "",
-            number: "",
-            model: "",
-            maxPassengers: ""
-        })
-    }, [vehicleType, vehicleModelRef?.current?.value, vehicleNumberRef?.current?.value, maxPassengersRef?.current?.value])
 
     return (
         <div>
@@ -171,12 +158,14 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                 <label htmlFor="vehicleNumber" className='font-extrabold sm:font-medium text-gray-500 text-[14px]'>Vehicle Number </label>
                 <input
                     ref={vehicleNumberRef}
-                    onChange={() => setErrors({
-                        type: "",
-                        number: "",
-                        model: "",
-                        maxPassengers: ""
-                    })}
+                    onChange={() => {
+                        if (errors.number) {
+                            setErrors(prev => ({
+                                ...prev,
+                                number: ""
+                            }));
+                        }
+                    }}
                     type="text"
                     id='vehicleNumber'
                     placeholder='HR06AB1234'
@@ -192,12 +181,14 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                 <label htmlFor="vehicleModel" className='font-extrabold sm:font-medium text-gray-500 text-[14px]'>Vehicle Model</label>
                 <input
                     ref={vehicleModelRef}
-                    onChange={() => setErrors({
-                        type: "",
-                        number: "",
-                        model: "",
-                        maxPassengers: ""
-                    })}
+                    onChange={() => {
+                        if (errors.model) {
+                            setErrors(prev => ({
+                                ...prev,
+                                model: ""
+                            }));
+                        }
+                    }}
                     type="text"
                     id='vehicleModel'
                     placeholder='Alto 800'
@@ -213,15 +204,19 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                 <label htmlFor="maxPassengers" className='font-extrabold sm:font-medium text-gray-500 text-[14px]'>Passenger capacity</label>
                 <input
                     ref={maxPassengersRef}
-                    onChange={() => setErrors({
-                        type: "",
-                        number: "",
-                        model: "",
-                        maxPassengers: ""
-                    })}
-                    type="text"
+                    onChange={() => {
+                        if (errors.maxPassengers) {
+                            setErrors(prev => ({
+                                ...prev,
+                                maxPassengers: ""
+                            }));
+                        }
+                    }}
+                    type="number"
                     id='maxPassengers'
                     placeholder='2'
+                    min={1}
+                    defaultValue={1}
                     className={`w-full mt-2 border-b pb-2 text-[max(16px)] focus:outline-none focus:border-background transition ${errors["model"] ? "border-red-500 text-red-700" : "text-background border-gray-300"
                         }`} />
                 {
@@ -231,11 +226,11 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                 }
             </div>
             <Button
-             className="mt-4 text-xl" text={"Continue"} 
-             fill={true}
-             isLoading={isLoading}
-             onClick={handleNextStep}
-               />
+                className="mt-4 text-xl" text={"Continue"}
+                fill={true}
+                isLoading={isLoading}
+                onClick={handleNextStep}
+            />
         </div>
     )
 }
