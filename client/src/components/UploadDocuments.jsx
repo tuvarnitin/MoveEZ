@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 import { motion } from "motion/react"
 
@@ -23,47 +23,20 @@ const UploadDocuments = ({ nextStep, step, prevStep }) => {
         rc: ""
     })
 
-    const DOCS_INPUT_FIELDS = [
-        {
-            name: "aadhar",
-            title: "Aadhar / ID Proof",
-            subTitle: "Government issued id",
-            value: aadhar,
-            onChange: (e) => {
-                setErrors(prev => ({
-                    ...prev,
-                    aadhar: ""
-                }))
-                setAadhar(e.target.files[0])
-            }
-        },
-        {
-            name: "license",
-            title: "Driving License",
-            subTitle: "Valid driving license",
-            value: license,
-            onChange: (e) => {
-                setErrors(prev => ({
-                    ...prev,
-                    license: ""
-                }))
-                setLicense(e.target.files[0])
-            }
-        },
-        {
-            name: "rc",
-            title: "Vehicle RC",
-            subTitle: "Valid registration certificate",
-            value: rc,
-            onChange: (e) => {
-                setErrors(prev => ({
-                    ...prev,
-                    rc: ""
-                }))
-                setRc(e.target.files[0])
-            }
-        }
-    ]
+    const handleAadharChange = useCallback((e) => {
+        setErrors(prev => ({ ...prev, aadhar: "" }));
+        setAadhar(e.target.files[0]);
+    }, [aadhar]);
+
+    const handleLicenseChange = useCallback((e) => {
+        setErrors(prev => ({ ...prev, license: "" }));
+        setLicense(e.target.files[0]);
+    }, [license]);
+
+    const handleRcChange = useCallback((e) => {
+        setErrors(prev => ({ ...prev, rc: "" }));
+        setRc(e.target.files[0]);
+    }, [rc]);
 
     const handleUploadDocuments = async () => {
         const newErrors = {
@@ -98,13 +71,12 @@ const UploadDocuments = ({ nextStep, step, prevStep }) => {
             formData.append("rc", rc)
 
             const response = await userService.uploadDocs(formData)
-            
-            if(response.success){
+
+            if (response.success) {
                 nextStep()
             }
 
         } catch (error) {
-            console.log("Error : ", error)
             if (error.message == "File size error") {
                 setErrors(error.errors)
             }
@@ -120,16 +92,32 @@ const UploadDocuments = ({ nextStep, step, prevStep }) => {
                 <h1 className='text-xl font-bold'>Upload Documents</h1>
                 <p className='text-xs text-gray-500 border-b border-gray-300 sm:border-0 pb-2 sm:pb-0'>Required for verification</p>
                 <div className='space-y-4 mt-6'>
-                    {
-                        DOCS_INPUT_FIELDS.map((fields, index) => (
-                            <DocsFileInput
-                                key={index}
-                                errors={errors}
-                                isLoading={isLoading}
-                                fields={fields}
-                            />
-                        ))
-                    }
+                    <DocsFileInput
+                        name="aadhar"
+                        title="Aadhar / ID Proof"
+                        subTitle="Government issued id"
+                        file={aadhar}
+                        error={errors.aadhar}
+                        onChange={handleAadharChange}
+                    />
+
+                    <DocsFileInput
+                        name="license"
+                        title="Driving License"
+                        subTitle="Valid driving license"
+                        file={license}
+                        error={errors.license}
+                        onChange={handleLicenseChange}
+                    />
+
+                    <DocsFileInput
+                        name="rc"
+                        title="Vehicle RC"
+                        subTitle="Valid registration certificate"
+                        file={rc}
+                        error={errors.rc}
+                        onChange={handleRcChange}
+                    />
                 </div>
             </div>
             <Button className="mt-4" text={"Continue"} onClick={handleUploadDocuments} fill={true} isLoading={isLoading} />
