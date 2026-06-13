@@ -7,6 +7,7 @@ import { GiCarWheel } from "react-icons/gi";
 
 import { useDispatch, useSelector } from 'react-redux'
 import { closeAuthModal, onLogout, openAuthModal } from '../redux/features/authSlice'
+import { clearUserData } from '../redux/features/userSlice'
 import { FaAngleRight, FaArrowRight, FaBus, FaCar } from 'react-icons/fa6';
 import { MdArrowRight } from 'react-icons/md';
 import { RiArrowRightLine, RiBikeLine } from 'react-icons/ri';
@@ -49,6 +50,7 @@ const Navbar = ({ setIsSidebarOpen }) => {
             if (res.success) {
                 setShowProfileModal(false)
                 dispatch(onLogout())
+                dispatch(clearUserData())
                 navigate("/")
             }
         } catch (error) {
@@ -115,7 +117,6 @@ const Navbar = ({ setIsSidebarOpen }) => {
                                 animate={{ y: 115, opacity: 1 }}
                                 exit={{ y: 60, opacity: 0 }}
                                 transition={{ duration: .2 }}
-                                onMouseEnter={() => setShowProfileModal(true)}
                                 onMouseLeave={() => setShowProfileModal(false)}
                                 className='absolute w-full max-w-90 sm:w-80 flex flex-col gap-2 z-1 right-1 sm:right-10 md:right-20 lg:right-54 bg-background border border-zinc-800 rounded-md p-3'>
                                 <div className='px-4'>

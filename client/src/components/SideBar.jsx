@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { onLogout, openAuthModal } from '../redux/features/authSlice';
 import { authService } from '../services/auth.service';
 import { useNavigate } from 'react-router-dom';
+import { clearUserData } from '../redux/features/userSlice';
 
 const SideBar = ({ setIsSidebarOpen }) => {
 
@@ -39,8 +40,9 @@ const SideBar = ({ setIsSidebarOpen }) => {
 
     const handleLogout = async () => {
         const response = await authService.logout()
-        if(response.success){
+        if (response.success) {
             dispatch(onLogout())
+            dispatch(clearUserData())
         }
     }
 
@@ -90,12 +92,12 @@ const SideBar = ({ setIsSidebarOpen }) => {
                     isAuthenticated ?
                         <button className='flex gap-2  text-red-500 items-center cursor-pointer text-md' onClick={handleLogout}>Logout <GiCarDoor /></button>
                         :
-                        <button 
-                        className='flex gap-2 items-center cursor-pointer text-md' 
-                        onClick={()=>{
-                            setIsSidebarOpen(false)
-                            dispatch(openAuthModal())
-                        }}
+                        <button
+                            className='flex gap-2 items-center cursor-pointer text-md'
+                            onClick={() => {
+                                setIsSidebarOpen(false)
+                                dispatch(openAuthModal())
+                            }}
                         >Login / Sign Up</button>
 
                 }
