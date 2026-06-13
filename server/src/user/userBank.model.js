@@ -14,7 +14,7 @@ const userBankSchema = new mongoose.Schema({
         required:true,
         unique:true
     },
-    ifsc:{
+    ifscCode:{
         type:String,
         required:true,
         uppercase:true

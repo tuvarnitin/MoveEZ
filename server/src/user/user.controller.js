@@ -1,5 +1,6 @@
 import { handleUpload } from "../cloudinary/cloudinary.config.js"
 import userDocModel from "./userDoc.model.js"
+import userBankModel from "./userBank.model.js"
 
 export const uploadUserDocs = async (req, res) => {
 
@@ -62,13 +63,87 @@ export const uploadUserDocs = async (req, res) => {
                 message: "Documents uploaded successfully",
                 result
             })
+        } else {
+            return res.status(500).json({
+                success: false,
+                message: `Internal server error (uploading documents)`,
+                error
+            })
         }
 
     } catch (error) {
-        return res.json({
+        return res.status(500).json({
             success: false,
             message: `Internal server error (uploading documents) : ${error}`,
             error
+        })
+    }
+}
+
+export const handleUserBank = async (req, res) => {
+    try {
+        const { accountHolder, accountNumber, ifscCode, mobileNumber, upiId } = req.body
+        const errors = {}
+        if (!accountHolder) {
+            errors.accountHolder = "Account holder name is requried"
+        }
+        if (!accountNumber) {
+            errors.accountNumber = "Account number is requried"
+        }
+        if (!ifscCode) {
+            errors.ifscCode = "IFSC code is requried"
+        }
+        if (!mobileNumber) {
+            errors.mobileNumber = "Mobile number is requried"
+        }
+        if (Object.entries(errors).length) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required",
+                errors
+            })
+        }
+
+        const isAccExists = await userBankModel.findOne({accountNumber})
+        if(isAccExists){
+            return res.status(400).json({
+                success: false,
+                message: "Account number is already registered",
+            })
+        }
+
+        const user = req.user
+        const userBank = await userBankModel.create({
+            owner: user._id,
+            accountNumber,
+            accountHolder,
+            ifscCode,
+            mobileNumber,
+            upiId
+        })
+
+        const codedeAccNumber = userBank.accountNumber.split("").map((num, i) => {
+            if (i < 7)
+                return "*"
+            else return num
+        }).join("")
+
+        return res.status(201).json({
+            success: true,
+            message: "Bank info are submited successfully",
+            details: {
+                holderName: userBank.holdername,
+                ifscCode: userBank.ifscCode,
+                accountNumber: codedeAccNumber,
+                mobileNumber: userBank.mobileNumber
+            }
+        })
+
+    } catch (error) {
+        console.log("Internal server error (Hanlde user bank) : ", error)
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error"
         })
     }
 }
