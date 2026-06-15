@@ -65,7 +65,7 @@ export const uploadUserDocs = async (req, res) => {
         } else {
             return res.status(500).json({
                 success: false,
-                message: `Internal server error (uploading documents)`,
+                message: `Internal server error (uploading documents)`
             })
         }
 
