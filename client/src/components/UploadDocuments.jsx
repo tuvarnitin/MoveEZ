@@ -71,6 +71,7 @@ const UploadDocuments = ({ nextStep, step, prevStep }) => {
             formData.append("rc", rc)
 
             const response = await userService.uploadDocs(formData)
+            console.log(response)
 
             if (response.success) {
                 nextStep()
@@ -80,6 +81,7 @@ const UploadDocuments = ({ nextStep, step, prevStep }) => {
             if (error.message == "File size error") {
                 setErrors(error.errors)
             }
+            console.log(error)
         } finally {
             setIsLoading(false)
         }
