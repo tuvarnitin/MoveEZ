@@ -126,6 +126,9 @@ export const handleUserBank = async (req, res) => {
             else return num
         }).join("")
 
+        user.role = "partner"
+        await user.save()
+
         return res.status(201).json({
             success: true,
             message: "Bank info are submited successfully",
