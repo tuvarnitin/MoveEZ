@@ -6,24 +6,25 @@ import { AnimatePresence } from "motion/react";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import AuthModal from "./components/auth/AuthModal.jsx";
-
-import { authService } from "./services/auth.service.js"
-
-import { useDispatch, useSelector } from "react-redux";
-import { loginSuccess, onLogout } from "./redux/features/authSlice.js";
 import SideBar from "./components/SideBar.jsx";
-import Login from "./components/auth/Login.jsx";
 import BecomePartner from "./pages/BecomePartner.jsx";
+import Login from "./components/auth/Login.jsx";
 import AuthCheckerRoute from "./components/protectedRoutes/AuthCheckerRoute.jsx";
-import { clearUserData, setUserData } from "./redux/features/userSlice.js";
 import VehicleDetails from "./components/VehicleDetails.jsx";
 import UploadDocuments from "./components/UploadDocuments.jsx";
 import BankingInfo from "./components/BankingInfo.jsx";
 import PartnerPage from "./pages/PartnerPage.jsx";
 import PartnerDashboard from "./pages/PartnerDashboard.jsx";
 import Footer from "./components/Footer.jsx";
-import RoleChecker from "./components/protectedRoutes/RoleChecker.jsx"
+import PartnerAuthChecker from "./components/protectedRoutes/PartnerAuthChecker.jsx"
 import AdminDashboard from "./pages/AdminDashboard.jsx";
+
+import { authService } from "./services/auth.service.js"
+
+import { useDispatch, useSelector } from "react-redux";
+import { loginSuccess, onLogout } from "./redux/features/authSlice.js";
+import { clearUserData, setUserData } from "./redux/features/userSlice.js";
+
 
 function App() {
 
@@ -89,7 +90,7 @@ function App() {
             <Route path="upload-documents" element={<UploadDocuments />} />
             <Route path="bank-details" element={<BankingInfo />} />
           </Route>
-          <Route element={<RoleChecker />}>
+          <Route element={<PartnerAuthChecker />}>
             <Route path="/partner" element={<PartnerPage />}>
               <Route index element={<PartnerDashboard />} />
               <Route path="dashboard" element={<PartnerDashboard />} />
