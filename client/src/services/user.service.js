@@ -6,5 +6,6 @@ export const userService = {
             "Content-Type": "multipart/form-data"
         }
     }),
-    hadnleUserBank: (data) => apiClient.post("/api/user/bank/details", data)
+    hadnleUserBank: (data) => apiClient.post("/api/user/bank/details", data),
+    fetchUserBankDetails: (data) => apiClient.get("/api/user/bank/details"),
 }
