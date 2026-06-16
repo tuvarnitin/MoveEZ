@@ -16,6 +16,14 @@ import Login from "./components/auth/Login.jsx";
 import BecomePartner from "./pages/BecomePartner.jsx";
 import AuthCheckerRoute from "./components/protectedRoutes/AuthCheckerRoute.jsx";
 import { clearUserData, setUserData } from "./redux/features/userSlice.js";
+import VehicleDetails from "./components/VehicleDetails.jsx";
+import UploadDocuments from "./components/UploadDocuments.jsx";
+import BankingInfo from "./components/BankingInfo.jsx";
+import PartnerPage from "./pages/PartnerPage.jsx";
+import PartnerDashboard from "./pages/PartnerDashboard.jsx";
+import Footer from "./components/Footer.jsx";
+import RoleChecker from "./components/protectedRoutes/RoleChecker.jsx"
+import AdminDashboard from "./pages/AdminDashboard.jsx";
 
 function App() {
 
@@ -24,6 +32,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
+    setIsLoading(true)
     const getUser = async () => {
       try {
         try {
@@ -35,7 +44,7 @@ function App() {
         if (response.success) {
           dispatch(loginSuccess())
           dispatch(setUserData({
-            user:response.user
+            user: response.user
           }))
         }
       } catch (error) {
@@ -51,18 +60,21 @@ function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const isAuthModalOpen = useSelector(state => state.auth.isAuthModalOpen)
+  const user = useSelector(state => state.user)
+
+  if (isLoading) {
+    return <div className={`fixed inset-0 w-screen grid place-items-center h-screen z-10 backdrop-blur-sm`}>
+      <div className="w-10 h-10 border-4 rounded-full border-t-transparent animate-spin border-white"></div>
+    </div>
+  }
 
   return (
-    <div className={`w-full min-h-screen`}>
-      {/* Loader */}
-      {
-        isLoading && <div className={`fixed inset-0 w-screen grid place-items-center h-screen z-10 backdrop-blur-sm`}>
-          <div className="w-10 h-10 border-4 rounded-full border-t-transparent animate-spin border-white"></div>
-        </div>
-      }
+    <div className={`w-full min-h-screen bg-background`}>
+      {/* Sidebar */}
       <AnimatePresence>
         {isSidebarOpen && <SideBar setIsSidebarOpen={setIsSidebarOpen} />}
       </AnimatePresence>
+      {/* Auth modal */}
       <AnimatePresence>
         {
           isAuthModalOpen && <AuthModal />
@@ -72,7 +84,18 @@ function App() {
         <Route path="/" element={<Home setIsSidebarOpen={setIsSidebarOpen} />} />
         <Route path="/auth" element={<AuthModal />} />
         <Route element={<AuthCheckerRoute />}>
-          <Route path="/partner/become-partner" element={<BecomePartner />} />
+          <Route path="/partner/become-partner" element={<BecomePartner />}>
+            <Route index element={<VehicleDetails />} />
+            <Route path="upload-documents" element={<UploadDocuments />} />
+            <Route path="bank-details" element={<BankingInfo />} />
+          </Route>
+          <Route element={<RoleChecker />}>
+            <Route path="/partner" element={<PartnerPage />}>
+              <Route index element={<PartnerDashboard />} />
+              <Route path="dashboard" element={<PartnerDashboard />} />
+            </Route>
+          </Route>
+          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
       </Routes>
     </div>
