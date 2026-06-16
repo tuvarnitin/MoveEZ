@@ -1,9 +1,10 @@
 import express from "express"
-import { registerVehicle } from "./vehicle.controller.js"
+import { fetchVehicle, registerVehicle } from "./vehicle.controller.js"
 
 const vehicleRouter = express.Router()
 
 
+vehicleRouter.get("/", fetchVehicle)
 vehicleRouter.post("/register",registerVehicle)
 
 
