@@ -31,9 +31,15 @@ googleRouter.get("/callback",
                 sameSite: "none",
                 maxAge: 7 * 24 * 60 * 60 * 1000
             })
-            res.redirect(`${process.env.FRONTEND_URL}`);
+            if(req.user.role === "partner"){
+                res.redirect(`${process.env.FRONTEND_URL}/partner`);
+            }else if(req.user.role === "admin"){
+                res.redirect(`${process.env.FRONTEND_URL}/admin`);
+            }else{
+                res.redirect(`${process.env.FRONTEND_URL}`);
+            }
         } catch (error) {
-            res.redirect(`${process.env.FRONTEND_URL}/login?error=google_login_failed`)
+            res.redirect(`${process.env.FRONTEND_URL}/auth?error=google_login_failed`)
         }
     })
 
