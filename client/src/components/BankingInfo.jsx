@@ -7,9 +7,16 @@ import { PiBank, PiCreditCardLight } from "react-icons/pi";
 import { RiVerifiedBadgeLine } from 'react-icons/ri'
 import { MdOutlinePhone } from 'react-icons/md';
 import { userService } from '../services/user.service';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUserData } from '../redux/features/userSlice';
+import { LuFilePenLine } from 'react-icons/lu';
 
-const BankingInfo = ({ step, setStep, nextStep }) => {
+const BankingInfo = () => {
+
+    const userData = useSelector(state => state.user?.data)
+    const dispatch = useDispatch()
+
     const [accountHolder, setAccountHolder] = useState("")
     const [accountNumber, setAccountNumber] = useState("")
     const [ifscCode, setIfscCode] = useState("")
@@ -73,16 +80,19 @@ const BankingInfo = ({ step, setStep, nextStep }) => {
         if (!accountNumber) {
             newError.accountNumber = "Account number is required"
         }
+        if (!/^[0-9]+$/.test(accountNumber.trim())) {
+            newError.accountNumber = "Invalid account number"
+        }
         if (!ifscCode) {
             newError.ifscCode = "IFSC code is required"
         }
         if (!/^[A-Z]{4}0[A-Z0-9]{6}$/.test(ifscCode)) {
             newError.ifscCode = "Invalid IFCS code"
         }
-        if (!mobileNumber || mobileNumber.length !== 10) {
+
+        if (!mobileNumber || mobileNumber.length !== 10 || !/^[0-9]+$/.test(mobileNumber.trim())) {
             newError.mobileNumber = "Invalid mobile number"
         }
-        console.log(newError)
         if (Object.entries(newError).length) {
             setErrors(newError)
             return
@@ -97,6 +107,9 @@ const BankingInfo = ({ step, setStep, nextStep }) => {
                 upiId
             })
             if (response.success) {
+                dispatch(setUserData({
+                    user: response.user
+                }))
                 navigate("/partner/dashboard")
             }
         } catch (error) {
@@ -159,10 +172,28 @@ const BankingInfo = ({ step, setStep, nextStep }) => {
         }
     ]
 
+    useEffect(() => {
+        if (userData.onboardingStep < 3) {
+            navigate("/partner/become-partner/upload-documents")
+        }
+        const fetchBankDetails = async () => {
+            const response = await userService.fetchUserBankDetails()
+            console.log(response)
+            if (response.success) {
+                setAccountHolder(response.bank.holderName || "")
+                setAccountNumber(response.bank.accountNumber || "")
+                setMobileNumber(response.bank.mobileNumber || "")
+                setUpiId(response.bank.upiId || "")
+                setIfscCode(response.bank.ifscCode || "")
+            }
+        }
+        fetchBankDetails()
+    }, [])
+
     return (
         <div>
             <div className='-space-y-0.5 text-center'>
-                <p className='text-xs text-gray-500 font-medium'>Step {step} of 3</p>
+                <p className='text-xs text-gray-500 font-medium'>Step 3 of 3</p>
                 <h1 className='text-xl font-bold'>Banking Information</h1>
                 <p className='text-xs text-gray-500 border-b border-gray-300 sm:border-0 pb-2 sm:pb-0'>Fill you Banking information</p>
             </div>
@@ -170,6 +201,7 @@ const BankingInfo = ({ step, setStep, nextStep }) => {
                 {
                     BANK_FIELDS.map(({ label, Icon, value, id, placeholder, onChange, maxLength, error }, index) => (
                         <BankInfoInput
+                            key={id}
                             label={label}
                             Icon={Icon}
                             value={value}
@@ -186,6 +218,10 @@ const BankingInfo = ({ step, setStep, nextStep }) => {
                 responseError &&
                 <p className='text-xs text-left ml-2 mt-0.5 text-red-500'>{responseError}</p>
             }
+            <div className='flex items-center gap-2 pl-4 mt-3 justify-center'>
+                <LuFilePenLine />
+                <p className='text-xs text-zinc-400'>Documents are stored securly and manually verified by our team</p>
+            </div>
             <Button isLoading={isLoading} className="mt-4" onClick={handleSubmit} text={"Continue"} fill={true} />
         </div>
     )
