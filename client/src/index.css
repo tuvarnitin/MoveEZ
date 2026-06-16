@@ -22,11 +22,6 @@
   box-sizing: border-box;
 }
 
-html,
-body {
-  @apply bg-background text-white ;
-}
-
 @theme {
   --color-background: oklch(17.4% 0.005 285.823);
 }

@@ -2,8 +2,11 @@ import React from 'react'
 import { motion } from "motion/react"
 import { FaFacebook, FaFacebookF, FaInstagram, FaLinkedin, FaLinkedinIn, FaTwitter, FaXTwitter } from 'react-icons/fa6'
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Footer = () => {
+
+    const role = useSelector(state => state.user?.data?.role)
 
     const FOOTER_LINKS = [
         {
@@ -19,7 +22,7 @@ const Footer = () => {
             title: "Services",
             links: [
                 { label: "Book a Ride", href: "/rides" },
-                { label: "Become a Driver", href: "/partner/become-partner" },
+                role !== "partner" && role !== "admin" && { label: "Become a Driver", href: "/partner/become-partner" },
                 { label: "Corporate Travel", href: "/business" },
                 { label: "Airport Transfers", href: "/airport-transfer" },
             ],
@@ -77,10 +80,11 @@ const Footer = () => {
                             <ul className="space-y-2 sm:space-y-1.5">
                                 {section.links.map((link, i) => (
                                     <motion.li
+                                        key={`${link.label}-${i}`}
                                         initial={{ y: 20, opacity: 0 }}
                                         whileInView={{ y: 0, opacity: 1 }}
                                         transition={{ delay: 0.1 * i }}
-                                        key={link.href}>
+                                    >
                                         <Link className='text-[max(15px)] text-zinc-500 hover:text-zinc-200 hover:underline transition-colors duration-200' to={link.href}>
                                             {link.label}
                                         </Link>

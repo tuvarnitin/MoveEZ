@@ -54,7 +54,7 @@ const SideBar = ({ setIsSidebarOpen }) => {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ duration: .4 }}
-            className='h-screen fixed top-0 right-0 w-full max-w-90 bg-background border-l-[0.5px] border-white/10 sm:hidden flex flex-col justify-between z-10'>
+            className='h-screen fixed top-0 right-0 w-full max-w-90 bg-background text-white border-l-[0.5px] border-white/10 sm:hidden flex flex-col justify-between z-30'>
             <IoMdClose onClick={() => setIsSidebarOpen(prev => !prev)} className='fixed top-2 right-2 cursor-pointer z-20' size={26} />
             <div>
                 {
@@ -62,8 +62,8 @@ const SideBar = ({ setIsSidebarOpen }) => {
                     <div className="flex items-center gap-2 px-4 py-4 bg-zinc-900 border-b border-zinc-800">
                         <img className='w-9 h-9 rounded-full border-2 border-white ' src={user.avatar} alt="Avatar" />
                         <div className=''>
-                            <h1 className='leading-4 text-[max(14px)]'>Name</h1>
-                            <p className='leading-4 text-[max(12px)] text-zinc-400'>nitintuvar2003@gmail.com</p>
+                            <h1 className='leading-4 text-[max(14px)]'>{user.name}</h1>
+                            <p className='leading-4 text-[max(12px)] text-zinc-400'>{user.email}</p>
                         </div>
                     </div>
                 }

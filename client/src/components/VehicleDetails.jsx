@@ -7,6 +7,9 @@ import Button from './Button'
 import { FaBus, FaCar, FaMotorcycle, FaTruck } from 'react-icons/fa6'
 import { MdBikeScooter } from 'react-icons/md'
 import { vehicleService } from '../services/vehicle.service'
+import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate, useOutletContext } from 'react-router-dom'
+import { setUserData } from '../redux/features/userSlice'
 
 const VEHICLE_CATEGORIES = [
     {
@@ -49,14 +52,19 @@ const VEHICLE_CATEGORIES = [
 
 const vehicleRegex = /^[A-Z]{2}[0-9]{1,2}[A-Z]{1,3}[0-9]{4}$/;
 
-const VehicleDetails = ({ nextStep, step, prevStep }) => {
+const VehicleDetails = () => {
 
-    const [vehicleType, setVehicleType] = useState(null)
-    const vehicleNumberRef = useRef(null)
-    const vehicleModelRef = useRef(null)
-    const maxPassengersRef = useRef(null)
+    const [vehicleType, setVehicleType] = useState("")
+    const [vehicleNumber, setVehicleNumber] = useState("")
+    const [vehicleModel, setVehicleModel] = useState("")
+    const [maxPassengers, setMaxPassengers] = useState("")
 
     const [isLoading, setIsLoading] = useState(false)
+
+    const navigate = useNavigate()
+
+    const dispatch = useDispatch()
+    const userData = useSelector(state => state.user?.data)
 
     const [errors, setErrors] = useState({
         type: "",
@@ -65,6 +73,8 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
         maxPassengers: ""
     })
 
+    const [responseError, setResponseError] = useState("")
+
     const handleNextStep = async () => {
         setIsLoading(true)
         const newErrors = {};
@@ -72,16 +82,16 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
         if (!vehicleType) {
             newErrors.type = "Vehicle type required";
         }
-        if (!vehicleNumberRef.current?.value) {
+        if (!vehicleNumber) {
             newErrors.number = "Vehicle number required";
         }
-        if (!vehicleRegex.test(vehicleNumberRef.current?.value?.toUpperCase())) {
+        if (!vehicleRegex.test(vehicleNumber?.toUpperCase())) {
             newErrors.number = "Invalid vehicle number"
         }
-        if (!vehicleModelRef.current?.value) {
+        if (!vehicleModel) {
             newErrors.model = "Model required";
         }
-        if (!maxPassengersRef.current?.value) {
+        if (!maxPassengers) {
             newErrors.maxPassengers = "Passenger capacity required";
         }
         setErrors(newErrors);
@@ -93,24 +103,42 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
 
             const response = await vehicleService.register({
                 vehicleType,
-                vehicleModel: vehicleModelRef.current.value,
-                vehicleNumber: vehicleNumberRef.current.value,
-                maxPassengers: maxPassengersRef.current.value
+                vehicleModel,
+                vehicleNumber,
+                maxPassengers
             })
+
             if (response.success) {
-                nextStep()
+                dispatch(setUserData({
+                    user: response.user
+                }))
+                navigate("/partner/become-partner/upload-documents")
             }
         } catch (error) {
-            console.log(error)
+            setResponseError(error.message)
         } finally {
             setIsLoading(false)
         }
     }
 
+    useEffect(() => {
+        setIsLoading(true)
+
+        const fetchVehicleDetails = async () => {
+            const { vehicle: { number, type, model, maxPassengers } } = await vehicleService.fetchVehicle();
+            setVehicleType(type)
+            setVehicleNumber(number)
+            setVehicleModel(model)
+            setMaxPassengers(maxPassengers)
+        }
+        fetchVehicleDetails()
+        setIsLoading(false)
+    }, [])
+
     return (
-        <div>
-            <div className=' text-center'>
-                <p className='text-[max(14px,1vw)] text-gray-500 font-medium'>Step {step} of 3</p>
+        <div className='relative'>
+            <div className='text-center'>
+                <p className='text-[max(14px,1vw)] text-gray-500 font-medium'>Step 1 of 3</p>
                 <div className='-space-y-0.5 sm:-space-y-1 border-b border-gray-300 sm:border-0 pb-2 sm:pb-0'>
                     <h1 className='text-[max(22px,1.5vw)] font-bold'>Vehicle Details</h1>
                     <p className='text-[12px] text-gray-500'>Fill you Vehicle details</p>
@@ -157,15 +185,17 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
             <div>
                 <label htmlFor="vehicleNumber" className='font-extrabold sm:font-medium text-gray-500 text-[14px]'>Vehicle Number </label>
                 <input
-                    ref={vehicleNumberRef}
-                    onChange={() => {
+                    value={vehicleNumber}
+                    onChange={(e) => {
                         if (errors.number) {
                             setErrors(prev => ({
                                 ...prev,
                                 number: ""
                             }));
                         }
+                        setVehicleNumber(e.target.value)
                     }}
+                    disabled={isLoading}
                     type="text"
                     id='vehicleNumber'
                     placeholder='HR06AB1234'
@@ -180,15 +210,17 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
             <div className='mt-4'>
                 <label htmlFor="vehicleModel" className='font-extrabold sm:font-medium text-gray-500 text-[14px]'>Vehicle Model</label>
                 <input
-                    ref={vehicleModelRef}
-                    onChange={() => {
+                    value={vehicleModel}
+                    onChange={(e) => {
                         if (errors.model) {
                             setErrors(prev => ({
                                 ...prev,
                                 model: ""
                             }));
                         }
+                        setVehicleModel(e.target.value)
                     }}
+                    disabled={isLoading}
                     type="text"
                     id='vehicleModel'
                     placeholder='Alto 800'
@@ -203,20 +235,21 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
             <div className='mt-4'>
                 <label htmlFor="maxPassengers" className='font-extrabold sm:font-medium text-gray-500 text-[14px]'>Passenger capacity</label>
                 <input
-                    ref={maxPassengersRef}
-                    onChange={() => {
+                    value={maxPassengers}
+                    onChange={(e) => {
                         if (errors.maxPassengers) {
                             setErrors(prev => ({
                                 ...prev,
                                 maxPassengers: ""
                             }));
                         }
+                        setMaxPassengers(e.target.value)
                     }}
+                    disabled={isLoading}
                     type="number"
                     id='maxPassengers'
                     placeholder='2'
                     min={1}
-                    defaultValue={1}
                     className={`w-full mt-2 border-b pb-2 text-[max(16px)] focus:outline-none focus:border-background transition ${errors["model"] ? "border-red-500 text-red-700" : "text-background border-gray-300"
                         }`} />
                 {
@@ -225,6 +258,10 @@ const VehicleDetails = ({ nextStep, step, prevStep }) => {
                     <p className='text-xs text-red-500 mt-2'>{errors.maxPassengers}</p>
                 }
             </div>
+            {
+                responseError &&
+                <p className='text-xs text-red-500 mt-2'>{responseError}</p>
+            }
             <Button
                 className="mt-4 text-xl" text={"Continue"}
                 fill={true}

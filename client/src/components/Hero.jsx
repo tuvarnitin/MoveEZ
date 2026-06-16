@@ -47,7 +47,7 @@ const Hero = ({ setIsAuthModalOpen, isLogin }) => {
     }
 
     return (
-        <div className='overflow-x-hidden'>
+        <div className='overflow-x-hidden pt-30 sm:pt-20 bg-background text-white'>
             <main className="w-full min-h-screen flex flex-col justify-center items-center gap-6">
                 <div className='flex flex-col items-center gap-4 transform sm:-translate-y-1/2 -translate-y-full'>
                     <div className='flex flex-col items-center'>
