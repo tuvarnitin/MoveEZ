@@ -29,16 +29,19 @@ const authModel = () => {
 
   const currState = useSelector(state => state.auth.currState)
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+  const isAuthModalOpen = useSelector(state => state.auth.isAuthModalOpen)
   const user = useSelector(state => state.user.data)
 
   const dispatch = useDispatch()
 
   const naviagte = useNavigate()
 
-  if (user && isAuthenticated && user.emailVerified) {
-    dispatch(closeAuthModal())
-    naviagte("/")
-  }
+  useEffect(() => {
+    if (user && isAuthenticated) {
+      dispatch(closeAuthModal())
+      naviagte("/")
+    }
+  }, [])
 
   const name = useRef(null)
   const email = useRef(null)
@@ -53,7 +56,7 @@ const authModel = () => {
 
   return (
     <motion.div
-      className='fixed inset-0 overflow-y-hidden left-0 z-100 bg-background/90 flex items-center justify-center transition-all overflow-hidden px-3' ref={pageRef} onClick={(e) => (e.target == pageRef.current) && dispatch(closeAuthModal())}>
+      className='fixed inset-0 overflow-y-hidden left-0 z-100 bg-background/90 flex items-center justify-center transition-all overflow-hidden px-3' ref={pageRef}>
 
       <motion.div
         initial={{ opacity: 0, y: 10 }}
@@ -64,9 +67,10 @@ const authModel = () => {
         {/* Close Icon */}
         <IoMdClose
           className='absolute right-2 top-2 text-[max(1.7vw,28px)] cursor-pointer text-background/70'
-          onClick={() =>
+          onClick={() => {
+            naviagte("/")
             dispatch(closeAuthModal())
-          }
+          }}
         />
         {/* Title  */}
         <div className=' flex flex-col gap-2 items-center'>

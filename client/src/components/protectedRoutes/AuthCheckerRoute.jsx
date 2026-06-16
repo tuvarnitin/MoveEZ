@@ -4,9 +4,9 @@ import { Navigate, Outlet } from 'react-router-dom'
 
 const AuthCheckerRoute = () => {
 
-    const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+  const isAuthenticated = useSelector(state => state.auth?.isAuthenticated)
 
-  return isAuthenticated ? <Outlet /> : <Navigate to="/" replace />
+  return isAuthenticated ? <Outlet /> : <Navigate to="/auth" replace />
 }
 
 export default AuthCheckerRoute

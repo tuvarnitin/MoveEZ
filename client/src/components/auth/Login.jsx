@@ -71,7 +71,12 @@ const Login = () => {
           token: response.token
         }))
         dispatch(closeAuthModal({}))
-        navigate("/")
+        if (response.user.role == "partner")
+          navigate("/partner")
+        else if (response.user.role == "admin")
+          navigate("/admin")
+        else
+          navigate("/bookings")
       }
     } catch (error) {
       setResponseErrors(error.message)
