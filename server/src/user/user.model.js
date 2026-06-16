@@ -49,6 +49,11 @@ const userShcema = new mongoose.Schema({
     onboardingStep:{
         type:Number,
         default:0
+    },
+    partnerStatus:{
+        type:String,
+        enum:["pending","approved","rejected"],
+        default:"pending"
     }
 })
 

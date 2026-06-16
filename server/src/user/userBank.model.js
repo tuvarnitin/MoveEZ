@@ -19,6 +19,9 @@ const userBankSchema = new mongoose.Schema({
         required:true,
         uppercase:true
     },
+    mobileNumber:{
+        type:String
+    },
     upi:String,
     status:{
         type:String,

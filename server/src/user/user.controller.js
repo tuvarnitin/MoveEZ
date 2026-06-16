@@ -61,6 +61,7 @@ export const uploadUserDocs = async (req, res) => {
             res.status(201).json({
                 success: true,
                 message: "Documents uploaded successfully",
+                user
             })
         } else {
             return res.status(500).json({
@@ -120,7 +121,7 @@ export const handleUserBank = async (req, res) => {
             upiId
         })
 
-        const codedeAccNumber = userBank.accountNumber.split("").map((num, i) => {
+        const encodedAccNumber = userBank.accountNumber.split("").map((num, i) => {
             if (i < 7)
                 return "*"
             else return num
@@ -135,9 +136,10 @@ export const handleUserBank = async (req, res) => {
             details: {
                 holderName: userBank.holdername,
                 ifscCode: userBank.ifscCode,
-                accountNumber: codedeAccNumber,
+                accountNumber: encodedAccNumber,
                 mobileNumber: userBank.mobileNumber
-            }
+            },
+            user
         })
 
     } catch (error) {
@@ -145,6 +147,31 @@ export const handleUserBank = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Internal server error"
+        })
+    }
+}
+
+export const getUserBankDetails = async (req, res) => {
+    const user = req.user
+    const userBank = await userBankModel.findOne({ owner: user._id })
+    if (userBank) {
+        const encodedAccNumber = userBank.accountNumber.split("").map((num, i) => {
+            if (i < 7)
+                return "*"
+            else return num
+        }).join("")
+
+        console.log(userBank)
+
+        return res.status(200).json({
+            success: true,
+            bank: {
+                holderName: userBank.accountHolder,
+                ifscCode: userBank.ifscCode,
+                accountNumber: encodedAccNumber,
+                mobileNumber: userBank.mobileNumber,
+                upi:userBank.upi || ""
+            }
         })
     }
 }
