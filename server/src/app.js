@@ -13,6 +13,8 @@ import { authMiddleware } from "./auth/auth.middleware.js"
 import userRoute from "./user/user.route.js"
 import { upload } from "./multer/multer.js"
 import multer from "multer"
+import adminRouter from "./admin/admin.route.js"
+import { adminMiddleware } from "./admin/admin.middleware.js"
 
 const app = express()
 
@@ -41,8 +43,11 @@ app.get("/", (req, res) => {
 
 app.use('/api/auth/google', googleRouter);
 app.use("/api/auth", authRoute)
-app.use("/api/vehicle", authMiddleware, vehicleRouter)
+
 app.use("/api/user",authMiddleware,upload.fields(FIELDS),userRoute)
+app.use("/api/admin", authMiddleware,adminMiddleware, adminRouter)
+
+app.use("/api/vehicle", authMiddleware, vehicleRouter)
 
 app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {
