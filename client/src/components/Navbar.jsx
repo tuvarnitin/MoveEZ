@@ -63,9 +63,9 @@ const Navbar = ({ setIsSidebarOpen }) => {
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: .4 }}
-            className="relative w-full p-4 sm:px-6 md:px-16 lg:px-50 z-2"
+            className="fixed w-full p-4 sm:px-6 md:px-16 lg:px-50 z-20"
         >
-            <div className='max-w-7xl flex justify-between items-center border border-zinc-900 rounded-full p-2 bg-zinc-900'>
+            <div className='max-w-7xl flex justify-between items-center border border-zinc-900 rounded-full p-2 bg-zinc-900 text-white shadow-2xl shadow-black'>
                 {/* Logo */}
                 <Link to={"/"} className='ml-1'>
                     <img src="/logo.png" alt="MoveEZ Logo" width={80} />
@@ -123,31 +123,34 @@ const Navbar = ({ setIsSidebarOpen }) => {
                                     <h1 className='text-md'>{user?.name}</h1>
                                     <h6 className='text-[10px] leading-2.5 text-zinc-500 font-semibold'>{user?.role.toUpperCase()}</h6>
                                 </div>
-                                <button
-                                    onClick={() => navigate("/partner/become-partner")}
-                                    className='w-full flex justify-between items-center px-4 text-[14px] py-3 hover:bg-zinc-800 bg-zinc-900 rounded-lg cursor-pointer'>
-                                    <div className='flex items-center justify-start'>
-                                        <div className='flex relative w-18'>
-                                            <div className='flex items-center justify-center bg-white text-background p-1.5 sm:p-2 rounded-full'>
-                                                <RiBikeLine />
+                                {
+                                    user.role !== "partner" && user.role !== "admin" &&
+                                    <button
+                                        onClick={() => navigate("/partner/become-partner")}
+                                        className='w-full flex justify-between items-center px-4 text-[14px] py-3 hover:bg-zinc-800 bg-zinc-900 rounded-lg cursor-pointer'>
+                                        <div className='flex items-center justify-start'>
+                                            <div className='flex relative w-18'>
+                                                <div className='flex items-center justify-center bg-white text-background p-1.5 sm:p-2 rounded-full'>
+                                                    <RiBikeLine />
+                                                </div>
+                                                <div className='flex transform -translate-x-3 items-center justify-center bg-white text-background p-1.5 sm:p-2 rounded-full'>
+                                                    <FaCar />
+                                                </div>
+                                                <div className='flex transform -translate-x-6 items-center justify-center bg-white text-background p-1.5 sm:p-2 rounded-full'>
+                                                    <FaBus />
+                                                </div>
                                             </div>
-                                            <div className='flex transform -translate-x-3 items-center justify-center bg-white text-background p-1.5 sm:p-2 rounded-full'>
-                                                <FaCar />
-                                            </div>
-                                            <div className='flex transform -translate-x-6 items-center justify-center bg-white text-background p-1.5 sm:p-2 rounded-full'>
-                                                <FaBus />
-                                            </div>
+                                            <p className=' text-[max(14px,1vw)] font-semibold'>Become a partner</p>
                                         </div>
-                                        <p className=' text-[max(14px,1vw)] font-semibold'>Become a partner</p>
-                                    </div>
-                                    <motion.div
-                                        initial={{ x: -10, opacity: 0 }}
-                                        animate={{ x: 0, opacity: 1 }}
-                                        whileHover={{ x: 4 }}
-                                    >
-                                        <FaAngleRight />
-                                    </motion.div>
-                                </button>
+                                        <motion.div
+                                            initial={{ x: -10, opacity: 0 }}
+                                            animate={{ x: 0, opacity: 1 }}
+                                            whileHover={{ x: 4 }}
+                                        >
+                                            <FaAngleRight />
+                                        </motion.div>
+                                    </button>
+                                }
                                 <button
                                     onClick={handleLogout}
                                     className='w-full flex justify-between items-center px-4 text-[14px] py-3 hover:bg-zinc-800 bg-zinc-900 rounded-lg cursor-pointer font-semibold tracking-wide'>Logout
