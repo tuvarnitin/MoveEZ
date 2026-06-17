@@ -2,6 +2,7 @@ import User from "../user/user.model.js";
 import Docs from "../user/userDoc.model.js";
 import Bank from "../user/userBank.model.js";
 import Vehicle from "../vehicle/vehicle.model.js";
+import userModel from "../user/user.model.js";
 
 export const fetchAdminData = async (req, res) => {
     const admin = req.user;
@@ -16,6 +17,13 @@ export const fetchAdminData = async (req, res) => {
 
         const partnerVehicles = await Vehicle.find({
             owner: { $in: partnerIds }
+        })
+
+        const pendingVideoKyc = await User.find({
+            role: "partner",
+            videoKycStatus: {
+                $in: ["pending", "in_progress"]
+            }
         })
 
         const vehicleTypes = new Map(
@@ -34,9 +42,11 @@ export const fetchAdminData = async (req, res) => {
                 totalPartners,
                 totalApprovedPartners,
                 totalPendingPartners,
-                totalRejectedPartners
+                totalRejectedPartners,
             },
+            pendingVideoKyc,
             pendingPartnerReviews
+
         })
 
 
@@ -80,6 +90,27 @@ export const fetchPartnerData = async (req, res) => {
     }
 }
 
+export const fetchPendingVideoKyc = async(req,res) => {
+    try {
+        const partner = await userModel.find({
+            role:"partner",
+            videoKycStatus:{
+                $in:["pending","in_progress"]
+            }
+        })
+        return res.status(200).json({
+            success:true,
+            partner
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            message:"Internal server error (Fetch pending video kyc)",
+            error
+        })
+    }
+}
+
 export const approvePartner = async (req, res) => {
     try {
         const partnerId = req.params.id
@@ -110,6 +141,7 @@ export const approvePartner = async (req, res) => {
         }
 
         partner.partnerStatus = "approved"
+        partner.videoKycStatus = "pending"
         partner.onboardingStep = 4
         await partner.save()
 
@@ -132,7 +164,6 @@ export const approvePartner = async (req, res) => {
         })
     }
 }
-
 
 export const rejectPartner = async (req, res) => {
     try {
