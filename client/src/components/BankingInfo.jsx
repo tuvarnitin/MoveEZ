@@ -173,9 +173,6 @@ const BankingInfo = () => {
     ]
 
     useEffect(() => {
-        if (userData.onboardingStep < 3) {
-            navigate("/partner/become-partner/upload-documents")
-        }
         const fetchBankDetails = async () => {
             const response = await userService.fetchUserBankDetails()
             console.log(response)

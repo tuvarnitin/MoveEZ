@@ -24,6 +24,7 @@ import { authService } from "./services/auth.service.js"
 import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, onLogout } from "./redux/features/authSlice.js";
 import { clearUserData, setUserData } from "./redux/features/userSlice.js";
+import AdminReviewPartner from "./pages/AdminReviewPartner.jsx";
 
 
 function App() {
@@ -97,6 +98,7 @@ function App() {
             </Route>
           </Route>
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/reviews/partner/:id" element={<AdminReviewPartner />} />
         </Route>
       </Routes>
     </div>

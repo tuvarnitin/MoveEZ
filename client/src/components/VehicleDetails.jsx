@@ -112,7 +112,10 @@ const VehicleDetails = () => {
                 dispatch(setUserData({
                     user: response.user
                 }))
-                navigate("/partner/become-partner/upload-documents")
+                if (response.user.onboardingStep >= 3) {
+                    navigate("/partner/dashboard")
+                } else
+                    navigate("/partner/become-partner/upload-documents")
             }
         } catch (error) {
             setResponseError(error.message)
@@ -123,16 +126,21 @@ const VehicleDetails = () => {
 
     useEffect(() => {
         setIsLoading(true)
-
         const fetchVehicleDetails = async () => {
-            const { vehicle: { number, type, model, maxPassengers } } = await vehicleService.fetchVehicle();
-            setVehicleType(type)
-            setVehicleNumber(number)
-            setVehicleModel(model)
-            setMaxPassengers(maxPassengers)
+            try {
+                const { success, vehicle: { number, type, model, maxPassengers } } = await vehicleService.fetchVehicle();
+                if (success) {
+                    setVehicleType(type)
+                    setVehicleNumber(number)
+                    setVehicleModel(model)
+                    setMaxPassengers(maxPassengers)
+                }
+            } catch (error) {
+            } finally {
+                setIsLoading(false)
+            }
         }
         fetchVehicleDetails()
-        setIsLoading(false)
     }, [])
 
     return (

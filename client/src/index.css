@@ -26,7 +26,9 @@
   --color-background: oklch(17.4% 0.005 285.823);
 }
 
-
+html,body,#root{
+  @apply bg-background text-white;
+}
 @keyframes shake {
 
   0%,

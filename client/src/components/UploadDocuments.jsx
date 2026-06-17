@@ -85,6 +85,9 @@ const UploadDocuments = () => {
                 dispatch(setUserData({
                     user: response.user
                 }))
+                if (response.user.onboardingStep >= 3) {
+                    navigate("/partner/dashboard")
+                } else
                 navigate("/partner/become-partner/bank-details")
             }
         } catch (error) {

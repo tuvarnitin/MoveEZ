@@ -5,7 +5,7 @@ import { RiLoader2Line } from 'react-icons/ri'
 const Button = ({ text, onClick = () => { }, icon = "", fill = false, isLoading, className }) => {
   return (
     <button
-      className={`${className} w-full p-1.5 text-[max(18px,1.1vw)] font-extrabold sm:font-semibold ${fill ? "text-white bg-background" : "text-background bg-white border border-background/30"} disabled:opacity-80 rounded-md cursor-pointer hover:bg-background hover:text-white transition-all duration-200 ease-in-out hover:scale-98 w-full flex justify-center items-center gap-2`}
+      className={`w-full p-1.5 text-[max(18px,1.1vw)] font-extrabold sm:font-semibold ${fill ? "text-white bg-background" : "text-background bg-white border border-background/30"} disabled:bg-zinc-800 rounded-md cursor-pointer hover:bg-background hover:text-white transition-all duration-200 ease-in-out hover:scale-98 w-full flex justify-center items-center gap-2 ${className}`}
       onClick={onClick}
       disabled={isLoading}
     >{
