@@ -54,7 +54,8 @@ const userShcema = new mongoose.Schema({
         type:String,
         enum:["pending","approved","rejected"],
         default:"pending"
-    }
+    },
+    rejectionReason:String
 })
 
 userShcema.pre("save",async function() {

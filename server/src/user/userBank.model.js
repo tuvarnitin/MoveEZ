@@ -25,7 +25,7 @@ const userBankSchema = new mongoose.Schema({
     upi:String,
     status:{
         type:String,
-        enum:["approved","pending","rejected"],
+        enum:["verified","pending","not_verified"],
         default:"pending"
     },
 },{

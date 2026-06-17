@@ -55,7 +55,13 @@ export const uploadUserDocs = async (req, res) => {
                 rcUrl: result[2].value.secure_url,
             })
 
-            user.onboardingStep = 3
+            if (user.onboardingStep == 1) {
+                user.onboardingStep = 2
+            } else if (user.onboardingStep >= 2) {
+                user.onboardingStep = 3
+            }
+            user.partnerStatus = "pending"
+            user.rejectionReason = ""
             await user.save()
 
             res.status(201).json({
@@ -103,8 +109,8 @@ export const handleUserBank = async (req, res) => {
             })
         }
 
-        const isAccExists = await userBankModel.findOne({accountNumber})
-        if(isAccExists){
+        const isAccExists = await userBankModel.findOne({ accountNumber })
+        if (isAccExists) {
             return res.status(400).json({
                 success: false,
                 message: "Account number is already registered",
@@ -128,6 +134,9 @@ export const handleUserBank = async (req, res) => {
         }).join("")
 
         user.role = "partner"
+        user.onboardingStep = 3
+        user.partnerStatus = "pending"
+        user.rejectionReason = ""
         await user.save()
 
         return res.status(201).json({
@@ -170,7 +179,7 @@ export const getUserBankDetails = async (req, res) => {
                 ifscCode: userBank.ifscCode,
                 accountNumber: encodedAccNumber,
                 mobileNumber: userBank.mobileNumber,
-                upi:userBank.upi || ""
+                upi: userBank.upi || ""
             }
         })
     }
