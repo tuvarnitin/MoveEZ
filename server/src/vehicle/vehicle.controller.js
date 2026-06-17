@@ -18,30 +18,41 @@ export const registerVehicle = async (req, res) => {
         }
 
         const user = req.user;
-        const vehicle = await Vehicle.findOne({ number: vehicleNumber })
+        let vehicle = await Vehicle.findOne({ owner:user._id })
 
         if (vehicle) {
-            return res.status(400).json({
-                success: false,
-                message: "Vehicle with this number is already registered."
+            vehicle.type = vehicleType
+            vehicle.model = vehicleModel
+            vehicle.number = vehicleNumber
+            vehicle.maxPassengers = maxPassengers
+            await vehicle.save()
+        } else {
+            vehicle = await Vehicle.create({
+                owner: user._id,
+                type: vehicleType,
+                model: vehicleModel,
+                number: vehicleNumber,
+                maxPassengers
             })
+
         }
-
-        const newVehicle = await Vehicle.create({
-            owner: user._id,
-            type: vehicleType,
-            model:vehicleModel,
-            number: vehicleNumber,
-            maxPassengers
-        })
-
-        user.onboardingStep = 1;
+        if (user.partnerStatus == "rejected" && user.onboardingStep >= 3) {
+            user.partnerStatus = "pending"
+        }
+        if (user.onboardingStep == 1) {
+            user.onboardingStep = 2
+        } else if (user.onboardingStep >= 2) {
+            user.onboardingStep = 3
+        }     
+        
+        user.partnerStatus = "pending"
+        user.rejectionReason = ""
         await user.save();
 
         return res.status(201).json({
             success: true,
             message: "Vehicle registered",
-            vehicle: newVehicle,
+            vehicle,
             user
         })
     } catch (error) {
@@ -52,17 +63,17 @@ export const registerVehicle = async (req, res) => {
     }
 }
 
-export const fetchVehicle = async (req,res) => {
+export const fetchVehicle = async (req, res) => {
     const user = req.user
-    const vehicle = await Vehicle.findOne({owner:user._id})
-    if(vehicle){
+    const vehicle = await Vehicle.findOne({ owner: user._id })
+    if (vehicle) {
         return res.status(200).json({
             vehicle,
-            success:true
+            success: true
         })
-    }else{
+    } else {
         return res.status(500).json({
-            success:false
+            success: false
         })
     }
 }
