@@ -61,6 +61,8 @@ export const registerUser = async (req, res) => {
                 role: user.role,
                 emailVerified: user.emailVerified,
                 avatar: user.avatar,
+                partnerStatus: user.partnerStatus,
+                rejectionReason: user.rejectionReason
             },
             message: "Registered successfully."
         })
@@ -144,6 +146,8 @@ export const loginUser = async (req, res) => {
                 role: user.role,
                 emailVerified: user.emailVerified,
                 avatar: user.avatar,
+                partnerStatus: user.partnerStatus,
+                rejectionReason: user.rejectionReason
             },
             message: "Login successfully."
         })
@@ -182,7 +186,9 @@ export const getMe = async (req, res) => {
             role: req.user.role,
             emailVerified: req.user.emailVerified,
             avatar: req.user.avatar,
-            onboardingStep: req.user.onboardingStep
+            onboardingStep: req.user.onboardingStep,
+            partnerStatus: req.user.partnerStatus,
+            rejectionReason: req.user.rejectionReason
         }
     })
 }
