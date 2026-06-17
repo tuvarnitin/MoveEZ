@@ -1,20 +1,34 @@
 import React, { useEffect, useState } from 'react'
-import { adminService } from '../services/admin.service'
 
-import KeyPermormanceIndicator from "../components/KeyPermormanceIndicator"
+import { AnimatePresence, motion } from "motion/react"
+
+import InfoCard from "../components/InfoCard"
 
 import { GrUser, GrUserAdmin } from "react-icons/gr";
-import { FaCheck } from "react-icons/fa6";
-import { CiClock1 } from "react-icons/ci";
+import { FaCheck, FaTruck } from "react-icons/fa6";
+import { CiClock1, CiUser } from "react-icons/ci";
 import { FiXCircle } from "react-icons/fi";
+
+import { adminService } from '../services/admin.service'
+import Tab from '../components/Tab';
+import { FaVideo } from 'react-icons/fa';
+import ContentList from '../components/ContentList';
+import { authService } from '../services/auth.service';
 
 const AdminDashboard = () => {
 
   const [stats, setStats] = useState(null)
 
+  const [activeTab, setActiveTab] = useState("partner")
+  const [partnerReviews, setPartnerReviews] = useState(0)
+  const [pendingKyc, setPendingKyc] = useState(0)
+  const [vehicleReviews, setVehicleReviews] = useState(0)
+
   useEffect(() => {
     const fetchAdminData = async () => {
       const response = await adminService.fetchAdminData()
+      console.log(response)
+      setPartnerReviews(response.pendingPartnerReviews)
       setStats(response.stats)
     }
     fetchAdminData()
@@ -29,16 +43,63 @@ const AdminDashboard = () => {
           <div className='flex items-center gap-2 text-xs px-3 py-1.5 rounded-full bg-white text-background'>
             <GrUserAdmin />
             <span className='font-semibold text-xs tracking-wide'>Admin</span>
+            <button onClick={async () => await authService.logout()}>Logout</button>
           </div>
         </div>
       </div>
       <main className='max-w-7xl mx-auto px-6 py-12 space-y-16'>
         <div className='grid grid-cols-2 sm:grid-cols-4 gap-6'>
-          <KeyPermormanceIndicator label="Total Partners" value={stats?.totalPartners} Icon={GrUser} variant="totalPartners"/>
-          <KeyPermormanceIndicator label="Total Approved Partners" value={stats?.totalApprovedPartners} Icon={FaCheck} variant="approved" />
-          <KeyPermormanceIndicator label="Total Pending Partners" value={stats?.totalPendingPartners} Icon={CiClock1} variant="pending"/>
-          <KeyPermormanceIndicator label="Total Rejected Partners" value={stats?.totalRejectedPartners} Icon={FiXCircle} variant="rejected" />
+          <InfoCard label="Total Partners" value={stats?.totalPartners} Icon={GrUser} variant="totalPartners" />
+          <InfoCard label="Total Approved Partners" value={stats?.totalApprovedPartners} Icon={FaCheck} variant="approved" />
+          <InfoCard label="Total Pending Partners" value={stats?.totalPendingPartners} Icon={CiClock1} variant="pending" />
+          <InfoCard label="Total Rejected Partners" value={stats?.totalRejectedPartners} Icon={FiXCircle} variant="rejected" />
         </div>
+        <div className='bg-background rounded-2xl p-2 shadow-lg border border-gray-800 flex flex-wrap gap-4'>
+          <Tab
+            active={activeTab === "partner"}
+            onClick={() => setActiveTab("partner")}
+            count={partnerReviews.length ?? 0}
+            icon={CiUser}
+          >
+            Partner Reviews
+          </Tab>
+          <Tab
+            active={activeTab === "kyc"}
+            onClick={() => setActiveTab("kyc")}
+            count={pendingKyc.length ?? 0}
+            icon={FaVideo}
+          >
+            Pending Video KYC
+          </Tab>
+          <Tab
+            active={activeTab === "vehicle"}
+            onClick={() => setActiveTab("vehicle")}
+            count={vehicleReviews.length ?? 0}
+            icon={FaTruck}
+          >
+            Pending Vehicel Reviews
+          </Tab>
+        </div>
+        <AnimatePresence>
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className='space-y-3'
+          >
+            {
+              activeTab === "partner" && <ContentList data={partnerReviews || []} type="partner" />
+            }
+            {
+              activeTab === "kyc" && <ContentList data={pendingKyc || []} type="kyc" />
+            }
+            {
+              activeTab === "vehicle" && <ContentList data={vehicleReviews || []} type="vehicle" />
+            }
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   )
