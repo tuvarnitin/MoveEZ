@@ -21,7 +21,7 @@ const AdminDashboard = () => {
 
   const [activeTab, setActiveTab] = useState("partner")
   const [partnerReviews, setPartnerReviews] = useState(0)
-  const [pendingKyc, setPendingKyc] = useState(0)
+  const [pendingKyc, setPendingKyc] = useState([])
   const [vehicleReviews, setVehicleReviews] = useState(0)
 
   useEffect(() => {
@@ -29,6 +29,7 @@ const AdminDashboard = () => {
       const response = await adminService.fetchAdminData()
       console.log(response)
       setPartnerReviews(response.pendingPartnerReviews)
+      setPendingKyc(response.pendingVideoKyc)
       setStats(response.stats)
     }
     fetchAdminData()
