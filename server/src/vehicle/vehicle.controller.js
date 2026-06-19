@@ -39,8 +39,8 @@ export const registerVehicle = async (req, res) => {
         if (user.partnerStatus == "rejected" && user.onboardingStep >= 3) {
             user.partnerStatus = "pending"
         }
-        if (user.onboardingStep == 1) {
-            user.onboardingStep = 2
+        if (user.onboardingStep == 0) {
+            user.onboardingStep = 1
         } else if (user.onboardingStep >= 2) {
             user.onboardingStep = 3
         }     

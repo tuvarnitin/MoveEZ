@@ -53,17 +53,11 @@ export const registerUser = async (req, res) => {
 
         await sendOtp(user.name, user.email, otp);
 
+        delete user.password
+
         return res.status(201).json({
             success: true,
-            user: {
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                emailVerified: user.emailVerified,
-                avatar: user.avatar,
-                partnerStatus: user.partnerStatus,
-                rejectionReason: user.rejectionReason
-            },
+            user,
             message: "Registered successfully."
         })
 
@@ -138,17 +132,11 @@ export const loginUser = async (req, res) => {
             maxAge: 7 * 24 * 60 * 60 * 1000 
         })
 
+        delete user.password
+
         return res.status(200).json({
             success: true,
-            user: {
-                name: user.name,
-                email: user.email,
-                role: user.role,
-                emailVerified: user.emailVerified,
-                avatar: user.avatar,
-                partnerStatus: user.partnerStatus,
-                rejectionReason: user.rejectionReason
-            },
+            user,
             message: "Login successfully."
         })
     } catch (error) {
@@ -178,18 +166,10 @@ export const logout = async (req, res) => {
 }
 
 export const getMe = async (req, res) => {
+    delete req.user._id
     return res.json({
         success: true,
-        user: {
-            name: req.user.name,
-            email: req.user.email,
-            role: req.user.role,
-            emailVerified: req.user.emailVerified,
-            avatar: req.user.avatar,
-            onboardingStep: req.user.onboardingStep,
-            partnerStatus: req.user.partnerStatus,
-            rejectionReason: req.user.rejectionReason
-        }
+        user:req.user
     })
 }
 
