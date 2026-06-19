@@ -25,6 +25,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, onLogout } from "./redux/features/authSlice.js";
 import { clearUserData, setUserData } from "./redux/features/userSlice.js";
 import AdminReviewPartner from "./pages/AdminReviewPartner.jsx";
+import Zego from "./zego/Zego.jsx";
 
 
 function App() {
@@ -85,18 +86,22 @@ function App() {
       <Routes>
         <Route path="/" element={<Home setIsSidebarOpen={setIsSidebarOpen} />} />
         <Route path="/auth" element={<AuthModal />} />
+        <Route path="/video-kyc/:roomId" element={<Zego />} />
         <Route element={<AuthCheckerRoute />}>
+
           <Route path="/partner/become-partner" element={<BecomePartner />}>
             <Route index element={<VehicleDetails />} />
             <Route path="upload-documents" element={<UploadDocuments />} />
             <Route path="bank-details" element={<BankingInfo />} />
           </Route>
+
           <Route element={<PartnerAuthChecker />}>
             <Route path="/partner" element={<PartnerPage />}>
               <Route index element={<PartnerDashboard />} />
               <Route path="dashboard" element={<PartnerDashboard />} />
             </Route>
           </Route>
+
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/reviews/partner/:id" element={<AdminReviewPartner />} />
         </Route>
