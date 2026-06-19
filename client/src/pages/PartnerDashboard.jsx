@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { motion } from "motion/react"
-import { FaCheck, FaClockRotateLeft } from 'react-icons/fa6';
+import { FaCheck, FaClock, FaClockRotateLeft, FaVideo } from 'react-icons/fa6';
 import { PiLockersBold } from 'react-icons/pi';
 import { GiLockedBox } from 'react-icons/gi';
 import { CiLock } from 'react-icons/ci';
@@ -9,6 +9,10 @@ import { useNavigate } from 'react-router-dom';
 import RejectionCard from '../components/RejectionCard';
 import Button from '../components/Button';
 import StatusCard from '../components/StatusCard';
+import ActionCard from '../components/ActionCard';
+
+import { partnerService } from "../services/partner.service"
+import PricingModal from '../components/PricingModal';
 
 const STEPS = [
     { id: 1, title: "Vehicle", route: "/partner/become-partner" },
@@ -28,9 +32,11 @@ const PartnerDashboard = () => {
 
     const step = useSelector(state => state.user?.data?.onboardingStep)
     const [activeStep, setActiveStep] = useState(step)
+    const [showPricingModal, setShowPricingModal] = useState(false)
+    const [pricingData, setPricingData] = useState({})
     const userData = useSelector(state => state.user?.data)
 
-    console.log(userData)
+    const [requestKycLoading, setRequestKycLoading] = useState(false)
 
     useEffect(() => {
         if (userData)
@@ -39,8 +45,22 @@ const PartnerDashboard = () => {
 
 
     const goToStep = (id, route) => {
+        if (id == 6 && userData.partnerStatus === "approved" && userData.videoKycStatus === "approved") {
+            setShowPricingModal(true)
+        }
         if (id <= activeStep && route) {
             navigate(route)
+        }
+    }
+
+    const handleRequestKyc = async () => {
+        try {
+            setRequestKycLoading(true)
+            await partnerService.requestVideoKyc()
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setRequestKycLoading(false)
         }
     }
 
@@ -116,7 +136,64 @@ const PartnerDashboard = () => {
                         />
                     )
                 }
+                {
+
+                    step == 4 &&
+                    (
+                        step == 4 && userData.videoKycStatus === "approve" ?
+                            (
+                                <StatusCard
+                                    title="Video KYC approved"
+                                    desc="You can now proceed to pricing"
+                                    icon={FaCheck}
+                                />
+                            )
+                            :
+                            (
+                                step == 4 && userData.videoKycStatus === "rejected" ?
+                                    (
+                                        <RejectionCard
+                                            title="Video KYC Rejected"
+                                            actionLabel="Request Again"
+                                            reason={userData.videoKycRejectionReason}
+                                            onAction={handleRequestKyc}
+                                            actionLabel={requestKycLoading ? "Requesting..." : "Request Again"}
+                                        />
+                                    ) :
+                                    (
+                                        step == 4 && userData.videoKycStatus === "in_progress" && userData.videoKycRoomId ?
+                                            (
+                                                <ActionCard
+                                                    icon={FaVideo}
+                                                    title="Admin started video kyc"
+                                                    button="Join Call"
+                                                    onClick={() => {
+                                                        navigate(`/video-kyc/${userData.videoKycRoomId}`)
+                                                    }}
+                                                />
+                                            )
+                                            :
+                                            (
+                                                <StatusCard
+                                                    icon={FaClock}
+                                                    title="Waiting for admin"
+                                                    desc="Admin will initiate Video KYC shortly."
+                                                />
+                                            )
+                                    )
+                            )
+                    )
+                }
             </div>
+
+            {
+                showPricingModal && (
+                    <PricingModal
+                        data={pricingData}
+                        onClose={() => setShowPricingModal(false)}
+                    />
+                )
+            }
         </div>
     )
 }
