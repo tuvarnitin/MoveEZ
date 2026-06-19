@@ -55,7 +55,18 @@ const userShcema = new mongoose.Schema({
         enum:["pending","approved","rejected"],
         default:"pending"
     },
-    rejectionReason:String
+    rejectionReason:String,
+    videoKycStatus:{
+        type:String,
+        enum:["pending","approved","rejected","in_progress","not_required"],
+        default:"not_required"
+    },
+    videoKycRoomId:{
+        type:String
+    },
+    videoKycRejectionReason:{
+        type:String
+    }
 })
 
 userShcema.pre("save",async function() {
