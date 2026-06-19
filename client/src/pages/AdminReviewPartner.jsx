@@ -105,7 +105,7 @@ const AdminReviewPartner = () => {
                     }
                 </div>
             </div>
-            <main className='max-w-7xl mx-auto px-4 py-12 grid sm:grid-cols-3 gap-10'>
+            <main className='max-w-7xl mx-auto px-4 py-12 grid md:grid-cols-2 lg:grid-cols-3 gap-10'>
                 <div className='lg:col-span-2 space-y-8'>
                     <Card title="Vehicle Details" icon={FaCar}>
                         <div className='flex justify-between text-sm'>
@@ -122,7 +122,7 @@ const AdminReviewPartner = () => {
                         </div>
                     </Card>
                     <Card title="Documents" icon={FaFileCircleCheck}>
-                        <div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
+                        <div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
                             <DocsPreview label="Aadhar" url={docs.aadharUrl} />
                             <DocsPreview label="Registration Certificate" url={docs.rcUrl} />
                             <DocsPreview label="Driving License" url={docs.licenseUrl} />

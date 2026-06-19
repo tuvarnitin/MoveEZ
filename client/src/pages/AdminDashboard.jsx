@@ -18,7 +18,6 @@ import { authService } from '../services/auth.service';
 const AdminDashboard = () => {
 
   const [stats, setStats] = useState(null)
-
   const [activeTab, setActiveTab] = useState("partner")
   const [partnerReviews, setPartnerReviews] = useState(0)
   const [pendingKyc, setPendingKyc] = useState([])
@@ -27,7 +26,6 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchAdminData = async () => {
       const response = await adminService.fetchAdminData()
-      console.log(response)
       setPartnerReviews(response.pendingPartnerReviews)
       setPendingKyc(response.pendingVideoKyc)
       setStats(response.stats)
