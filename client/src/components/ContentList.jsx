@@ -4,9 +4,18 @@ import { FiCheckCircle } from 'react-icons/fi'
 import { CiUser } from 'react-icons/ci'
 import { FaArrowRight } from 'react-icons/fa6'
 import { useNavigate } from 'react-router-dom'
+import { adminService } from '../services/admin.service'
 const ContentList = ({ data, type }) => {
-console.log(data)
     const navigate = useNavigate()
+    const startVideoKyc = async (id) => {
+        try {
+            const result = await adminService.startVideoKyc({id})
+            window.location.reload()
+            console.log("Room id",result)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     if (data.length == 0) {
         return <motion.div
@@ -42,6 +51,7 @@ console.log(data)
                     const name = item.name
                     const email = item.email
                     return <motion.div
+                        key={index}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
@@ -49,7 +59,7 @@ console.log(data)
                         style={{
                             boxShadow: "0 10px 50px rgba(255,255,255,0.03)"
                         }}
-                        
+
                         className='bg-background text-white shadow inset-shadow-2xs shadow-zinc-600 border-gray-900 rounded-2xl px-5 py-4 flex items-center justify-between gap-4 transition-shadow'
                     >
                         <div className='flex itemce gap-3 min-w-0'>
@@ -60,13 +70,40 @@ console.log(data)
                             </div>
                         </div>
                         <div className='shrink-0'>
-                            <motion.button
-                            onClick={()=>navigate(`/admin/reviews/partner/${item.id}`)}
-                                whileTap={{ scale: 0.96 }}
-                                className='flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-600 hover:text-white text-background  text-sm font-semibold transition-colors cursor-pointer'
-                            >
-                                Review <FaArrowRight />
-                            </motion.button>
+                            {
+                                item.videoKycStatus === "pending"
+                                    ?
+                                    (
+                                        <motion.button
+                                            onClick={()=>startVideoKyc(item._id)}
+                                            whileTap={{ scale: 0.96 }}
+                                            className='flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-600 hover:text-white text-background  text-sm font-semibold transition-colors cursor-pointer'
+                                        >
+                                            Start Video Kyc <FaArrowRight />
+                                        </motion.button>
+                                    )
+                                    : item.videoKycStatus === "in_progress" ?
+                                        (
+                                            <motion.button
+                                                onClick={() => navigate(`/video-kyc/${item.videoKycRoomId.toString()}`) }
+                                                whileTap={{ scale: 0.96 }}
+                                                className='flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-600 hover:text-white text-background  text-sm font-semibold transition-colors cursor-pointer'
+                                            >
+                                                Join Call<FaArrowRight />
+                                            </motion.button>
+                                        )
+                                        :
+                                        (
+                                            <motion.button
+                                                onClick={() => navigate(`/admin/reviews/partner/${item.id}`)}
+                                                whileTap={{ scale: 0.96 }}
+                                                className='flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-600 hover:text-white text-background  text-sm font-semibold transition-colors cursor-pointer'
+                                            >
+                                                Review <FaArrowRight />
+                                            </motion.button>
+                                        )
+                            }
+
                         </div>
                     </motion.div>
                 })
