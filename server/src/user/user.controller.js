@@ -152,7 +152,6 @@ export const handleUserBank = async (req, res) => {
         })
 
     } catch (error) {
-        console.log("Internal server error (Hanlde user bank) : ", error)
         return res.status(500).json({
             success: false,
             message: "Internal server error"
@@ -169,8 +168,6 @@ export const getUserBankDetails = async (req, res) => {
                 return "*"
             else return num
         }).join("")
-
-        console.log(userBank)
 
         return res.status(200).json({
             success: true,
