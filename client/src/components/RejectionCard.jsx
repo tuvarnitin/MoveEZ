@@ -1,5 +1,7 @@
 import React from 'react'
+
 import { FiAlertTriangle } from 'react-icons/fi'
+
 import Button from './Button'
 
 const RejectionCard = ({ title, actionLabel, reason, onAction }) => {
@@ -14,7 +16,7 @@ const RejectionCard = ({ title, actionLabel, reason, onAction }) => {
             </div>
             {
                 onAction && (
-                    <Button text={actionLabel} onClick={onAction} fill={true} className="text-[100px]" />
+                    <Button text={actionLabel} onClick={onAction} fill={true} className="text-[100px]" style={{width:"max-content"}} />
                 )
             }
         </div>

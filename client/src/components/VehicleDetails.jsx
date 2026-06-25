@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useNavigate, useOutletContext } from 'react-router-dom'
 
 import { motion } from "motion/react"
 
@@ -6,10 +7,11 @@ import Button from './Button'
 
 import { FaBus, FaCar, FaMotorcycle, FaTruck } from 'react-icons/fa6'
 import { MdBikeScooter } from 'react-icons/md'
-import { vehicleService } from '../services/vehicle.service'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate, useOutletContext } from 'react-router-dom'
+
 import { setUserData } from '../redux/features/userSlice'
+
+import { vehicleService } from '../services/vehicle.service'
 
 const VEHICLE_CATEGORIES = [
     {
@@ -112,10 +114,7 @@ const VehicleDetails = () => {
                 dispatch(setUserData({
                     user: response.user
                 }))
-                if (response.user.onboardingStep >= 3) {
-                    navigate("/partner/dashboard")
-                } else
-                    navigate("/partner/become-partner/upload-documents")
+                navigate("/partner/become-partner/upload-documents")
             }
         } catch (error) {
             setResponseError(error.message)

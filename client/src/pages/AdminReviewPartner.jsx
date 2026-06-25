@@ -149,7 +149,8 @@ const AdminReviewPartner = () => {
                         </div>
                     </Card>
                     {
-                        data?.partnerStatus === "pending" && <Card title="Admin Check" icon={FiShield}>
+                        data?.partnerStatus === "pending" &&
+                        <Card title="Admin Check" icon={FiShield}>
                             <motion.div
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}

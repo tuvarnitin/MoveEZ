@@ -1,11 +1,13 @@
 import React from 'react'
+
 import Hero from '../components/Hero'
 import VehicleCategories from '../components/VehicleCategories'
 import Footer from '../components/Footer'
 import Navbar from '../components/Navbar'
-import { useSelector } from 'react-redux'
 import AdminDashboard from './AdminDashboard'
 import PartnerDashboard from './PartnerDashboard'
+
+import { useSelector } from 'react-redux'
 
 const Home = ({ setIsSidebarOpen }) => {
 
@@ -26,10 +28,10 @@ const Home = ({ setIsSidebarOpen }) => {
               <>
                 <Hero />
                 <VehicleCategories />
+                <Footer />
               </>
           )
       }
-      <Footer />
     </>
   )
 }

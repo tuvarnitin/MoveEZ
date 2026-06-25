@@ -3,25 +3,25 @@ import React, { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from "motion/react"
 
 import InfoCard from "../components/InfoCard"
+import ContentList from '../components/ContentList';
+import Tab from '../components/Tab';
 
 import { GrUser, GrUserAdmin } from "react-icons/gr";
 import { FaCheck, FaTruck } from "react-icons/fa6";
 import { CiClock1, CiUser } from "react-icons/ci";
 import { FiXCircle } from "react-icons/fi";
+import { FaVideo } from 'react-icons/fa';
 
 import { adminService } from '../services/admin.service'
-import Tab from '../components/Tab';
-import { FaVideo } from 'react-icons/fa';
-import ContentList from '../components/ContentList';
 import { authService } from '../services/auth.service';
 
 const AdminDashboard = () => {
 
   const [stats, setStats] = useState(null)
   const [activeTab, setActiveTab] = useState("partner")
-  const [partnerReviews, setPartnerReviews] = useState(0)
+  const [partnerReviews, setPartnerReviews] = useState([])
   const [pendingKyc, setPendingKyc] = useState([])
-  const [vehicleReviews, setVehicleReviews] = useState(0)
+  const [vehicleReviews, setVehicleReviews] = useState([])
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -29,6 +29,7 @@ const AdminDashboard = () => {
       setPartnerReviews(response.pendingPartnerReviews)
       setPendingKyc(response.pendingVideoKyc)
       setStats(response.stats)
+      setVehicleReviews(response.pendingVehicles)
     }
     fetchAdminData()
   }, [])
