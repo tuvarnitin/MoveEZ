@@ -1,3 +1,4 @@
+import { handleUpload } from "../cloudinary/cloudinary.config.js";
 import Vehicle from "./vehicle.model.js"
 
 export const registerVehicle = async (req, res) => {
@@ -18,7 +19,7 @@ export const registerVehicle = async (req, res) => {
         }
 
         const user = req.user;
-        let vehicle = await Vehicle.findOne({ owner:user._id })
+        let vehicle = await Vehicle.findOne({ owner: user._id })
 
         if (vehicle) {
             vehicle.type = vehicleType
@@ -43,8 +44,8 @@ export const registerVehicle = async (req, res) => {
             user.onboardingStep = 1
         } else if (user.onboardingStep >= 2) {
             user.onboardingStep = 3
-        }     
-        
+        }
+
         user.partnerStatus = "pending"
         user.rejectionReason = ""
         await user.save();
@@ -74,6 +75,108 @@ export const fetchVehicle = async (req, res) => {
     } else {
         return res.status(500).json({
             success: false
+        })
+    }
+}
+
+export const setPricing = async (req, res) => {
+    try {
+        const partner = req.user
+        const { baseFare, waitingCharge, pricePerKM,imageUrl } = req.body
+        const  image = req.file
+        const errors = {}
+
+        console.log(req.body)
+        if (!baseFare) {
+            errors.baseFare = "Base fare is required"
+        }
+        if (!waitingCharge) {
+            errors.waitingCharge = "Waiting charges are required"
+        }
+        if (!pricePerKM) {
+            errors.pricePerKM = "Price is required"
+        }
+        if (!image && !imageUrl) {
+            errors.image = "Vehicle image is required"
+        }
+
+        if (Object.entries(errors).length) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required.",
+                errors
+            })
+        }
+
+        const vehicle = await Vehicle.findOne({ owner: partner._id })
+
+        if (!vehicle) {
+            return res.status(400).json({
+                success: false,
+                message: "Vehicle not found"
+            })
+        }
+
+        let secure_url;
+
+        if(imageUrl !== "undefined"){
+            secure_url = imageUrl
+        }else{
+            const imageObj = await handleUpload(image.buffer, partner._id, "vehicle-image")
+            console.log(imageObj)
+            secure_url = imageObj.secure_url
+        }
+        console
+
+        vehicle.imageUrl = secure_url
+        vehicle.baseFare = baseFare
+        vehicle.waitingCharge = waitingCharge
+        vehicle.pricePerKM = pricePerKM
+        vehicle.status = "pending"
+        vehicle.rejectionReason = ""
+        await vehicle.save()
+
+        partner.onboardingStep = 6
+        await partner.save()
+
+        return res.status(200).json({
+            success:true,
+            message:"Pricing setup successfull"
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            success:false,
+            message:"Internal server error (Set Pricings)",
+            error
+        })
+    }
+}
+
+export const getPricing = async (req, res) => {
+    try {
+        const partner = req.user
+        const vehicle = await Vehicle.findOne({ owner: partner._id })
+        if (!vehicle) {
+            return res.status(400).json({
+                success: false,
+            })
+        }
+
+        console.log(vehicle)
+
+        return res.status(200).json({
+            success:true,
+            vehicle
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            success:false,
+            message:"Internal server error (Set Pricings)",
+            error
         })
     }
 }

@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 const vehicleSchema = new mongoose.Schema({
     owner:{
         type:mongoose.Types.ObjectId,
-        ref:"users",
+        ref:"user",
         required:true
     },
     type:{

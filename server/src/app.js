@@ -51,7 +51,7 @@ app.use("/api/admin", authMiddleware,adminMiddleware, adminRouter)
 
 app.use("/api/partner", authMiddleware, partnerMiddleware, partnerRouter)
 
-app.use("/api/vehicle", authMiddleware, vehicleRouter)
+app.use("/api/vehicle", authMiddleware,upload.single("image"), vehicleRouter)
 
 app.use((err, req, res, next) => {
     if (err instanceof multer.MulterError) {
