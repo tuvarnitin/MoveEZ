@@ -1,18 +1,23 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
-import { motion } from "motion/react"
-import { FaCheck, FaClock, FaClockRotateLeft, FaVideo } from 'react-icons/fa6';
-import { PiLockersBold } from 'react-icons/pi';
-import { GiLockedBox } from 'react-icons/gi';
-import { CiLock } from 'react-icons/ci';
 import { useNavigate } from 'react-router-dom';
+
+import { useSelector } from 'react-redux';
+
+import { motion } from "motion/react"
+
 import RejectionCard from '../components/RejectionCard';
 import Button from '../components/Button';
 import StatusCard from '../components/StatusCard';
 import ActionCard from '../components/ActionCard';
+import PricingModal from '../components/PricingModal';
+
+import { FaCheck, FaClock, FaClockRotateLeft, FaVideo } from 'react-icons/fa6';
+import { PiLockersBold } from 'react-icons/pi';
+import { GiLockedBox } from 'react-icons/gi';
+import { CiLock } from 'react-icons/ci';
 
 import { partnerService } from "../services/partner.service"
-import PricingModal from '../components/PricingModal';
+import { vehicleService } from '../services/vehicle.service';
 
 const STEPS = [
     { id: 1, title: "Vehicle", route: "/partner/become-partner" },
@@ -34,6 +39,7 @@ const PartnerDashboard = () => {
     const [activeStep, setActiveStep] = useState(step)
     const [showPricingModal, setShowPricingModal] = useState(false)
     const [pricingData, setPricingData] = useState({})
+    const [vehicleData,setVehicleData] = useState("")
     const userData = useSelector(state => state.user?.data)
 
     const [requestKycLoading, setRequestKycLoading] = useState(false)
@@ -42,6 +48,21 @@ const PartnerDashboard = () => {
         if (userData)
             setActiveStep(userData.onboardingStep + 1);
     }, [])
+
+    useEffect(()=>{
+        try {
+            const fetchVehicle = async () => {
+                const response = await vehicleService.fetchVehicle();
+                console.log(response)
+                if(response.success){
+                    setVehicleData(response.vehicle)
+                }
+            }
+            fetchVehicle()
+        } catch (error) {
+            console.log(error)
+        }
+    },[])
 
 
     const goToStep = (id, route) => {
@@ -183,6 +204,24 @@ const PartnerDashboard = () => {
                                     )
                             )
                     )
+                }
+                {
+                    step == 6 && vehicleData.status === "pending" ?
+                        <StatusCard
+                            icon={FaClock}
+                            title="Pricing Under Review"
+                            desc="Admin is reviewing your pricings"
+                        /> :
+                        vehicleData.status === "rejected" ?
+                            <RejectionCard
+                                title="Pricing Rejected"
+                                actionLabel="Request Again"
+                                reason={vehicleData.rejectionReason}
+                                onAction={()=>{
+                                    setShowPricingModal(true)
+                                }}
+                                actionLabel="Edit and resubmit"
+                            />:null
                 }
             </div>
 
