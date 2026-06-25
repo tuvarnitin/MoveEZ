@@ -21,7 +21,7 @@ export const fetchAdminData = async (req, res) => {
 
         const pendingVideoKyc = await User.find({
             role: "partner",
-            onboardingStep:4,
+            onboardingStep: 4,
             videoKycStatus: {
                 $in: ["pending", "in_progress"]
             }
@@ -38,7 +38,15 @@ export const fetchAdminData = async (req, res) => {
             name: p.name
         }))
 
+        const pendingVehicles = await Vehicle.find({
+            status: "pending",
+            baseFare:{$exists:true},
+            pricePerKM:{$exists:true},
+            waitingCharge:{$exists:true},
+        }).populate("owner")
+
         return res.status(200).json({
+            pendingVehicles,
             stats: {
                 totalPartners,
                 totalApprovedPartners,
@@ -56,6 +64,125 @@ export const fetchAdminData = async (req, res) => {
             success: false,
             message: "Internal server error (Admin /)",
             error: error.message
+        })
+    }
+}
+
+export const fetchVehicle = async (req, res) => {
+    try {
+        const id = req.params.id
+        const vehicle = await Vehicle.findById(id).populate("owner")
+
+        if (!vehicle) {
+            return res.status(404).json({
+                success: false,
+                message: "Vehicle not found"
+            })
+        }
+
+        return res.status(200).json({
+            success: true,
+            vehicle
+        })
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            success:false,
+            message:"Internal server error (Fetch vehicle)",
+            error
+        })
+    }
+}
+
+export const approveVehicle = async (req,res) => {
+    try {
+        const vehicleId = req.params.id
+        const vehicle = await Vehicle.findById(vehicleId)
+        const owner = await User.findById(vehicle.owner)
+
+        if (!owner) {
+            return res.status(400).json({
+                success: false,
+                message: "Partner not found"
+            })
+        }
+        if (!vehicle) {
+            return res.status(400).json({
+                success: false,
+                message: "Vehicle not found"
+            })
+        }
+
+        if (vehicle.status === "approved") {
+            return res.status(400).json({
+                success: false,
+                message: "Vehicle already approved"
+            })
+        }
+
+        vehicle.status = "approved"
+        vehicle.rejectionReason = ""
+        await vehicle.save()
+
+        owner.onboardingStep = 7
+        await owner.save()
+
+        return res.status(200).json({
+            success: true,
+            message: "Vehicle approved successfully"
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error (Approving Vehicle)",
+            error
+        })
+    }
+}
+export const rejectVehicle = async (req,res) => {
+    try {
+        const vehicleId = req.params.id
+        const reason = req.body.rejectionReason
+
+        const vehicle = await Vehicle.findById(vehicleId)
+
+        if (!vehicle) {
+            return res.status(400).json({
+                success: false,
+                message: "Vehicle not found"
+            })
+        }
+        if (!reason) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide rejection reason"
+            })
+        }
+
+        if (vehicle.status === "rejected") {
+            return res.status(400).json({
+                success: false,
+                message: "Vehicle already rejected"
+            })
+        }
+
+        vehicle.status = "rejected"
+        vehicle.rejectionReason = reason
+        await vehicle.save()
+
+        return res.status(200).json({
+            success: true,
+            message: "Vehicle rejected successfully"
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error (Rejecting Vehicle)",
+            error
         })
     }
 }
@@ -91,7 +218,7 @@ export const fetchPartnerData = async (req, res) => {
     }
 }
 
-export const startVideoCall = async (req,res)=>{
+export const startVideoCall = async (req, res) => {
     try {
         const partnerId = req.params.id
         const partner = await User.findById(partnerId)
@@ -110,14 +237,14 @@ export const startVideoCall = async (req,res)=>{
         await partner.save()
 
         return res.status(200).json({
-            success:true,
+            success: true,
             roomId
         })
     } catch (error) {
         console.log(error)
         return res.status(500).json({
-            success:false,
-            message:"Internal server error (Start call)",
+            success: false,
+            message: "Internal server error (Start call)",
             error
         })
     }
@@ -220,67 +347,67 @@ export const rejectPartner = async (req, res) => {
     }
 }
 
-export const videoKycComplete = async (req,res) => {
-   try {
-       const { roomId, action, reason } = req.body
-       if (!roomId) {
-           return res.status(400).json({
-               success: false,
-               message: "Room id is requried"
-           })
-       }
+export const videoKycComplete = async (req, res) => {
+    try {
+        const { roomId, action, reason } = req.body
+        if (!roomId) {
+            return res.status(400).json({
+                success: false,
+                message: "Room id is requried"
+            })
+        }
 
-       if (!["approved", "rejected"].includes(action)) {
-           return res.status(400).json({
-               success: false,
-               message: "Invalid action"
-           })
-       }
-       const partner = await User.findOne({
-           videoKycRoomId: roomId,
-           role: "partner"
-       })
+        if (!["approved", "rejected"].includes(action)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid action"
+            })
+        }
+        const partner = await User.findOne({
+            videoKycRoomId: roomId,
+            role: "partner"
+        })
 
-       if (!partner) {
-           return res.status(400).json({
-               success: false,
-               message: "Partner not found"
-           })
-       }
+        if (!partner) {
+            return res.status(400).json({
+                success: false,
+                message: "Partner not found"
+            })
+        }
 
-       if (action === "approved") {
-           partner.videoKycStatus = "approved"
-           partner.videoKycRejectionReason = ""
-           partner.onboardingStep = 5
-           await partner.save()
-       }
+        if (action === "approved") {
+            partner.videoKycStatus = "approved"
+            partner.videoKycRejectionReason = ""
+            partner.onboardingStep = 5
+            await partner.save()
+        }
 
-       if (action === "rejected") {
-           if (!reason) {
-               return res.status(400).json({
-                   success: false,
-                   message: "Rejection reason is required"
-               })
-           }
-           partner.videoKycStatus = "rejected"
-           partner.videoKycRejectionReason = reason.trim()
-           partner.onboardingStep = 4
-           await partner.save()
-       }
+        if (action === "rejected") {
+            if (!reason) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Rejection reason is required"
+                })
+            }
+            partner.videoKycStatus = "rejected"
+            partner.videoKycRejectionReason = reason.trim()
+            partner.onboardingStep = 4
+            await partner.save()
+        }
 
-       return res.status(200).json({
-           success: true,
-           message: "Video KYC completed",
-           status:partner.videoKycStatus,
-           partner
-       })
+        return res.status(200).json({
+            success: true,
+            message: "Video KYC completed",
+            status: partner.videoKycStatus,
+            partner
+        })
 
-   } catch (error) {
-       return res.status(400).json({
-           success: false,
-           message: "Internal server error (Complete Video KYC)",
-           error
-       })
-   }
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            message: "Internal server error (Complete Video KYC)",
+            error
+        })
+    }
 
 }
