@@ -3,6 +3,7 @@ import Vehicle from "./vehicle.model.js"
 
 export const registerVehicle = async (req, res) => {
     try {
+        const user = req.user;
         const { vehicleType, vehicleModel, vehicleNumber, maxPassengers } = req.body;
         const errors = [];
 
@@ -18,7 +19,15 @@ export const registerVehicle = async (req, res) => {
             });
         }
 
-        const user = req.user;
+        const alreadyExistsVehicle = await Vehicle.findOne({number:vehicleNumber})
+
+        if (alreadyExistsVehicle && alreadyExistsVehicle.owner.toString() != user._id.toString()) {
+            return res.status(400).json({
+                success: false,
+                message: "Someone already registered this vehicle"
+            })
+        }
+
         let vehicle = await Vehicle.findOne({ owner: user._id })
 
         if (vehicle) {
@@ -86,7 +95,6 @@ export const setPricing = async (req, res) => {
         const  image = req.file
         const errors = {}
 
-        console.log(req.body)
         if (!baseFare) {
             errors.baseFare = "Base fare is required"
         }
@@ -123,7 +131,6 @@ export const setPricing = async (req, res) => {
             secure_url = imageUrl
         }else{
             const imageObj = await handleUpload(image.buffer, partner._id, "vehicle-image")
-            console.log(imageObj)
             secure_url = imageObj.secure_url
         }
         console
@@ -163,8 +170,6 @@ export const getPricing = async (req, res) => {
                 success: false,
             })
         }
-
-        console.log(vehicle)
 
         return res.status(200).json({
             success:true,

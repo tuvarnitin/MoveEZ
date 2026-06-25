@@ -63,7 +63,6 @@ const Zego = () => {
                 },
                 showPreJoinView: false,
                 onJoinRoom: () => {
-                    console.log("joined");
                     setJoined(true);
                 },
             });
@@ -95,7 +94,6 @@ const Zego = () => {
             if (response.success) {
                 navigate("/")
             }
-            console.log(response)
         } catch (error) {
             console.log(error)
         } finally {
@@ -112,7 +110,6 @@ const Zego = () => {
             if (response.success) {
                 navigate("/")
             }
-            console.log(response)
         } catch (error) {
             console.log(error)
         } finally {

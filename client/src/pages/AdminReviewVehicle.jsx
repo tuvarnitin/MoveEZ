@@ -31,7 +31,6 @@ const AdminReviewVehicle = () => {
     try {
       const fetchVehicle = async () => {
         const response = await adminService.fetchVehicle({ id })
-        console.log(response)
         if (response.success) {
           setData(response.vehicle)
         }

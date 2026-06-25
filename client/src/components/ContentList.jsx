@@ -16,7 +16,6 @@ const ContentList = ({ data, type }) => {
         try {
             const result = await adminService.startVideoKyc({id})
             window.location.reload()
-            console.log("Room id",result)
         } catch (error) {
             console.log(error)
         }

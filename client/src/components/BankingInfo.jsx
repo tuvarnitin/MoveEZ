@@ -175,7 +175,7 @@ const BankingInfo = () => {
     useEffect(() => {
         const fetchBankDetails = async () => {
             const response = await userService.fetchUserBankDetails()
-            console.log(response)
+            (response)
             if (response.success) {
                 setAccountHolder(response.bank.holderName || "")
                 setAccountNumber(response.bank.accountNumber || "")

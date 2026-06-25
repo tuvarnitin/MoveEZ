@@ -48,11 +48,12 @@ const BecomePartner = () => {
                     <div className='relative p-6 pt-2 sm:p-8 my-auto'>
                         <button
                             onClick={()=>window.history.back()}
-                            className='absolute left-4 top-4 w-9 h-9  rounded-full border border-gray-300 flex items-center justify-center text-background hover:bg-gray-100 cursor-pointer hover:scale-90 transition'>
-                            <FaArrowLeft />
+                            className='absolute left-4 top-4 w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-background hover:bg-gray-100 cursor-pointer hover:scale-90 transition z-10'>
+                            <FaArrowLeft className='cursor-pointer' />
                         </button>
-                        
+
                     <Outlet />
+
                     </div>
                 </motion.div>
             </AnimatePresence>

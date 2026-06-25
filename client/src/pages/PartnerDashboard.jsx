@@ -53,7 +53,6 @@ const PartnerDashboard = () => {
         try {
             const fetchVehicle = async () => {
                 const response = await vehicleService.fetchVehicle();
-                console.log(response)
                 if(response.success){
                     setVehicleData(response.vehicle)
                 }

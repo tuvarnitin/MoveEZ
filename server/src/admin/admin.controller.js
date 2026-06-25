@@ -308,7 +308,6 @@ export const rejectPartner = async (req, res) => {
     try {
         const partnerId = req.params.id
         const { rejectionReason } = req.body
-        console.log(rejectionReason)
         const partner = await User.findById(partnerId)
 
         if (!partner || partner.role !== "partner") {
