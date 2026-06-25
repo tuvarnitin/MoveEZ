@@ -1,10 +1,15 @@
 import React from 'react'
+
 import { motion } from "motion/react"
+
 import { FiCheckCircle } from 'react-icons/fi'
 import { CiUser } from 'react-icons/ci'
 import { FaArrowRight } from 'react-icons/fa6'
+
 import { useNavigate } from 'react-router-dom'
+
 import { adminService } from '../services/admin.service'
+
 const ContentList = ({ data, type }) => {
     const navigate = useNavigate()
     const startVideoKyc = async (id) => {
@@ -48,8 +53,8 @@ const ContentList = ({ data, type }) => {
             </div>
             {
                 data.map((item, index) => {
-                    const name = item.name
-                    const email = item.email
+                    const name = item.name || item.owner.name
+                    const email = item.email || item.owner.email
                     return <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 10 }}
@@ -94,13 +99,21 @@ const ContentList = ({ data, type }) => {
                                         )
                                         :
                                         (
-                                            <motion.button
-                                                onClick={() => navigate(`/admin/reviews/partner/${item.id}`)}
-                                                whileTap={{ scale: 0.96 }}
-                                                className='flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-600 hover:text-white text-background  text-sm font-semibold transition-colors cursor-pointer'
-                                            >
-                                                Review <FaArrowRight />
-                                            </motion.button>
+                                            item.status === "pending" ? 
+                                                <motion.button
+                                                    onClick={() => navigate(`/admin/reviews/vehicle/${item._id}`)}
+                                                    whileTap={{ scale: 0.96 }}
+                                                    className='flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-600 hover:text-white text-background  text-sm font-semibold transition-colors cursor-pointer'
+                                                >
+                                                    Review <FaArrowRight />
+                                                </motion.button>
+                                                : <motion.button
+                                                    onClick={() => navigate(`/admin/reviews/partner/${item.id}`)}
+                                                    whileTap={{ scale: 0.96 }}
+                                                    className='flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-600 hover:text-white text-background  text-sm font-semibold transition-colors cursor-pointer'
+                                                >
+                                                    Review <FaArrowRight />
+                                                </motion.button>
                                         )
                             }
 

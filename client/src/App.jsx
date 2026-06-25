@@ -26,6 +26,7 @@ import { loginSuccess, onLogout } from "./redux/features/authSlice.js";
 import { clearUserData, setUserData } from "./redux/features/userSlice.js";
 import AdminReviewPartner from "./pages/AdminReviewPartner.jsx";
 import Zego from "./zego/Zego.jsx";
+import AdminReviewVehicle from "./pages/AdminReviewVehicle.jsx";
 
 
 function App() {
@@ -104,6 +105,7 @@ function App() {
 
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/reviews/partner/:id" element={<AdminReviewPartner />} />
+          <Route path="/admin/reviews/vehicle/:id" element={<AdminReviewVehicle />} />
         </Route>
       </Routes>
     </div>

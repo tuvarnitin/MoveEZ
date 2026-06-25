@@ -110,7 +110,7 @@ const BankingInfo = () => {
                 dispatch(setUserData({
                     user: response.user
                 }))
-                navigate("/partner/dashboard")
+                navigate("/")
             }
         } catch (error) {
             if (error.message == "All fields are required") {
