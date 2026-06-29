@@ -11,7 +11,7 @@ import StatusCard from '../components/StatusCard';
 import ActionCard from '../components/ActionCard';
 import PricingModal from '../components/PricingModal';
 
-import { FaCheck, FaClock, FaClockRotateLeft, FaVideo } from 'react-icons/fa6';
+import { FaArrowLeft, FaArrowRight, FaCheck, FaClock, FaClockRotateLeft, FaVideo } from 'react-icons/fa6';
 import { PiLockersBold } from 'react-icons/pi';
 import { GiLockedBox } from 'react-icons/gi';
 import { CiLock } from 'react-icons/ci';
@@ -39,7 +39,7 @@ const PartnerDashboard = () => {
     const [activeStep, setActiveStep] = useState(step)
     const [showPricingModal, setShowPricingModal] = useState(false)
     const [pricingData, setPricingData] = useState({})
-    const [vehicleData,setVehicleData] = useState("")
+    const [vehicleData, setVehicleData] = useState("")
     const userData = useSelector(state => state.user?.data)
 
     const [requestKycLoading, setRequestKycLoading] = useState(false)
@@ -49,11 +49,11 @@ const PartnerDashboard = () => {
             setActiveStep(userData.onboardingStep + 1);
     }, [])
 
-    useEffect(()=>{
+    useEffect(() => {
         try {
             const fetchVehicle = async () => {
                 const response = await vehicleService.fetchVehicle();
-                if(response.success){
+                if (response.success) {
                     setVehicleData(response.vehicle)
                 }
             }
@@ -61,7 +61,7 @@ const PartnerDashboard = () => {
         } catch (error) {
             console.log(error)
         }
-    },[])
+    }, [])
 
 
     const goToStep = (id, route) => {
@@ -77,6 +77,7 @@ const PartnerDashboard = () => {
         try {
             setRequestKycLoading(true)
             await partnerService.requestVideoKyc()
+            location.reload()
         } catch (error) {
             console.log(error)
         } finally {
@@ -160,48 +161,57 @@ const PartnerDashboard = () => {
 
                     step == 4 &&
                     (
-                        step == 4 && userData.videoKycStatus === "approve" ?
+                        step == 4 && userData.videoKycStatus === "rejected" ?
                             (
-                                <StatusCard
-                                    title="Video KYC approved"
-                                    desc="You can now proceed to pricing"
-                                    icon={FaCheck}
+                                <RejectionCard
+                                    title="Video KYC Rejected"
+                                    actionLabel="Request Again"
+                                    reason={userData.videoKycRejectionReason}
+                                    onAction={handleRequestKyc}
+                                    actionLabel={requestKycLoading ? "Requesting..." : "Request Again"}
                                 />
-                            )
-                            :
+                            ) :
                             (
-                                step == 4 && userData.videoKycStatus === "rejected" ?
+                                step == 4 && userData.videoKycStatus === "in_progress" && userData.videoKycRoomId ?
                                     (
-                                        <RejectionCard
-                                            title="Video KYC Rejected"
-                                            actionLabel="Request Again"
-                                            reason={userData.videoKycRejectionReason}
-                                            onAction={handleRequestKyc}
-                                            actionLabel={requestKycLoading ? "Requesting..." : "Request Again"}
+                                        <ActionCard
+                                            icon={FaVideo}
+                                            title="Admin started video kyc"
+                                            button="Join Call"
+                                            onClick={() => {
+                                                navigate(`/video-kyc/${userData.videoKycRoomId}`)
+                                            }}
                                         />
-                                    ) :
+                                    )
+                                    :
                                     (
-                                        step == 4 && userData.videoKycStatus === "in_progress" && userData.videoKycRoomId ?
-                                            (
-                                                <ActionCard
-                                                    icon={FaVideo}
-                                                    title="Admin started video kyc"
-                                                    button="Join Call"
-                                                    onClick={() => {
-                                                        navigate(`/video-kyc/${userData.videoKycRoomId}`)
-                                                    }}
-                                                />
-                                            )
-                                            :
-                                            (
-                                                <StatusCard
-                                                    icon={FaClock}
-                                                    title="Waiting for admin"
-                                                    desc="Admin will initiate Video KYC shortly."
-                                                />
-                                            )
+                                        <StatusCard
+                                            icon={FaClock}
+                                            title="Waiting for admin"
+                                            desc="Admin will initiate Video KYC shortly."
+                                        />
                                     )
                             )
+                    )
+                }
+                {
+                    step == 5 && (
+                        step == 5 && userData.videoKycStatus === "approved" && (
+                           <motion.div
+                               initial={{opacity:0,y:20}}
+                               animate={{opacity:1,y:0}}
+                               className='bg-white rounded-2xl md:rounded-3xl p-5 sm:p-6 md:p-7 shadow-lg border flex flex-col sm:flex-row gap-4 sm:gap-5 items-start sm:items-center'
+                               >
+                                 <div className='bg-background text-white p-3 md:p-4 rounded-xl shrink-0 self-start'>
+                                   <FaCheck />
+                                 </div>
+                                 <div className='flex-1'>
+                                   <h1 className='text-base sm:text-lg md:text-xl font-semibold'>Video KYC Approved</h1>
+                                   <p className='text-gray-600 text-sm sm:text-base mt-1'>Now you can proceed to pricings</p>
+                                    <Button text={"Set Pricings"} onClick={()=>setShowPricingModal(true)} fill={true} className="text-[100px] mt-1" style={{ width: "max-content" }} />
+                                 </div>
+                               </motion.div>
+                        )
                     )
                 }
                 {
@@ -216,11 +226,21 @@ const PartnerDashboard = () => {
                                 title="Pricing Rejected"
                                 actionLabel="Request Again"
                                 reason={vehicleData.rejectionReason}
-                                onAction={()=>{
+                                onAction={() => {
                                     setShowPricingModal(true)
                                 }}
                                 actionLabel="Edit and resubmit"
-                            />:null
+                            /> : null
+                }
+                {
+                    step == 7 && vehicleData.status === "approved" &&
+                    <motion.div
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className='w-full p-6 bg-background text-white rounded-2xl shadow-2xl'>
+                        <h1 className='text-2xl font-semibold'>🚀 You're Live Now</h1>
+                        <button className='mt-6 bg-white text-background px-6 py-3 rounded-xl font-semibold flex items-center gap-2 cursor-pointer'>Go to Bookings <FaArrowRight /></button>
+                    </motion.div>
                 }
             </div>
 

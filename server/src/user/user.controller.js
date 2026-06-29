@@ -127,12 +127,6 @@ export const handleUserBank = async (req, res) => {
             upiId
         })
 
-        const encodedAccNumber = userBank.accountNumber.split("").map((num, i) => {
-            if (i < 7)
-                return "*"
-            else return num
-        }).join("")
-
         user.role = "partner"
         user.onboardingStep = 3
         user.partnerStatus = "pending"
@@ -145,7 +139,7 @@ export const handleUserBank = async (req, res) => {
             details: {
                 holderName: userBank.holdername,
                 ifscCode: userBank.ifscCode,
-                accountNumber: encodedAccNumber,
+                accountNumber: userBank.accountNumber,
                 mobileNumber: userBank.mobileNumber
             },
             user
@@ -163,18 +157,12 @@ export const getUserBankDetails = async (req, res) => {
     const user = req.user
     const userBank = await userBankModel.findOne({ owner: user._id })
     if (userBank) {
-        const encodedAccNumber = userBank.accountNumber.split("").map((num, i) => {
-            if (i < 7)
-                return "*"
-            else return num
-        }).join("")
-
         return res.status(200).json({
             success: true,
             bank: {
                 holderName: userBank.accountHolder,
                 ifscCode: userBank.ifscCode,
-                accountNumber: encodedAccNumber,
+                accountNumber: userBank.accountNumber,
                 mobileNumber: userBank.mobileNumber,
                 upi: userBank.upi || ""
             }
