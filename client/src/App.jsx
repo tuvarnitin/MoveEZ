@@ -17,6 +17,7 @@ import PartnerPage from "./pages/PartnerPage.jsx";
 import PartnerDashboard from "./pages/PartnerDashboard.jsx";
 import Footer from "./components/Footer.jsx";
 import PartnerAuthChecker from "./components/protectedRoutes/PartnerAuthChecker.jsx"
+import AdminAuthChecker from "./components/protectedRoutes/AdminAuthChecker.jsx"
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 
 import { authService } from "./services/auth.service.js"
@@ -85,24 +86,30 @@ function App() {
         }
       </AnimatePresence>
       <Routes>
+        {/* Routes for all visiters */}
         <Route path="/" element={<Home setIsSidebarOpen={setIsSidebarOpen} />} />
         <Route path="/auth" element={<AuthModal />} />
-        <Route path="/video-kyc/:roomId" element={<Zego />} />
-        <Route element={<AuthCheckerRoute />}>
 
+        {/* Routes only for authenticated users */}
+        <Route element={<AuthCheckerRoute />}>
+          <Route path="/video-kyc/:roomId" element={<Zego />} />
           <Route path="/partner/become-partner" element={<BecomePartner />}>
             <Route index element={<VehicleDetails />} />
             <Route path="upload-documents" element={<UploadDocuments />} />
             <Route path="bank-details" element={<BankingInfo />} />
           </Route>
+        </Route>
 
-          <Route element={<PartnerAuthChecker />}>
-            <Route path="/partner" element={<PartnerPage />}>
-              <Route index element={<PartnerDashboard />} />
-              <Route path="dashboard" element={<PartnerDashboard />} />
-            </Route>
+        {/* Routes only for authorized partners */}
+        <Route element={<PartnerAuthChecker />}>
+          <Route path="/partner" element={<PartnerPage />}>
+            <Route index element={<PartnerDashboard />} />
+            <Route path="dashboard" element={<PartnerDashboard />} />
           </Route>
+        </Route>
 
+        {/* Routes for authorized admin */}
+        <Route element={<AdminAuthChecker />}>
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/reviews/partner/:id" element={<AdminReviewPartner />} />
           <Route path="/admin/reviews/vehicle/:id" element={<AdminReviewVehicle />} />
