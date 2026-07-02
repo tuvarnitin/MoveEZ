@@ -48,6 +48,7 @@ const Zego = () => {
 
 	const startCall = async () => {
 		setIsLoading(true);
+		if(!roomId) return
 		try {
 			if (!containerRef) return;
 			const appId = Number(import.meta.env.VITE_API_ZEGO_APP_ID);

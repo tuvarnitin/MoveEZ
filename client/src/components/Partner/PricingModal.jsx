@@ -16,7 +16,7 @@ import { vehicleService } from "../../services/vehicle.service.js";
 const PricingModal = ({ data, onClose }) => {
 	const [image, setImage] = useState(null);
 	const [preview, setPreview] = useState(null);
-	const [baseFare, setBaseFare] = useState(0);
+	const [baseFare, setBaseFare] = useState("");
 	const [pricePerKM, setPricePerKM] = useState(0);
 	const [waitingCharge, setWaitingCharge] = useState(0);
 	const [imageUrl, setImageUrl] = useState("");
