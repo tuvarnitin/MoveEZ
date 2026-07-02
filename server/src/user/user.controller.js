@@ -86,8 +86,10 @@ export const uploadUserDocs = async (req, res) => {
 }
 
 export const handleUserBank = async (req, res) => {
+    const user = req.user
     try {
         const { accountHolder, accountNumber, ifscCode, mobileNumber, upiId } = req.body
+
         const errors = {}
         if (!accountHolder) {
             errors.accountHolder = "Account holder name is requried"
@@ -108,24 +110,35 @@ export const handleUserBank = async (req, res) => {
                 errors
             })
         }
+        
+        let userBank
 
-        const isAccExists = await userBankModel.findOne({ accountNumber })
+        const isAccExists = await userBankModel.findOne({ accountNumber }).populate("owner")
+
         if (isAccExists) {
-            return res.status(400).json({
-                success: false,
-                message: "Account number is already registered",
+            if (isAccExists.owner._id.toString() === user._id.toString()) {
+                isAccExists.accountNumber = accountNumber
+                isAccExists.accountHolder = accountHolder
+                isAccExists.ifscCode = ifscCode
+                isAccExists.mobileNumber = mobileNumber
+                userBank = await isAccExists.save()
+            } else {
+                return res.status(400).json({
+                    success: false,
+                    message: "Account number is already registered",
+                })
+            }
+        }
+        else {
+            userBank = await userBankModel.create({
+                owner: user._id,
+                accountNumber,
+                accountHolder,
+                ifscCode,
+                mobileNumber,
+                upiId
             })
         }
-
-        const user = req.user
-        const userBank = await userBankModel.create({
-            owner: user._id,
-            accountNumber,
-            accountHolder,
-            ifscCode,
-            mobileNumber,
-            upiId
-        })
 
         user.role = "partner"
         user.onboardingStep = 3
@@ -146,6 +159,7 @@ export const handleUserBank = async (req, res) => {
         })
 
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             success: false,
             message: "Internal server error"
