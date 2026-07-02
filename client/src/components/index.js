@@ -8,7 +8,6 @@ import GoogleIcon from "./GoogleIcon"
 import Hero from "../components/Home/Hero"
 import InfoCard from "./Admin/InfoCard"
 import Input from "./Input"
-import Map from "./Map"
 import Navbar from "./Navbar"
 import OrDivider from "./OrDivider"
 import SideBar from "./SideBar"
@@ -34,7 +33,6 @@ export {
     Hero,
     InfoCard,
     Input,
-    Map,
     Navbar,
     OrDivider,
     SideBar,

@@ -5,8 +5,10 @@ import ChooseVehicle from "./ChooseVehicle";
 import SectionTitle from "./SectionTitle";
 import LocationInput from "./LocationInput";
 import ContinueButton from "./ContinueButton";
+import Map from "./Map";
 
 export {
+    Map,
     Header,
     VehicleCard,
     PhoneInput,

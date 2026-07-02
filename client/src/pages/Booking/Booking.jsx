@@ -16,7 +16,7 @@ import {
 	IoLocationOutline,
 	CiLocationArrow1,
 	TiLocationArrow
-} from "../assets/icons/index"
+} from "../../assets/icons/index"
 
 import {
 	Header,
@@ -26,9 +26,9 @@ import {
 	SectionTitle,
 	LocationInput,
 	ContinueButton,
-} from "../components/Booking/index";
+} from "../../components/Booking/index";
 
-import { debounce } from "../utils/utility";
+import { debounce } from "../../utils/utility";
 import axios from "axios";
 
 const variants = {

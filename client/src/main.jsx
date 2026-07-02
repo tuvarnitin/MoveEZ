@@ -8,6 +8,7 @@ import Lenis from "lenis"
 
 import './index.css'
 import App from './App.jsx'
+import "leaflet/dist/leaflet.css";
 
 // Initialize Lenis
 const lenis = new Lenis();

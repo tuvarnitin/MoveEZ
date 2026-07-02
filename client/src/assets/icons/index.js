@@ -53,7 +53,7 @@ import {
     MdOutlineCheckCircleOutline,
     MdArrowRight,
     MdMic,
-     MdMicOff
+    MdMicOff
 } from "react-icons/md";
 
 import {
@@ -70,7 +70,9 @@ import {
     CiLock,
     CiUser,
     CiClock1,
-    CiVideoOff
+    CiVideoOff,
+    CiLocationOn,
+    CiMapPin
 } from "react-icons/ci";
 
 import { IoMdClose } from "react-icons/io";
@@ -103,6 +105,8 @@ import {
 } from "react-icons/gi";
 
 export {
+    CiLocationOn,
+    CiMapPin,
     FiPhoneOff,
     FaCheckCircle,
     MdMic,

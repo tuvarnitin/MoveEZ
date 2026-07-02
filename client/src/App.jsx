@@ -20,7 +20,8 @@ import {
 	AdminAuthChecker,
 } from "./components/protectedRoutes/index.js";
 
-import { Home, BecomePartner, Booking, Search } from "./pages/index.js";
+import { Home, BecomePartner } from "./pages/index.js";
+import { Booking, Search } from "./pages/Booking/index.js";
 
 import { PartnerDashboard, PartnerPage } from "./pages/Partner/index.js";
 
