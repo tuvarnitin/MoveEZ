@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from "motion/react"
-const KeyPermormanceIndicator = ({ label, value, Icon, variant }) => {
+const InfoCard = ({ label, value, Icon, variant }) => {
 
   const CONFIG = {
     totalPartners: {
@@ -47,4 +47,4 @@ const KeyPermormanceIndicator = ({ label, value, Icon, variant }) => {
   )
 }
 
-export default KeyPermormanceIndicator
+export default InfoCard

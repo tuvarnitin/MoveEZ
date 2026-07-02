@@ -2,13 +2,11 @@ import React from 'react'
 
 import { motion } from "motion/react"
 
-import { FiCheckCircle } from 'react-icons/fi'
-import { CiUser } from 'react-icons/ci'
-import { FaArrowRight } from 'react-icons/fa6'
+import { FiCheckCircle,CiUser,FaArrowRight } from '../../assets/icons/index.js'
 
 import { useNavigate } from 'react-router-dom'
 
-import { adminService } from '../services/admin.service'
+import { adminService } from "../../services/admin.service.js"
 
 const ContentList = ({ data, type }) => {
     const navigate = useNavigate()
