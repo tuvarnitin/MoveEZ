@@ -1,38 +1,33 @@
 
-import ActionCard from "./ActionCard"
-import BankInfoInput from "./BankInfoInput"
-import BankingInfo from "./BankingInfo"
+import ActionCard from "./Partner/ActionCard"
 import Button from "./Button"
 import Card from "./Card"
-import ContentList from "./ContentList"
-import DocsFileInput from "./DocsFileInput"
 import DocsPreview from "./DocsPreview"
 import Footer from "./Footer"
 import GoogleIcon from "./GoogleIcon"
 import Hero from "../components/Home/Hero"
-import InfoCard from "./InfoCard"
+import InfoCard from "./Admin/InfoCard"
 import Input from "./Input"
 import Map from "./Map"
 import Navbar from "./Navbar"
 import OrDivider from "./OrDivider"
-import PricingModal from "./PricingModal"
-import RejectionCard from "./RejectionCard"
 import SideBar from "./SideBar"
-import StatusCard from "./StatusCard"
-import Tab from "./Tab"
+import StatusCard from "./Partner/StatusCard"
 import UploadDocuments from "./UploadDocuments"
 import VehicleCard from "./VehicleCard"
 import VehicleCategories from "./Home/VehicleCategories"
 import VehicleDetails from "./VehicleDetails"
+import DocsFileInput from "./DocsFileInput"
+import BankingInfo from "./BankingInfo"
+import BankInfoInput from "./BankInfoInput"
 
 export {
-    ActionCard,
     BankInfoInput,
     BankingInfo,
+    ActionCard,
+    DocsFileInput,
     Button,
     Card,
-    ContentList,
-    DocsFileInput,
     DocsPreview,
     Footer,
     GoogleIcon,
@@ -42,11 +37,8 @@ export {
     Map,
     Navbar,
     OrDivider,
-    PricingModal,
-    RejectionCard,
     SideBar,
     StatusCard,
-    Tab,
     UploadDocuments,
     VehicleCard,
     VehicleCategories,
