@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { RiVerifiedBadgeLine } from 'react-icons/ri'
+import { RiVerifiedBadgeLine } from '../assets/icons/index.js'
 
 const BankInfoInput = React.memo(({ label, Icon, inputAttr, id, error, value, placeholder, onChange, maxLength }) => {
 

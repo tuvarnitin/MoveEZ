@@ -2,8 +2,7 @@ import React from 'react'
 
 import { AnimatePresence, motion } from "motion/react"
 
-import { GiCarDoor } from "react-icons/gi";
-import { IoMdClose } from 'react-icons/io'
+import { GiCarDoor, IoMdClose } from "../assets/icons/index.js";
 
 import { useDispatch, useSelector } from 'react-redux'
 import { onLogout, openAuthModal } from '../redux/features/authSlice';

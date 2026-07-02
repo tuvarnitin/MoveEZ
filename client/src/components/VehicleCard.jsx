@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { motion } from "motion/react"
-import { IoSparklesOutline } from 'react-icons/io5';
+import { IoSparklesOutline } from '../assets/icons/index.js';
 
 const VehicleCard = ({ vehicle: { id, Icon, badge, description }, hoveredCard, setHoveredCard, index }) => {
 

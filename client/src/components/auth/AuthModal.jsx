@@ -1,101 +1,107 @@
-import React, { useEffect, useRef, useState } from 'react'
-import axios from "axios"
-import { useNavigate } from "react-router-dom"
+import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-import { motion } from "motion/react"
+import { motion } from "motion/react";
 
-import { IoMdClose } from "react-icons/io";
-import { MdEmojiFlags, MdOutlineMail } from "react-icons/md";
-import { CiLock } from "react-icons/ci";
-import { RiUser6Line } from "react-icons/ri";
+import {
+	IoMdClose,
+	MdEmojiFlags,
+	MdOutlineMail,
+	CiLock,
+	RiUser6Line,
+} from "../../assets/icons/index.js";
 
-import GoogleIcon from "../GoogleIcon.jsx"
-import Input from '../Input.jsx';
-import Otp from './Otp.jsx';
-import Button from '../Button.jsx';
-import OrDivider from '../OrDivider.jsx';
-import SignUp from './SignUp.jsx';
-import Login from './Login.jsx';
+import {
+	GoogleIcon,
+	Input,
+	Button,
+	OrDivider,
+} from "../../components/index.js";
 
-import { authService } from "../../services/auth.service.js"
+import { Otp, SignUp, Login, Google } from "./index.js";
 
-import { useDispatch, useSelector } from 'react-redux';
-import { closeAuthModal } from '../../redux/features/authSlice.js';
-import Google from './Google.jsx';
+import { authService } from "../../services/auth.service.js";
 
-const BACKEND_URL = import.meta.env.VITE_API_BACKEND_URL
+import { useDispatch, useSelector } from "react-redux";
+import { closeAuthModal } from "../../redux/features/authSlice.js";
 
-const authModel = () => {
+const BACKEND_URL = import.meta.env.VITE_API_BACKEND_URL;
 
-  const currState = useSelector(state => state.auth.currState)
-  const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
-  const isAuthModalOpen = useSelector(state => state.auth.isAuthModalOpen)
-  const user = useSelector(state => state.user.data)
+const AuthModal = () => {
+	const currState = useSelector((state) => state.auth.currState);
+	const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+	const isAuthModalOpen = useSelector((state) => state.auth.isAuthModalOpen);
+	const user = useSelector((state) => state.user.data);
 
-  const dispatch = useDispatch()
+	const dispatch = useDispatch();
 
-  const naviagte = useNavigate()
+	const naviagte = useNavigate();
 
-  useEffect(() => {
-    if (user && isAuthenticated) {
-      dispatch(closeAuthModal())
-      naviagte("/")
-    }
-  }, [])
+	useEffect(() => {
+		if (user && isAuthenticated) {
+			dispatch(closeAuthModal());
+			naviagte("/");
+		}
+	}, []);
 
-  const name = useRef(null)
-  const email = useRef(null)
-  const password = useRef(null)
+	const name = useRef(null);
+	const email = useRef(null);
+	const password = useRef(null);
 
+	const pageRef = useRef(null);
+	const modelRef = useRef(null);
 
-  const pageRef = useRef(null)
-  const modelRef = useRef(null)
+	const [fieldsErrors, setFieldsErrors] = useState({});
+	const [responseError, setResponseErrors] = useState("");
 
-  const [fieldsErrors, setFieldsErrors] = useState({})
-  const [responseError, setResponseErrors] = useState("")
+	return (
+		<motion.div
+			className="fixed inset-0 overflow-y-hidden left-0 z-100 bg-background/90 flex items-center justify-center transition-all overflow-hidden px-3"
+			ref={pageRef}
+		>
+			<motion.div
+				initial={{ opacity: 0, y: 10 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ ease: "backInOut", duration: 0.4 }}
+				exit={{ opacity: 0, y: 10 }}
+				className="w-full sm:w-[62vw] md:w-[40vw] max-w-90 relative bg-white text-background pt-10 px-4 pb-6 rounded-md flex flex-col gap-4 items-center"
+				ref={modelRef}
+			>
+				{/* Close Icon */}
+				<IoMdClose
+					className="absolute right-2 top-2 text-[max(1.7vw,28px)] cursor-pointer text-background/70"
+					onClick={() => {
+						naviagte("/");
+						dispatch(closeAuthModal());
+					}}
+				/>
+				{/* Title  */}
+				<div className=" flex flex-col gap-2 items-center">
+					<h1 className="font-[supercharge] text-[max(28px,1.8vw)] leading-1 ">
+						Move
+						<span className="text-[max(36px,2.3vw)] text-orange-500">EZ</span>
+					</h1>
+					<p className="text-[max(12px,.9vw)] text-background/50">
+						Easy vehicle bookings
+					</p>
+				</div>
 
-  return (
-    <motion.div
-      className='fixed inset-0 overflow-y-hidden left-0 z-100 bg-background/90 flex items-center justify-center transition-all overflow-hidden px-3' ref={pageRef}>
+				{/* Button - Continue wiht Google */}
+				<Google />
 
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ ease: "backInOut", duration: .4 }}
-        exit={{ opacity: 0, y: 10 }} className='w-full sm:w-[62vw] md:w-[40vw] max-w-90 relative bg-white text-background pt-10 px-4 pb-6 rounded-md flex flex-col gap-4 items-center' ref={modelRef}>
+				{/* Separator */}
+				<OrDivider />
+				{currState === "login" ? (
+					<Login />
+				) : currState === "sign-up" ? (
+					<SignUp />
+				) : (
+					<Otp />
+				)}
+			</motion.div>
+		</motion.div>
+	);
+};
 
-        {/* Close Icon */}
-        <IoMdClose
-          className='absolute right-2 top-2 text-[max(1.7vw,28px)] cursor-pointer text-background/70'
-          onClick={() => {
-            naviagte("/")
-            dispatch(closeAuthModal())
-          }}
-        />
-        {/* Title  */}
-        <div className=' flex flex-col gap-2 items-center'>
-          <h1 className='font-[supercharge] text-[max(28px,1.8vw)] leading-1 '>Move<span className='text-[max(36px,2.3vw)] text-orange-500'>EZ</span></h1>
-          <p className='text-[max(12px,.9vw)] text-background/50'>Easy vehicle bookings</p>
-        </div>
-
-        {/* Button - Continue wiht Google */}
-        <Google />
-
-        {/* Separator */}
-        <OrDivider />
-        {
-          currState === "login" ?
-            <Login />
-            : (
-              currState === "sign-up" ?
-                <SignUp />
-                :
-                <Otp />
-            )
-        }
-      </motion.div>
-    </motion.div>
-  )
-}
-
-export default authModel
+export default AuthModal;

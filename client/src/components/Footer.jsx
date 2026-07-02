@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion } from "motion/react"
-import { FaFacebook, FaFacebookF, FaInstagram, FaLinkedin, FaLinkedinIn, FaTwitter, FaXTwitter } from 'react-icons/fa6'
+import {  FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter } from '../assets/icons/index.js'
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 

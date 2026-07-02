@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { RiLoader2Line } from 'react-icons/ri'
+import { RiLoader2Line } from '../assets/icons/index.js'
 
 const Button = ({ text, onClick = () => { }, icon = "", fill = false, isLoading, className ,style}) => {
   return (

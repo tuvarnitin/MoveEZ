@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { MdOutlineMail } from 'react-icons/md'
+import { MdOutlineMail } from '../assets/icons/index.js'
 
 const Input = ({ type, placeholder, icon, value, onChange, ref, errors, name }) => {
 

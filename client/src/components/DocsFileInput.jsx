@@ -2,8 +2,7 @@ import React from 'react'
 
 import { motion } from "motion/react"
 
-import { MdOutlineCheckCircleOutline } from "react-icons/md";
-import { RiLoader2Line, RiUploadCloud2Line } from 'react-icons/ri'
+import { MdOutlineCheckCircleOutline,RiLoader2Line,RiUploadCloud2Line } from "../assets/icons/index.js";
 
 const DocsFileInput = React.memo(({ name, title, file, error, onChange, subTitle, isLoading }) => {
     return (
