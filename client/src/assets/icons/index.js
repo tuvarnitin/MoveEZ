@@ -34,7 +34,8 @@ import {
     FiAlertTriangle,
     FiXCircle,
     FiShield,
-    FiPhoneOff
+    FiPhoneOff,
+    FiNavigation
 } from "react-icons/fi";
 
 import {
@@ -105,6 +106,7 @@ import {
 } from "react-icons/gi";
 
 export {
+    FiNavigation,
     CiLocationOn,
     CiMapPin,
     FiPhoneOff,

@@ -16,7 +16,10 @@ import axios from "axios";
 import { AnimatePresence, motion } from "motion/react";
 
 import { CiLocationOn, CiMapPin } from "../../assets/icons/index.js";
-import MapLoader from "./MapLoader.jsx";
+
+import { MapLoader } from "./index.js";
+
+import { FiNavigation } from "../../assets/icons/index.js";
 
 function FitBounds({ position1, dropCoords }) {
 	const map = useMap();
@@ -79,6 +82,12 @@ const Map = ({
 
 	const handleDrag = async (lat, lon, setPosition) => {
 		setPosition([lat, lon]);
+
+		const { data } = await axios.get(`https://photon.komoot.io/reverse?lon=${lon}&lat=${lat}`);
+		if (data.features.length) {
+			const properties = data.features[0].properties;
+			return [properties.name,properties.street,properties.city,properties.state,properties.country,].filter(Boolean).join(",");
+		}
 	};
 
 	return (
@@ -106,9 +115,14 @@ const Map = ({
 							position={pickUpCoords}
 							draggable
 							eventHandlers={{
-								dragend: (e) => {
+								dragend: async (e) => {
 									const latlon = e.target.getLatLng();
-									handleDrag(latlon.lat, latlon.lng, setPickUpCoords);
+									const pickUpAddress = await handleDrag(
+										latlon.lat,
+										latlon.lng,
+										setPickUpCoords,
+									);
+									onChange(pickUpAddress, drop);
 								},
 							}}
 						></Marker>
@@ -119,9 +133,14 @@ const Map = ({
 							icon={dropIcon}
 							draggable
 							eventHandlers={{
-								dragend: (e) => {
+								dragend: async (e) => {
 									const coords = e.target.getLatLng();
-									handleDrag(coords.lat, coords.lng, setDropCoords);
+									const dropAddress = await handleDrag(
+										coords.lat,
+										coords.lng,
+										setDropCoords,
+									);
+									onChange(pickUp, dropAddress);
 								},
 							}}
 						></Marker>
@@ -144,6 +163,20 @@ const Map = ({
 			) : (
 				<MapLoader />
 			)}
+			<AnimatePresence>
+				<motion.div
+					initial={{ opacity: 0, y: 8, scale: 0.95 }}
+					animate={{ opacity: 1, y: 0, scale: 1 }}
+					exit={{ opacity: 0 }}
+					transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+					className="absolute bottom-14 left-4 z-500 flex items-center gap-2 bg-white border border-zinc-200 px-3.5 py-2 rounded-xl shadow-lg"
+				>
+					<FiNavigation className="text-background" />
+					<span className="text-background text-xs font-bold">{km} km</span>
+					<span className="w-px h-3 bg-zinc-200" />
+					<span>~{Math.max(3, Math.ceil((km / 50) * 60))} min</span>
+				</motion.div>
+			</AnimatePresence>
 		</div>
 	);
 };
