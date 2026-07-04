@@ -66,8 +66,29 @@ const userShcema = new mongoose.Schema({
     },
     videoKycRejectionReason:{
         type:String
+    },
+    socketId:{
+        type: String
+    },
+    location:{
+        type:{
+            type: String,
+            enum:["Point"],
+            required:true
+        },
+        coordinate: {
+            type: [Number],
+            required:true
+        }
+    },
+    isOnline:{
+        type:Boolean,
+        default:false,
+        index:true
     }
 })
+
+userShcema.index({location:"2dsphere"})
 
 userShcema.pre("save",async function() {
     if(!this.isModified("password")){

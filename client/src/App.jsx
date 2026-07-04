@@ -38,9 +38,15 @@ import { clearUserData, setUserData } from "./redux/features/userSlice.js";
 import Zego from "./zego/Zego.jsx";
 
 import { authService } from "./services/auth.service.js";
+import { getSocket } from "./socket.io/socketIo.js";
+import useUpdateGeoLoc from "./hooks/useUpdateGeoLoc.js";
 
 function App() {
 	const dispatch = useDispatch();
+
+		const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+		const isAuthModalOpen = useSelector((state) => state.auth.isAuthModalOpen);
+		const user = useSelector((state) => state.user);
 
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -71,10 +77,7 @@ function App() {
 		getUser();
 	}, []);
 
-	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-	const isAuthModalOpen = useSelector((state) => state.auth.isAuthModalOpen);
-	const user = useSelector((state) => state.user);
+	useUpdateGeoLoc(user?.data?._id)
 
 	if (isLoading) {
 		return (
@@ -142,15 +145,15 @@ function App() {
 				<Route element={<PartnerAuthChecker />}>
 					<Route
 						path="/partner"
-						element={<PartnerPage />}
+						element={<PartnerPage setIsSidebarOpen={setIsSidebarOpen} />}
 					>
 						<Route
 							index
-							element={<PartnerDashboard />}
+							element={<PartnerDashboard setIsSidebarOpen={setIsSidebarOpen} />}
 						/>
 						<Route
 							path="dashboard"
-							element={<PartnerDashboard />}
+							element={<PartnerDashboard setIsSidebarOpen={setIsSidebarOpen} />}
 						/>
 					</Route>
 				</Route>

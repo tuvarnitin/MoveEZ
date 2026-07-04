@@ -11,14 +11,14 @@ import {
 	FaBusSimple,
 } from "../../assets/icons/index.js";
 
-import { Navbar } from "../../components/index.js";
-
 import { authService } from "../../services/auth.service.js";
 
 import { useDispatch, useSelector } from "react-redux";
 import { onLogout, openAuthModal } from "../../redux/features/authSlice";
 
+
 const Hero = ({ setIsAuthModalOpen, isLogin }) => {
+
 	const dispatch = useDispatch();
 	const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
