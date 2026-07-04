@@ -23,13 +23,23 @@ const io = new Server(httpServer, {
 })
 
 io.on("connection", (socket) => {
+
     socket.on("init", async ({ userId }) => {
         socket.userId = userId
         await userModel.findByIdAndUpdate(userId, { socketId: socket.id, isOnline: true })
     })
 
-    socket.on("disconnect",async ()=>{
-        if(!socket.userId) return
+    socket.on("update-location", async ({ userId, lat, lon }) => {
+        await userModel.findByIdAndUpdate(userId,{
+            location:{
+                type:"Point",
+                coordinates:[lon,lat]
+            }
+        })
+    })
+
+    socket.on("disconnect", async () => {
+        if (!socket.userId) return
         await userModel.findByIdAndUpdate(socket.userId, { socketId: "", isOnline: false })
     })
 })
