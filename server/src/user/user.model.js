@@ -70,15 +70,15 @@ const userShcema = new mongoose.Schema({
     socketId:{
         type: String
     },
-    location:{
-        type:{
+    location: {
+        type: {
             type: String,
-            enum:["Point"],
-            required:true
+            enum: ["Point"],
+            required: true
         },
-        coordinate: {
+        coordinates: {
             type: [Number],
-            required:true
+            required: true
         }
     },
     isOnline:{

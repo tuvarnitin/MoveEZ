@@ -24,7 +24,9 @@ import {
     FaImage,
     FaIndianRupeeSign,
     FaClock,
-    FaX
+    FaX,
+    FaGauge,
+    FaStar
 } from "react-icons/fa6"
 
 import { FaCheckCircle } from 'react-icons/fa';
@@ -35,7 +37,8 @@ import {
     FiXCircle,
     FiShield,
     FiPhoneOff,
-    FiNavigation
+    FiNavigation,
+    FiZap
 } from "react-icons/fi";
 
 import {
@@ -73,7 +76,8 @@ import {
     CiClock1,
     CiVideoOff,
     CiLocationOn,
-    CiMapPin
+    CiMapPin,
+    CiSearch
 } from "react-icons/ci";
 
 import { IoMdClose } from "react-icons/io";
@@ -89,7 +93,8 @@ import {
 import {
     GrBike,
     GrUser,
-    GrUserAdmin
+    GrUserAdmin,
+    GrRefresh
 } from "react-icons/gr";
 
 import {
@@ -106,6 +111,11 @@ import {
 } from "react-icons/gi";
 
 export {
+    FaGauge,
+    FaStar,
+    GrRefresh,
+    CiSearch,
+    FiZap,
     FiNavigation,
     CiLocationOn,
     CiMapPin,

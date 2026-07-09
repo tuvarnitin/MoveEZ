@@ -1,0 +1,24 @@
+{
+  "name": "moveez",
+  "version": "1.0.0",
+  "description": "Modern vehicle booking platform built with MERN stack.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\" \"npm run dev --prefix socket\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tuvarnitin/MoveEZ.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/tuvarnitin/MoveEZ/issues"
+  },
+  "homepage": "https://github.com/tuvarnitin/MoveEZ#readme",
+  "dependencies": {
+    "concurrently": "^10.0.3"
+  }
+}

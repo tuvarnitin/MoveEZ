@@ -20,6 +20,7 @@ import { CiLocationOn, CiMapPin } from "../../assets/icons/index.js";
 import { MapLoader } from "./index.js";
 
 import { FiNavigation } from "../../assets/icons/index.js";
+import { vehicleService } from "../../services/vehicle.service.js";
 
 function FitBounds({ position1, dropCoords }) {
 	const map = useMap();
@@ -43,6 +44,11 @@ const Map = ({
 	pickUpLon,
 	dropLon,
 	dropLat,
+	vehicleType,
+	setPickUpLat,
+	setPickUpLon,
+	setDropLat,
+	setDropLon
 }) => {
 	const [pickUpCoords, setPickUpCoords] = useState([pickUpLat, pickUpLon]);
 	const [dropCoords, setDropCoords] = useState([dropLat, dropLon]);
@@ -78,15 +84,30 @@ const Map = ({
 			}
 		};
 		loadRoute(pickUpCoords, dropCoords);
+		setPickUpLat(pickUpCoords[0])
+		setPickUpLon(pickUpCoords[1])
+		setDropLat(dropCoords[0])
+		setDropLon(dropCoords[1])
 	}, [pickUpCoords, dropCoords]);
 
 	const handleDrag = async (lat, lon, setPosition) => {
-		setPosition([lat, lon]);
 
-		const { data } = await axios.get(`https://photon.komoot.io/reverse?lon=${lon}&lat=${lat}`);
+		setPosition([lat, lon]);
+		
+		const { data } = await axios.get(
+			`https://photon.komoot.io/reverse?lon=${lon}&lat=${lat}`,
+		);
 		if (data.features.length) {
 			const properties = data.features[0].properties;
-			return [properties.name,properties.street,properties.city,properties.state,properties.country,].filter(Boolean).join(",");
+			return [
+				properties.name,
+				properties.street,
+				properties.city,
+				properties.state,
+				properties.country,
+			]
+				.filter(Boolean)
+				.join(",");
 		}
 	};
 

@@ -38,7 +38,7 @@ const vehicleSchema = new mongoose.Schema({
     rejectionReason:String,
     isActive:{
         type:Boolean,
-        default:false
+        default:true
     },
     maxPassengers:{
         type:Number,

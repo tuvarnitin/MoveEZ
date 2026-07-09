@@ -1,5 +1,7 @@
 import { handleUpload } from "../cloudinary/cloudinary.config.js";
+import User from "../user/user.model.js";
 import Vehicle from "./vehicle.model.js"
+
 
 export const registerVehicle = async (req, res) => {
     try {
@@ -19,7 +21,7 @@ export const registerVehicle = async (req, res) => {
             });
         }
 
-        const alreadyExistsVehicle = await Vehicle.findOne({number:vehicleNumber})
+        const alreadyExistsVehicle = await Vehicle.findOne({ number: vehicleNumber })
 
         if (alreadyExistsVehicle && alreadyExistsVehicle.owner.toString() != user._id.toString()) {
             return res.status(400).json({
@@ -91,8 +93,8 @@ export const fetchVehicle = async (req, res) => {
 export const setPricing = async (req, res) => {
     try {
         const partner = req.user
-        const { baseFare, waitingCharge, pricePerKM,imageUrl } = req.body
-        const  image = req.file
+        const { baseFare, waitingCharge, pricePerKM, imageUrl } = req.body
+        const image = req.file
         const errors = {}
 
         if (!baseFare) {
@@ -127,9 +129,9 @@ export const setPricing = async (req, res) => {
 
         let secure_url;
 
-        if(imageUrl !== "undefined"){
+        if (imageUrl !== "undefined") {
             secure_url = imageUrl
-        }else{
+        } else {
             const imageObj = await handleUpload(image.buffer, partner._id, "vehicle-image")
             secure_url = imageObj.secure_url
         }
@@ -147,15 +149,15 @@ export const setPricing = async (req, res) => {
         await partner.save()
 
         return res.status(200).json({
-            success:true,
-            message:"Pricing setup successfull"
+            success: true,
+            message: "Pricing setup successfull"
         })
 
     } catch (error) {
         console.log(error)
         return res.status(500).json({
-            success:false,
-            message:"Internal server error (Set Pricings)",
+            success: false,
+            message: "Internal server error (Set Pricings)",
             error
         })
     }
@@ -172,15 +174,92 @@ export const getPricing = async (req, res) => {
         }
 
         return res.status(200).json({
-            success:true,
+            success: true,
             vehicle
         })
 
     } catch (error) {
         console.log(error)
         return res.status(500).json({
-            success:false,
-            message:"Internal server error (Set Pricings)",
+            success: false,
+            message: "Internal server error (Set Pricings)",
+            error
+        })
+    }
+}
+
+export const nearByVehicles = async (req, res) => {
+    try {
+        const { lat, lon, vehicleType } = req.body
+
+        const longitude = Number(lon);
+        const latitude = Number(lat);
+
+        const errors = {}
+
+        if (!lat) {
+            errors.lat = "Latitude is required"
+        }
+        if (!lon) {
+            errors.lon = "Longitude is required"
+        }
+        if (!vehicleType) {
+            errors.vehicleType = "Vehicle type is required"
+        }
+
+        if (Object.entries(errors).length) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required.",
+                errors
+            })
+        }
+
+        const partners = await User.find({
+            role: "partner",
+            partnerStatus: "approved",
+            isOnline: true,
+            location: {
+                $near: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [longitude, latitude],
+                    },
+                    $maxDistance: 2500
+                }
+            }
+        })
+
+        if(!partners.length){
+            return res.status(200).json({   
+                success:true,
+                vehicles:[],
+                message:"No nearby vehicles"
+            })
+        }
+
+        const partnerIds = partners.map(partner => partner._id)
+        console.log(partnerIds)
+
+        const vehicles = await Vehicle.find({
+            owner:{
+                $in:partnerIds
+            },
+            type:vehicleType,
+            status:"approved",
+            isActive : true
+        }).lean()
+
+        return res.status(200).json({
+            success:true,
+            vehicles
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error (Get Near By Vehicle)",
             error
         })
     }

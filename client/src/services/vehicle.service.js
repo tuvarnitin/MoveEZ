@@ -11,4 +11,5 @@ export const vehicleService = {
             "Content-Type":"multipart/form-data"
         }
     }),
+    getNearByVehicles: (data) => apiClient.post("/api/vehicle/nearby-vehicles", data),
 }
