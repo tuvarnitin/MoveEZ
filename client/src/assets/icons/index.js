@@ -77,7 +77,8 @@ import {
     CiVideoOff,
     CiLocationOn,
     CiMapPin,
-    CiSearch
+    CiSearch,
+    CiWallet
 } from "react-icons/ci";
 
 import { IoMdClose } from "react-icons/io";
@@ -107,10 +108,13 @@ import {
 import {
     GiCarWheel,
     GiCarDoor,
-    GiLockedBox
+    GiLockedBox,
+    GiBanknote
 } from "react-icons/gi";
 
 export {
+    CiWallet,
+    GiBanknote,
     FaGauge,
     FaStar,
     GrRefresh,

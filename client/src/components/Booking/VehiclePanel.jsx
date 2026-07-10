@@ -66,7 +66,7 @@ const VehiclePanel = ({
 									}}
 									transition={{ duration: 0.35 }}
 								/>
-								<div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 bg-zinc-900 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-full ">
+								<div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 bg-zinc-700 text-white text-[10px] border border-zinc-500 font-bold uppercase tracking-wider px-2.5 py-1.5 rounded-full ">
 									<Icon size={10} />
 									{label}
 								</div>
@@ -94,7 +94,7 @@ const VehiclePanel = ({
 										</div>
 									</div>
 
-									<div className="flex-shrink-0 w-10 h-10 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center">
+									<div className="shrink-0 w-10 h-10 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center">
 										<Icon
 											size={17}
 											className="text-zinc-700"
