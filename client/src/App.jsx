@@ -40,6 +40,8 @@ import Zego from "./zego/Zego.jsx";
 import { authService } from "./services/auth.service.js";
 import { getSocket } from "./socket.io/socketIo.js";
 import useUpdateGeoLoc from "./hooks/useUpdateGeoLoc.js";
+import Checkout from "./pages/checkout/Checkout.jsx";
+import PendingRequest from "./pages/Partner/PendingRequest.jsx";
 
 function App() {
 	const dispatch = useDispatch();
@@ -123,6 +125,10 @@ function App() {
 						element={<Search />}
 					/>
 					<Route
+						path="checkout"
+						element={<Checkout />}
+					/>
+					<Route
 						path="/partner/become-partner"
 						element={<BecomePartner />}
 					>
@@ -154,6 +160,10 @@ function App() {
 						<Route
 							path="dashboard"
 							element={<PartnerDashboard setIsSidebarOpen={setIsSidebarOpen} />}
+						/>
+						<Route
+							path="pending-requests"
+							element={<PendingRequest setIsSidebarOpen={setIsSidebarOpen} />}
 						/>
 					</Route>
 				</Route>
