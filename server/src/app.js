@@ -17,6 +17,7 @@ import adminRouter from "./admin/admin.route.js"
 import { adminMiddleware } from "./admin/admin.middleware.js"
 import partnerRouter from "./partner/partner.route.js"
 import { partnerMiddleware } from "./partner/partner.midlleware.js"
+import bookingRouter from "./booking/booking.route.js"
 
 const app = express()
 
@@ -50,6 +51,7 @@ app.use("/api/user",authMiddleware,upload.fields(FIELDS),userRoute)
 app.use("/api/admin", authMiddleware,adminMiddleware, adminRouter)
 
 app.use("/api/partner", authMiddleware, partnerMiddleware, partnerRouter)
+app.use("/api/booking", authMiddleware, bookingRouter)
 
 app.use("/api/vehicle", authMiddleware,upload.single("image"), vehicleRouter)
 
