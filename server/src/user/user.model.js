@@ -74,17 +74,18 @@ const userShcema = new mongoose.Schema({
         type: {
             type: String,
             enum: ["Point"],
-            required: true
         },
         coordinates: {
             type: [Number],
-            required: true
         }
     },
     isOnline:{
         type:Boolean,
         default:false,
         index:true
+    },
+    mobileNumber:{
+        type:String,
     }
 })
 

@@ -135,7 +135,6 @@ export const setPricing = async (req, res) => {
             const imageObj = await handleUpload(image.buffer, partner._id, "vehicle-image")
             secure_url = imageObj.secure_url
         }
-        console
 
         vehicle.imageUrl = secure_url
         vehicle.baseFare = baseFare
@@ -229,6 +228,8 @@ export const nearByVehicles = async (req, res) => {
                 }
             }
         })
+
+        console.log(partners)
 
         if(!partners.length){
             return res.status(200).json({   

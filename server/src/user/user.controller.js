@@ -170,6 +170,8 @@ export const handleUserBank = async (req, res) => {
 export const getUserBankDetails = async (req, res) => {
     const user = req.user
     const userBank = await userBankModel.findOne({ owner: user._id })
+    user.mobileNumber = userBank.mobileNumber
+    await user.save()
     if (userBank) {
         return res.status(200).json({
             success: true,
