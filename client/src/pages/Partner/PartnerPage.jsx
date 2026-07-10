@@ -1,7 +1,9 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-import { Navbar, Footer } from "../../components/index.js";
+import { Footer } from "../../components/index.js";
+import { Navbar } from "../../components/Partner/index.js";
+
 
 const PartnerPage = ({ setIsSidebarOpen }) => {
 	return (

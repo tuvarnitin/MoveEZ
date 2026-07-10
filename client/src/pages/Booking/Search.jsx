@@ -68,19 +68,21 @@ const Search = () => {
 
 	const hadleBooking = (v) => {
 		const searchParams = new URLSearchParams({
-			pickUp,
+			pickup:pickUp,
 			drop,
 			vehicle: v.type,
-			driverId: v.owner,
+			vehicleid: v._id,
+			driverid: v.owner,
 			fare: v.baseFare + v.pricePerKM * km,
-			pickUpLat,
-			pickUpLon,
-			dropLat,
-			dropLon,
+			pickuplat : pickUpLat,
+			pickuplon : pickUpLon,
+			droplat : dropLat,
+			droplon : dropLon,
 			mobile,
 		});
 		navigate(`/checkout?${searchParams.toString()}`);
 	};
+
 
 		const { vehicles, loading, error, getNearbyVehicles } = useNearbyVehicles();
 
@@ -127,7 +129,7 @@ const Search = () => {
 				transition={{ type: "spring", stiffness: 160, damping: 22 }}
 				className="relative z-20 -mt-10 bg-white border-t border-zinc-200 shadow-[0px_-8px_40px_rgba(0,0,0,0.08)] pt-5 pb-20 min-h-[50vh]"
 			>
-				<div className="px-5 lg:px-8 max-w-6xl mx-auto">
+				<div className="px-5 lg:px-8 max-w-7xl mx-auto">
 					<BothLocationPanel
 						pickUp={pickUp}
 						drop={drop}
