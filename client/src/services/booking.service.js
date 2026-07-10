@@ -1,0 +1,7 @@
+import apiClient from "../api/API";
+
+export const bookingService = {
+    requestBooking: (data) => apiClient.post(`/api/booking`, data),
+    fetchActiveBooking: (data) => apiClient.get(`/api/booking/active`, data),
+    cancelBooking: (data) => apiClient.get(`/api/booking/cancle/${data.id}`, data)
+}
