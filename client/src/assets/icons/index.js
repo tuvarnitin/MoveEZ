@@ -29,7 +29,7 @@ import {
     FaStar
 } from "react-icons/fa6"
 
-import { FaCheckCircle } from 'react-icons/fa';
+import { FaCheckCircle, FaChevronCircleRight } from 'react-icons/fa';
 
 import {
     FiCheckCircle,
@@ -78,7 +78,8 @@ import {
     CiLocationOn,
     CiMapPin,
     CiSearch,
-    CiWallet
+    CiWallet,
+    CiCalendar
 } from "react-icons/ci";
 
 import { IoMdClose } from "react-icons/io";
@@ -113,6 +114,8 @@ import {
 } from "react-icons/gi";
 
 export {
+    FaChevronCircleRight,
+    CiCalendar,
     CiWallet,
     GiBanknote,
     FaGauge,

@@ -42,7 +42,9 @@ import { getSocket } from "./socket.io/socketIo.js";
 import useUpdateGeoLoc from "./hooks/useUpdateGeoLoc.js";
 import Checkout from "./pages/checkout/Checkout.jsx";
 import PendingRequest from "./pages/Partner/PendingRequest.jsx";
-import Bookings from "./pages/Partner/Bookings/PartnerBookings.jsx";
+import PartnerBookings from "./pages/Partner/Bookings/PartnerBookings.jsx";
+import UserBookingsPage from "./pages/Booking/UserBookingsPage.jsx";
+import BookVehiclePage from "./pages/Booking/BookVehiclePage.jsx";
 
 function App() {
 	const dispatch = useDispatch();
@@ -118,8 +120,12 @@ function App() {
 						element={<Zego />}
 					/>
 					<Route
-						path="/booking"
-						element={<Booking />}
+						path="/book"
+						element={<BookVehiclePage />}
+					/>
+					<Route
+						path="/bookings"
+						element={<UserBookingsPage setIsSidebarOpen={setIsSidebarOpen} />}
 					/>
 					<Route
 						path="/search"
@@ -168,7 +174,7 @@ function App() {
 						/>
 						<Route
 							path="bookings"
-							element={<Bookings />}
+							element={<PartnerBookings />}
 						/>
 					</Route>
 				</Route>
