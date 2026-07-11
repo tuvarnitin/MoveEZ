@@ -8,6 +8,7 @@ import {
 	CheckoutRight,
 	CheckoutLeft,
 } from "../../components/checkout/index.js";
+import { paymentService } from "../../services/payment.service.js";
 
 const Checkout = () => {
 	const [searchParams] = useSearchParams();
@@ -24,7 +25,7 @@ const Checkout = () => {
 	const fare = Number(searchParams.get("fare")) || "";
 	const [status, setStatus] = useState("idle");
 	const [loading, setLoading] = useState(false);
-	const [booking, setBooking] = useState({});
+	const [booking, setBooking] = useState({});	
 
 	const handleRequestBooking = useCallback(async () => {
 		setLoading(true);
@@ -108,6 +109,7 @@ const Checkout = () => {
 						fare={fare}
 					/>
 					<CheckoutRight
+					bookingId={booking._id}
 						loading={loading}
 						status={status}
 						setStatus={setStatus}

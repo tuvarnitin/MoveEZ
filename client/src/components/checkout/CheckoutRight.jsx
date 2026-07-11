@@ -14,8 +14,10 @@ import {
 
 import { PAYMENT_METHODS } from "../../contant/index.js";
 
-import {  useState ,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Button from "../Button.jsx";
+import { paymentService } from "../../services/payment.service.js";
+import { bookingService } from "../../services/booking.service.js";
 
 const CheckoutRight = ({
 	status,
@@ -23,14 +25,84 @@ const CheckoutRight = ({
 	handleCancelRequest,
 	handleRequestBooking,
 	loading,
+	bookingId
 }) => {
 	const [paymentMethod, setPaymentMethod] = useState("cash");
+	const [loading, setLoading] = useState(false);
+
 	useEffect(() => {
 		if (status !== "awaiting_payment") return;
 		const t = setTimeout(() => {
 			setStatus("payment");
 		}, 2000);
 	}, [status]);
+
+	const loadRazorpayScript = () => {
+		return new Promise((resolve, reject) => {
+			if (typeof window === "undefined") {
+				resolve(false);
+			}
+			if (window.Razorpay) {
+				resolve(true);
+			}
+			const script = document.createElement("script");
+			script.src = "https://checkout.razorpay.com/v1/checkout.js";
+			script.onload = () => resolve(true);
+			script.onerror = () => resolve(false);
+			document.body.append(script);
+		});
+	};
+
+	const handleProcedeToPayment = async () => {
+		if (!bookingId || !paymentMethod) return;
+		setLoading(true)
+
+		try {
+			if (paymentMethod == "online") {
+				const razorpayScript = await loadRazorpayScript();
+				if (!razorpayScript) {
+					alert("Razorpay script failed to load");
+				}
+				const response = await paymentService.createPayment({
+					bookingId
+				});
+				const options = {
+					key: import.meta.env.VITE_API_RAZORPAY_API_KEY,
+					amount:response.amount,
+					currency:"INR",
+					name:"MoveEZ",
+					description:"Ride Payment",
+					order_id:response.orderId,
+					handler: async function(data){
+						const response = await paymentService.verifyPayment({
+							bookingId : bookingId,
+							...data
+						});
+						if(response.success){
+							window.location.href = `/ride/${bookingId}`
+						}
+					}
+				};
+
+				const paymentObject = new window.Razorpay(options)
+				paymentObject.open()
+			}else{
+				const response = await bookingService.confirmBooking({
+					bookingId
+				})
+
+				if(response.success){
+					setStatus("confirmed")
+					window.location.href = `/ride/${bookingId}`;
+				}
+			}
+		} catch (error) {
+			console.log(error)
+		} finally{
+		setLoading(false);
+		}
+	};
+
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 20 }}
@@ -89,15 +161,6 @@ const CheckoutRight = ({
 									))}
 								</div>
 							</div>
-							{/* <motion.button
-								whileTap={{ scale: 0.97 }}
-								whileHover={{ scale: 1.02 }}
-								onClick={handleRequestBooking}
-								className="w-full h-14 mt-8 bg-zinc-900 hover:bg-black disabled:opacity-40 text-white font-black text-sm rounded-2xl flex items-center justify-center gap-2.5 transition-colors shadow-md cursor-pointer"
-							>
-								<span>Request Ride </span>
-								<FaArrowRight size={15} />
-							</motion.button> */}
 							<Button
 								text={`Request Ride`}
 								icon={<FaArrowRight />}
@@ -254,6 +317,7 @@ const CheckoutRight = ({
 								})}
 							</div>
 							<motion.button
+								onClick={handleProcedeToPayment}
 								whileTap={{ scale: 0.97 }}
 								whileHover={paymentMethod ? { scale: 1.02 } : {}}
 								disabled={!paymentMethod}
