@@ -57,18 +57,18 @@ export const createBooking = async (req, res) => {
     }
 }
 
-export const fetchActiveBooking = async (req,res) => {
+export const fetchActiveBooking = async (req, res) => {
     try {
-        const booking = await bookingModel.findOne({ user: req.user._id, bookingStatus: { $in: ["awaiting_payment", "confirmed", "started", "requested"]}})
-        if(!booking){
+        const booking = await bookingModel.findOne({ user: req.user._id, bookingStatus: { $in: ["awaiting_payment", "confirmed", "started", "requested"] } })
+        if (!booking) {
             return res.status(400).json({
-                message:"Booking not found",
-                success:false
+                message: "Booking not found",
+                success: false
             })
         }
         return res.status(200).json({
-            message:"Active booking",
-            success:true,
+            message: "Active booking",
+            success: true,
             booking
         })
     } catch (error) {
@@ -81,29 +81,57 @@ export const fetchActiveBooking = async (req,res) => {
 }
 
 export const cancleBooking = async (req, res) => {
-   try {
-       const id = req.params.id
-       const booking = await bookingModel.findById(id);
-       if (!booking || booking.bookingStatus !== "requested") {
-           return res.status(400).json({
-               message: "Invalid request",
-               success: false
-           })
-       }
+    try {
+        const id = req.params.id
+        const booking = await bookingModel.findById(id);
+        if (!booking || booking.bookingStatus !== "requested") {
+            return res.status(400).json({
+                message: "Invalid request",
+                success: false
+            })
+        }
 
-       booking.bookingStatus = "cancelled"
-       await booking.save()
+        booking.bookingStatus = "cancelled"
+        await booking.save()
 
-       return res.status(200).json({
-           message: "Booking cancel",
-           booking,
-           success: true
-       })
-   } catch (error) {
-       return res.status(500).json({
-           message: "Internal server error (Cancel Booking)",
-           success: false,
-           error
-       })
-   }
+        return res.status(200).json({
+            message: "Booking cancel",
+            booking,
+            success: true
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error (Cancel Booking)",
+            success: false,
+            error
+        })
+    }
+}
+
+export const confirmBooking = async (req, res) => {
+    try {
+        const { bookingId } = req.body
+
+        const booking = await bookingModel.findById(bookingId)
+        if (!booking) {
+            return res.status(400).json({
+                message: "Booking not found",
+                success: false
+            })
+        }
+
+        booking.paymentStatus = "paid"
+        booking.bookingStatus = "confirmed"
+        await booking.save()
+
+        return res.status(200).json({
+            success: true
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error (Confirm Booking)",
+            error
+        })
+    }
 }
