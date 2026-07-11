@@ -1,6 +1,7 @@
 import { handleUpload } from "../cloudinary/cloudinary.config.js"
 import userDocModel from "./userDoc.model.js"
 import userBankModel from "./userBank.model.js"
+import bookingModel from "../booking/booking.model.js"
 
 export const uploadUserDocs = async (req, res) => {
 
@@ -182,6 +183,23 @@ export const getUserBankDetails = async (req, res) => {
                 mobileNumber: userBank.mobileNumber,
                 upi: userBank.upi || ""
             }
+        })
+    }
+}
+
+export const fetchAllBookings = async (req, res) => {
+    try {
+        const bookings = await bookingModel.find({ user: req.user._id }).populate("user driver vehicle").sort({ createdAt: -1 })
+        return res.status(200).json({
+            bookings,
+            success: true
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error (Fetch all bookings (User))",
+            error
         })
     }
 }
