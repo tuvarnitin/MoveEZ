@@ -42,7 +42,7 @@ const variants = {
 	},
 };
 
-const Booking = () => {
+const BookVehiclePage = () => {
 	const navigate = useNavigate();
 
 	const [vehicle, setVehicle] = useState("");
@@ -215,4 +215,4 @@ const Booking = () => {
 	);
 };
 
-export default Booking;
+export default BookVehiclePage;
