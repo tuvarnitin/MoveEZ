@@ -7,13 +7,21 @@ import {
 	FaIndianRupeeSign,
 	FaMapPin,
 	FiNavigation,
-} from "../../assets/icons/index.js";
+} from "../../../assets/icons/index.js";
 
-import { partnerService } from "../../services/partner.service";
+import { partnerService } from "../../../services/partner.service.js";
 
-import { Button } from "../../components/index.js";
+import { Button } from "../../index.js";
+import { useNavigate } from "react-router-dom";
 
-const PendingBookingCard = ({ b, i, handleReject, handleAccept }) => {
+const PendingBookingCard = ({
+	b,
+	i,
+	handleReject,
+	handleAccept,
+	setBookings,
+}) => {
+	const navigate = useNavigate();
 	const [acceptLoading, setAcceptLoading] = useState(false);
 	const [rejectLoading, setRejectLoading] = useState(false);
 
@@ -21,7 +29,10 @@ const PendingBookingCard = ({ b, i, handleReject, handleAccept }) => {
 		setAcceptLoading(true);
 		try {
 			const response = await partnerService.acceptBooking({ id });
-			console.log(response);
+			if (response.success) {
+				setBookings((prev) => prev.filter((p) => p._id !== id));
+				navigate("/partner/bookings");
+			}
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -33,7 +44,9 @@ const PendingBookingCard = ({ b, i, handleReject, handleAccept }) => {
 		setRejectLoading(true);
 		try {
 			const response = await partnerService.rejectBooking({ id });
-			console.log(response);
+			if (response.success) {
+				setBookings((prev) => prev.filter((p) => p._id !== id));
+			}
 		} catch (error) {
 			console.log(error);
 		} finally {

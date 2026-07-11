@@ -47,11 +47,11 @@ const Checkout = () => {
 				mobileNumber: mobile,
 			});
 			setBooking(response.booking);
-			setStatus("requested");
+			setStatus(response.booking.bookingStatus);
 		} catch (error) {
 			console.log(error);
 		} finally {
-			setStatus(booking.bookingStatus);
+			setStatus("requested");
 			setLoading(false);
 		}
 	});
@@ -65,15 +65,6 @@ const Checkout = () => {
 			console.log(error);
 		}
 	};
-
-	const handleCancelRequest = useCallback(async () => {
-		try {
-			const response = await bookingService.cancelBooking({ id: booking._id });
-			setStatus("idle");
-		} catch (error) {
-			console.log(error);
-		}
-	});
 
 	useEffect(() => {
 		fetchActiveBooking();
@@ -113,7 +104,6 @@ const Checkout = () => {
 						loading={loading}
 						status={status}
 						setStatus={setStatus}
-						handleCancelRequest={handleCancelRequest}
 						handleRequestBooking={handleRequestBooking}
 					/>
 				</div>

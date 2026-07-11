@@ -56,6 +56,7 @@ const PendingRequest = () => {
 					<div className="space-y-6">
 						{bookings.map((b, i) => (
 							<PendingBookingCard
+								setBookings={setBookings}
 								b={b}
 								key={i}
 								i={i}

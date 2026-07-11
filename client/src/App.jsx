@@ -42,6 +42,7 @@ import { getSocket } from "./socket.io/socketIo.js";
 import useUpdateGeoLoc from "./hooks/useUpdateGeoLoc.js";
 import Checkout from "./pages/checkout/Checkout.jsx";
 import PendingRequest from "./pages/Partner/PendingRequest.jsx";
+import Bookings from "./pages/Partner/Bookings/PartnerBookings.jsx";
 
 function App() {
 	const dispatch = useDispatch();
@@ -164,6 +165,10 @@ function App() {
 						<Route
 							path="pending-requests"
 							element={<PendingRequest setIsSidebarOpen={setIsSidebarOpen} />}
+						/>
+						<Route
+							path="bookings"
+							element={<Bookings />}
 						/>
 					</Route>
 				</Route>

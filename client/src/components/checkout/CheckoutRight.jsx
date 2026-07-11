@@ -22,13 +22,13 @@ import { bookingService } from "../../services/booking.service.js";
 const CheckoutRight = ({
 	status,
 	setStatus,
-	handleCancelRequest,
 	handleRequestBooking,
+	bookingId,
 	loading,
-	bookingId
 }) => {
 	const [paymentMethod, setPaymentMethod] = useState("cash");
-	const [loading, setLoading] = useState(false);
+	const [paymentLoading, setPaymentLoading] = useState(false);
+	const [cancelLoading, setCancelLoading] = useState(false);
 
 	useEffect(() => {
 		if (status !== "awaiting_payment") return;
@@ -55,8 +55,7 @@ const CheckoutRight = ({
 
 	const handleProcedeToPayment = async () => {
 		if (!bookingId || !paymentMethod) return;
-		setLoading(true)
-
+		setPaymentLoading(true);
 		try {
 			if (paymentMethod == "online") {
 				const razorpayScript = await loadRazorpayScript();
@@ -64,42 +63,54 @@ const CheckoutRight = ({
 					alert("Razorpay script failed to load");
 				}
 				const response = await paymentService.createPayment({
-					bookingId
+					bookingId,
 				});
 				const options = {
 					key: import.meta.env.VITE_API_RAZORPAY_API_KEY,
-					amount:response.amount,
-					currency:"INR",
-					name:"MoveEZ",
-					description:"Ride Payment",
-					order_id:response.orderId,
-					handler: async function(data){
+					amount: response.amount,
+					currency: "INR",
+					name: "MoveEZ",
+					description: "Ride Payment",
+					order_id: response.orderId,
+					handler: async function (data) {
 						const response = await paymentService.verifyPayment({
-							bookingId : bookingId,
-							...data
+							bookingId: bookingId,
+							...data,
 						});
-						if(response.success){
-							window.location.href = `/ride/${bookingId}`
+						if (response.success) {
+							window.location.href = `/ride/${bookingId}`;
 						}
-					}
+					},
 				};
 
-				const paymentObject = new window.Razorpay(options)
-				paymentObject.open()
-			}else{
+				const paymentObject = new window.Razorpay(options);
+				paymentObject.open();
+			} else {
 				const response = await bookingService.confirmBooking({
-					bookingId
-				})
+					bookingId,
+				});
 
-				if(response.success){
-					setStatus("confirmed")
+				if (response.success) {
+					setStatus("confirmed");
 					window.location.href = `/ride/${bookingId}`;
 				}
 			}
 		} catch (error) {
-			console.log(error)
-		} finally{
-		setLoading(false);
+			console.log(error);
+		} finally {
+			setPaymentLoading(false);
+		}
+	};
+
+	const handleCancelRequest = async () => {
+		try {
+			setCancelLoading(true);
+			const response = await bookingService.cancelBooking({ id: bookingId });
+			setStatus("idle");
+		} catch (error) {
+			console.log(error);
+		} finally {
+			setCancelLoading(false);
 		}
 	};
 
@@ -163,9 +174,9 @@ const CheckoutRight = ({
 							</div>
 							<Button
 								text={`Request Ride`}
-								icon={<FaArrowRight />}
 								isLoading={loading}
 								onClick={handleRequestBooking}
+								style={{ width: "100%" }}
 							/>
 						</motion.div>
 					)}
@@ -191,12 +202,40 @@ const CheckoutRight = ({
 									/>
 								</div>
 							</div>
+							<div>
+								<motion.h3
+									initial={{ opacity: 0, y: 8 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ delay: 0.3 }}
+									className="text-2xl font-black text-zinc-900 mb-1"
+								>
+									Finding Your Driver
+								</motion.h3>
+								<motion.p
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									transition={{ delay: 0.4 }}
+									className="text-zinc-400 text-sm font-medium max-w-xs"
+								>
+									Waiting for driver to accept
+								</motion.p>
+							</div>
 							<motion.div
 								onClick={() => handleCancelRequest()}
 								whileTap={{ scale: 0.95 }}
-								className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors border border-zinc-200 hover:border-zinc-400 px-4 py-2.5 rounded-xl cursor-pointer"
+								className="flex items-center gap-2 text-xs font-bold text-zinc-400 hover:text-zinc-900 transition-colors border border-zinc-200 hover:border-zinc-400 px-4 py-2.5 rounded-xl cursor-pointer min-w-34 justify-center"
 							>
-								<FiXCircle size={13} /> Cancel Request
+								{cancelLoading ? (
+									<RiLoader2Line
+										size={13}
+										className="animate-spin"
+									/>
+								) : (
+									<>
+										<FiXCircle size={13} />
+										Cancel Request
+									</>
+								)}
 							</motion.div>
 						</motion.div>
 					)}
@@ -323,7 +362,12 @@ const CheckoutRight = ({
 								disabled={!paymentMethod}
 								className="w-full h-14 bg-zinc-900 hover:bg-black disabled:opacity-30 text-white font-black text-sm rounded-2xl flex items-center justify-center gap-2.5 transition-colors shadow-md mt-auto"
 							>
-								{paymentMethod === "cash" ? (
+								{paymentLoading ? (
+									<RiLoader2Line
+										size={17}
+										className="animate-spin"
+									/>
+								) : paymentMethod == "cash" ? (
 									<>
 										<GiBanknote size={16} />
 										<span>Confirm Cash Ride</span>
@@ -334,6 +378,74 @@ const CheckoutRight = ({
 										<FaArrowRight size={16} />
 									</>
 								)}
+							</motion.button>
+						</motion.div>
+					)}
+					{status == "confirmed" && (
+						<motion.div
+							key="confirmed"
+							initial={{ opacity: 0, scale: 0.94 }}
+							animate={{ opacity: 1, scale: 1 }}
+							exit={{ opacity: 0 }}
+							transition={{ duration: 0.4 }}
+							className="flex flex-col flex-1 items-center justify-center gap-6 text-center"
+						>
+							<motion.div
+								initial={{ scale: 0, rotate: -20 }}
+								animate={{ scale: 1, rotate: 0 }}
+								transition={{
+									type: "spring",
+									stiffness: 240,
+									damping: 14,
+									delay: 0.1,
+								}}
+								className="relative"
+							>
+								<div className="w-24 h-24 rounded-full bg-zinc-100 border-2 border-zinc-200 flex items-center justify-center">
+									<FaCheckCircle
+										size={44}
+										className="text-zinc-900"
+									/>
+								</div>
+								{[0, 1].map((i) => (
+									<motion.div
+										initial={{ scale: 1, opacity: 0.5 }}
+										animate={{ scale: 2.2 + i * 0.6, opacity: 0 }}
+										transition={{ duration: 0.9, delay: 0.2 + i * 0.15 }}
+										className="absolute inset-0 rounded-full border-2 border-zinc-900"
+									/>
+								))}
+							</motion.div>
+							<div>
+								<motion.h3
+									initial={{ opacity: 0, y: 8 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ delay: 0.3 }}
+									className="text-2xl font-black text-zinc-900 mb-1"
+								>
+									Ride Confirmed!
+								</motion.h3>
+								<motion.p
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									transition={{ delay: 0.4 }}
+									className="text-zinc-400 text-sm font-medium max-w-xs"
+								>
+									Your driver is on the way. Track live from the ride screen.
+								</motion.p>
+							</div>
+							<motion.button
+								initial={{ opacity: 0, y: 8 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ delay: 0.5 }}
+								whileTap={{ scale: 0.97 }}
+								whileHover={{ scale: 1.03 }}
+								onClick={() => {
+									window.location.href = `/ride/${bookingId}`;
+								}}
+								className="flex items-center gap-2.5 bg-zinc-900 hover:bg-black text-white font-black text-sm px-8 py-4 rounded-2xl transition-colors shadow-md cursor-pointer"
+							>
+								Track Your Ride <FaArrowRight />
 							</motion.button>
 						</motion.div>
 					)}

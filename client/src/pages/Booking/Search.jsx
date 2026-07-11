@@ -88,7 +88,7 @@ const Search = () => {
 
 		useEffect(() => {
 			getNearbyVehicles(pickUpLat, pickUpLon, vehicleType);
-		}, [pickUpLat, pickUpLon, vehicleType, getNearbyVehicles]);
+		}, [pickUpLat, pickUpLon, vehicleType, getNearbyVehicles,refresh]);
 
 	return (
 		<div className="h-full w-full bg-zinc-100 text-background overflow-x-hidden">

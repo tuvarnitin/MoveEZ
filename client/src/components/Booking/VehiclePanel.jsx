@@ -93,7 +93,6 @@ const VehiclePanel = ({
 											</span>
 										</div>
 									</div>
-
 									<div className="shrink-0 w-10 h-10 rounded-2xl bg-zinc-100 border border-zinc-200 flex items-center justify-center">
 										<Icon
 											size={17}

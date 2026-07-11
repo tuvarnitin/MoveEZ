@@ -38,7 +38,7 @@ const NAV_LINKS = [
 	},
 	{
 		title: "Bookings",
-		to: "/bookings",
+		to: "/partner/bookings",
 	},
 ];
 
