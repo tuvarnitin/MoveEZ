@@ -135,3 +135,26 @@ export const confirmBooking = async (req, res) => {
         })
     }
 }
+
+export const fetchAllBookings = async (req, res) => {
+    const role = req.user.role
+    let bookings
+    try {
+        if(role === "user"){
+            bookings = await bookingModel.find({ user: req.user._id }).populate("user driver vehicle").sort({ createdAt: -1 })
+        }else if(role === "partner"){
+            bookings = await bookingModel.find({ driver: req.user._id }).populate("user driver vehicle").sort({ createdAt: -1 })
+        }
+        return res.status(200).json({
+            bookings,
+            success: true
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error (Fetch all bookings)",
+            error
+        })
+    }
+}
