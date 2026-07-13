@@ -16,20 +16,18 @@ import {
 	PiPhone,
 	RiLoader2Line,
 	CiCalendar,
-	FaChevronCircleRight
-} from "../../../assets/icons/index.js";
+	FaChevronCircleRight,
+} from "../../assets/icons/index.js";
 
-import { bookingService } from "../../../services/booking.service.js";
+import { bookingService } from "../../services/booking.service.js";
 
 const PartnerBookings = () => {
-
 	const navigate = useNavigate();
 	const [bookings, setBookings] = useState([]);
 	const [selectedStatus, setSelectedStatus] = useState("All");
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		
 		const fetchBookings = async () => {
 			try {
 				setLoading(true);
@@ -241,7 +239,7 @@ const PartnerBookings = () => {
 													{b.paymentStatus}
 												</span>
 											</div>
-											{b.bookingStatus !== "completed" && (
+											{b.bookingStatus == "confirmed" && (
 												<div className="flex items-center gap-2">
 													<button
 														onClick={() => navigate("/partner/active-ride")}
