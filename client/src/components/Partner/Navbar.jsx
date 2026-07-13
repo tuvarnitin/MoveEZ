@@ -26,6 +26,7 @@ import {
 import { clearUserData } from "../../redux/features/userSlice.js";
 import { authService } from "../../services/auth.service";
 import { partnerService } from "../../services/partner.service.js";
+import { getSocket } from "../../socket.io/socketIo.js";
 
 const NAV_LINKS = [
 	{
@@ -40,6 +41,10 @@ const NAV_LINKS = [
 		title: "Bookings",
 		to: "/partner/bookings",
 	},
+	{
+		title: "Active Ride",
+		to: "/partner/active-ride",
+	},
 ];
 
 const Navbar = ({ setIsSidebarOpen }) => {
@@ -51,7 +56,7 @@ const Navbar = ({ setIsSidebarOpen }) => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const [pendingRequestCount,setPendingRequestCount] = useState(0)
+	const [pendingRequestCount, setPendingRequestCount] = useState(0);
 
 	const handleLogout = async () => {
 		try {
@@ -67,15 +72,25 @@ const Navbar = ({ setIsSidebarOpen }) => {
 		}
 	};
 
-	useEffect(()=>{
+	useEffect(() => {
 		const fetchPendingRequestCount = async () => {
-			const response = await partnerService.fetchPendingRequestCount()
-			if(response.success){
+			const response = await partnerService.fetchPendingRequestCount();
+			if (response.success) {
 				setPendingRequestCount(response.pendingRequestsCount);
 			}
-		}
-		fetchPendingRequestCount()
-	},[])
+		};
+		fetchPendingRequestCount();
+	}, []);
+
+	useEffect(() => {
+		const socket = getSocket();
+		socket.on("pending-booking-count", (data) => {
+			setPendingRequestCount((prev) => prev + data);
+		});
+		return () => {
+			socket.off("pending-booking-count");
+		};
+	}, []);
 
 	return (
 		<motion.nav

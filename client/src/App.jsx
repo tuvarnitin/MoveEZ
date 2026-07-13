@@ -21,9 +21,14 @@ import {
 } from "./components/protectedRoutes/index.js";
 
 import { Home, BecomePartner } from "./pages/index.js";
-import { Booking, Search } from "./pages/Booking/index.js";
+import { Search } from "./pages/Booking/index.js";
 
-import { PartnerDashboard, PartnerPage } from "./pages/Partner/index.js";
+import {
+	PartnerDashboard,
+	PartnerPage,
+	PendingRequest,
+	PartnerBookings,
+} from "./pages/Partner/index.js";
 
 import {
 	AdminDashboard,
@@ -40,18 +45,17 @@ import Zego from "./zego/Zego.jsx";
 import { authService } from "./services/auth.service.js";
 import { getSocket } from "./socket.io/socketIo.js";
 import useUpdateGeoLoc from "./hooks/useUpdateGeoLoc.js";
+
 import Checkout from "./pages/checkout/Checkout.jsx";
-import PendingRequest from "./pages/Partner/PendingRequest.jsx";
-import PartnerBookings from "./pages/Partner/Bookings/PartnerBookings.jsx";
-import UserBookingsPage from "./pages/Booking/UserBookingsPage.jsx";
-import BookVehiclePage from "./pages/Booking/BookVehiclePage.jsx";
+import { BookVehiclePage, UserBookingsPage } from "./pages/Booking/index.js";
+import ActiveRide from "./pages/Partner/ActiveRide.jsx";
 
 function App() {
 	const dispatch = useDispatch();
 
-		const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-		const isAuthModalOpen = useSelector((state) => state.auth.isAuthModalOpen);
-		const user = useSelector((state) => state.user);
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+	const isAuthModalOpen = useSelector((state) => state.auth.isAuthModalOpen);
+	const user = useSelector((state) => state.user);
 
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -82,7 +86,7 @@ function App() {
 		getUser();
 	}, []);
 
-	useUpdateGeoLoc(user?.data?._id)
+	useUpdateGeoLoc(user?.data?._id);
 
 	if (isLoading) {
 		return (
@@ -177,6 +181,10 @@ function App() {
 							element={<PartnerBookings />}
 						/>
 					</Route>
+					<Route
+						path="/partner/active-ride"
+						element={<ActiveRide />}
+					/>
 				</Route>
 
 				{/* Routes for authorized admin */}

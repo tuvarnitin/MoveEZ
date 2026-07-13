@@ -10,6 +10,8 @@ import { PendingBookingCard } from "../../components/Partner/index.js";
 import { partnerService } from "../../services/partner.service";
 import { bookingService } from "../../services/booking.service.js";
 
+import { getSocket } from "../../socket.io/socketIo.js";
+
 const PendingRequest = () => {
 	const [bookings, setBookings] = useState([]);
 	const [loading, setLoading] = useState(false);
@@ -29,6 +31,16 @@ const PendingRequest = () => {
 			}
 		};
 		fetchPendingRequests();
+	}, []);
+
+	useEffect(() => {
+		const socket = getSocket();
+
+		socket.on("new-booking",(data)=>{
+			setBookings(prev => [data,...prev])
+		})
+
+		return ()=> socket.off("new-booking")
 	}, []);
 
 	return (

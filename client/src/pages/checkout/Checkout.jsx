@@ -9,6 +9,7 @@ import {
 	CheckoutLeft,
 } from "../../components/checkout/index.js";
 import { paymentService } from "../../services/payment.service.js";
+import { getSocket } from "../../socket.io/socketIo.js";
 
 const Checkout = () => {
 	const [searchParams] = useSearchParams();
@@ -25,7 +26,7 @@ const Checkout = () => {
 	const fare = Number(searchParams.get("fare")) || "";
 	const [status, setStatus] = useState("idle");
 	const [loading, setLoading] = useState(false);
-	const [booking, setBooking] = useState({});	
+	const [booking, setBooking] = useState({});
 
 	const handleRequestBooking = useCallback(async () => {
 		setLoading(true);
@@ -70,6 +71,23 @@ const Checkout = () => {
 		fetchActiveBooking();
 	}, []);
 
+	useEffect(() => {
+		const socket = getSocket();
+
+		socket.on("accept-booking", (data) => {
+			setStatus(data);
+		});
+
+		socket.on("reject-booking", (data) => {
+			setStatus(data);
+		});
+
+		return () => {
+			socket.off("reject-booking");
+			socket.off("accept-booking");
+		};
+	}, []);
+
 	return (
 		<div className="min-h-screen bg-zinc-100 px-4 py-12">
 			<div className="relative max-w-6xl mx-auto z-10 ">
@@ -100,7 +118,7 @@ const Checkout = () => {
 						fare={fare}
 					/>
 					<CheckoutRight
-					bookingId={booking._id}
+						bookingId={booking._id}
 						loading={loading}
 						status={status}
 						setStatus={setStatus}
