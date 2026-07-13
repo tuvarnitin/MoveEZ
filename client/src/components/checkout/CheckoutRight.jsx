@@ -12,7 +12,7 @@ import {
 	GiBanknote,
 } from "../../assets/icons/index.js";
 
-import { PAYMENT_METHODS } from "../../contant/index.js";
+import { PAYMENT_METHODS } from "../../constant/index.js";
 
 import { useState, useEffect } from "react";
 import Button from "../Button.jsx";
@@ -128,7 +128,7 @@ const CheckoutRight = ({
 			<div className="h-1 bg-zinc-900" />
 			<div className="flex-1 p-8 sm:p-10 flex flex-col">
 				<AnimatePresence mode="wait">
-					{status == "idle" && (
+					{(status == "idle" || status === "rejected") && (
 						<motion.div
 							initial={{ opacity: 0, y: 12 }}
 							animate={{ opacity: 1, y: 0 }}

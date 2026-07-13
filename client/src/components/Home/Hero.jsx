@@ -108,7 +108,7 @@ const Hero = ({ setIsAuthModalOpen, isLogin }) => {
 						className="px-4 py-2 text-background bg-white rounded-full cursor-pointer hover:bg-white/90 hover:-translate-y-0.5 transition duration-150"
 						onClick={() => {
 							isAuthenticated
-								? navigate("/booking")
+								? navigate("/book")
 								: dispatch(openAuthModal());
 						}}
 					>

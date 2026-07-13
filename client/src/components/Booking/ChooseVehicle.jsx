@@ -4,7 +4,7 @@ import { motion } from "motion/react";
 import { VehicleCard } from "../../components/Booking/index";
 import { SectionTitle } from "../Booking/index.js";
 
-import { VEHICLES } from "../../contant/index.js"
+import { VEHICLES } from "../../constant/index.js"
 
 const ChooseVehicle = ({ variants, vehicle, setVehicle }) => {
 	return (

@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 
-import { VEHICLES_METAS } from "../../contant/index.js";
+import { VEHICLES_METAS } from "../../constant/index.js";
 
 import {
 	CiMapPin,

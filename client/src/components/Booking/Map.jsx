@@ -115,7 +115,7 @@ const Map = ({
 		<div className="relative w-full h-full bg-zinc-100">
 			{!loading ? (
 				<MapContainer
-					center={[0, 0]}
+					center={pickUpCoords ?? [0, 0]}
 					style={{
 						width: "100%",
 						height: "100%",
