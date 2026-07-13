@@ -13,6 +13,7 @@ const port = process.env.PORT || 5000;
 await connectDB();
 
 const app = express()
+app.use(express.json())
 
 const httpServer = http.createServer(app)
 
@@ -43,6 +44,27 @@ io.on("connection", (socket) => {
         await userModel.findByIdAndUpdate(socket.userId, { socketId: "", isOnline: false })
     })
 })
+
+app.post("/emit",async (req,res)=>{
+    try {
+        const { event, userId, data } = req.body
+
+        const user = await userModel.findById(userId);
+        console.log(user)
+
+        io.to(user.socketId).emit(event, data)
+
+        res.status(200).json({
+            success:true
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            success:false
+        })
+    }
+})
+
 
 httpServer.listen(port, () => {
     console.log(`Server is running on port : http://localhost:${port}`)

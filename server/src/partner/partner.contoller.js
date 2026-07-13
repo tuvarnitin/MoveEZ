@@ -1,4 +1,5 @@
 import bookingModel from "../booking/booking.model.js"
+import axios from "axios"
 
 export const requestKyc = async (req, res) => {
     try {
@@ -72,58 +73,95 @@ export const fetchPendingBookingRequests = async (req, res) => {
 }
 
 export const acceptBooking = async (req, res) => {
-   try {
-       const id = req.params.id
-       const booking = await bookingModel.findById(id);
-       if (!booking || booking.bookingStatus !== "requested") {
-           return res.status(400).json({
-               message: "Invalid request",
-               success: false
-           })
-       }
+    try {
+        const id = req.params.id
+        const booking = await bookingModel.findById(id);
+        if (!booking || booking.bookingStatus !== "requested") {
+            return res.status(400).json({
+                message: "Invalid request",
+                success: false
+            })
+        }
 
-       booking.bookingStatus = "awaiting_payment"
-       booking.paymentDeadline = new Date(Date.now() + 5 * 60 * 1000)
-       await booking.save()
+        booking.bookingStatus = "awaiting_payment"
+        booking.paymentDeadline = new Date(Date.now() + 5 * 60 * 1000)
+        await booking.save()
 
-       return res.status(200).json({
-           message: "Booking accepted",
-           booking,
-           success: true
-       })
-   } catch (error) {
-       return res.status(500).json({
-           message: "Internal server error (Accept Booking)",
-           success: false,
-           error
-       })
-   }
+        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
+            event: "accept-booking",
+            userId: booking.user,
+            data: booking.bookingStatus
+        })
+
+        return res.status(200).json({
+            message: "Booking accepted",
+            booking,
+            success: true
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error (Accept Booking)",
+            success: false,
+            error
+        })
+    }
 }
 
 export const rejectBooking = async (req, res) => {
-   try {
-       const id = req.params.id
-       const booking = await bookingModel.findById(id);
-       if (!booking || booking.bookingStatus !== "requested") {
-           return res.status(400).json({
-               message: "Invalid request",
-               success: false
-           })
-       }
+    try {
+        const id = req.params.id
+        const booking = await bookingModel.findById(id);
+        if (!booking || booking.bookingStatus !== "requested") {
+            return res.status(400).json({
+                message: "Invalid request",
+                success: false
+            })
+        }
 
-       booking.bookingStatus = "rejected"
-       await booking.save()
+        booking.bookingStatus = "rejected"
+        await booking.save()
 
-       return res.status(200).json({
-           message: "Booking rejected",
-           booking,
-           success: true
-       })
-   } catch (error) {
-       return res.status(500).json({
-           message: "Internal server error (Reject Booking)",
-           success: false,
-           error
-       })
-   }
+        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
+            event: "reject-booking",
+            userId: booking.user,
+            data: booking.bookingStatus
+        })
+
+        return res.status(200).json({
+            message: "Booking rejected",
+            booking,
+            success: true
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error (Reject Booking)",
+            success: false,
+            error
+        })
+    }
+}
+
+export const fetchActiveBookings = async (req, res) => {
+    try {
+        const user = req.user
+        const booking = await bookingModel.findOne({
+            driver: user._id,
+            bookingStatus: {
+                $in: ["confirmed", "started", "completed"]
+            }
+        })
+        if (booking) {
+            return res.status(200).json({
+                success: true,
+                booking
+            })
+        }
+    } catch (error) {
+        return res.status(200).json({
+            success: false,
+            booking: [],
+            message: "Internal server error (Fetch Acitve Booking)",
+            error
+        })
+    }
 }

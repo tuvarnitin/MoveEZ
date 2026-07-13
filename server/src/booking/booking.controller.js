@@ -1,6 +1,7 @@
 import { validate } from "../utlis/index.js"
 import bookingModel from "./booking.model.js";
 import userModel from "../user/user.model.js";
+import axios from "axios"
 
 export const createBooking = async (req, res) => {
     try {
@@ -40,6 +41,18 @@ export const createBooking = async (req, res) => {
 
         const booking = await bookingModel.create({
             user: req.user._id, driver: driver._id, vehicle: vehicleId, pickUpLocation, dropLocation, pickUpAddress, dropAddress, fare, userMobileNumber: mobileNumber, driverMobileNumber: driver.mobileNumber, bookingStatus: "requested"
+        })
+
+        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`,{
+            event:"new-booking",
+            userId:driver._id,
+            data:booking
+        })
+
+        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
+            event: "pending-booking-count",
+            userId: driver._id,
+            data: 1
         })
 
         return res.status(201).json({
