@@ -186,3 +186,24 @@ export const getUserBankDetails = async (req, res) => {
         })
     }
 }
+
+export const fetchActiveBookings = async (req, res) => {
+    try {
+        const user = req.user
+        const { bookingId } =  req.body
+        const booking = await bookingModel.findById(bookingId).populate("user vehicle driver")
+        if (booking) {
+            return res.status(200).json({
+                success: true,
+                booking
+            })
+        }
+    } catch (error) {
+        return res.status(200).json({
+            success: false,
+            booking: [],
+            message: "Internal server error (Fetch Acitve Booking - User)",
+            error
+        })
+    }
+}
