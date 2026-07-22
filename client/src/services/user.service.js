@@ -9,4 +9,5 @@ export const userService = {
     hadnleUserBank: (data) => apiClient.post("/api/user/bank/details", data),
     fetchUserBankDetails: (data) => apiClient.get("/api/user/bank/details"),
     fetchAllBookings: (data) => apiClient.get("/api/user/bookings"),
+    fetchAciveBookings: (data) => apiClient.post("/api/user/booking/acitve-booking",(data)),
 }
