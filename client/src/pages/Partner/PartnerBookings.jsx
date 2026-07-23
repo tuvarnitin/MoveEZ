@@ -22,6 +22,7 @@ import {
 import { bookingService } from "../../services/booking.service.js";
 
 const PartnerBookings = () => {
+
 	const navigate = useNavigate();
 	const [bookings, setBookings] = useState([]);
 	const [selectedStatus, setSelectedStatus] = useState("All");
@@ -123,7 +124,7 @@ const PartnerBookings = () => {
 							onChange={(e) => setSelectedStatus(e.target.value)}
 							className="bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-gray-600 focus:outline-none focus:ring-1 focus:ring-zinc-700"
 						>
-							<option value="all">All</option>
+							<option value="All">All</option>
 							<option value="requested">Requested</option>
 							<option value="awaiting_payment">Awaiting Payment</option>
 							<option value="confirmed">Confirmed</option>

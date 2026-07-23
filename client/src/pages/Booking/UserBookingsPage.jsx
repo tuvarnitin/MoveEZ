@@ -22,7 +22,6 @@ import { bookingService } from "../../services/booking.service.js";
 import { Navbar } from "../../components/index.js";
 
 const UserBookings = ({ setIsSidebarOpen }) => {
-	
 	const navigate = useNavigate();
 	const [bookings, setBookings] = useState([]);
 	const [selectedStatus, setSelectedStatus] = useState("all");
@@ -240,10 +239,11 @@ const UserBookings = ({ setIsSidebarOpen }) => {
 														{b.paymentStatus}
 													</span>
 												</div>
-												{b.bookingStatus !== "completed" && (
+												{(b.bookingStatus === "completed" ||
+													b.bookingStatus === "confirmed" ||
+													b.bookingStatus === "started") && (
 													<div className="flex items-center gap-2">
-														<button
-															onClick={() => navigate("/partner/active-ride")}
+														<button								onClick={() =>navigate(`/active-ride/${b?._id.toString()}`)}
 															className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-4 py-1.5 rounded-lg transition-colors cursor-pointer"
 														>
 															<span>Details</span>

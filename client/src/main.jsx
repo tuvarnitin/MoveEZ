@@ -10,16 +10,16 @@ import './index.css'
 import App from './App.jsx'
 import "leaflet/dist/leaflet.css";
 
-// Initialize Lenis
-const lenis = new Lenis();
+// // Initialize Lenis
+// const lenis = new Lenis();
 
-// Use requestAnimationFrame to continuously update the scroll
-function raf(time) {
-  lenis.raf(time* 0.7);
-  requestAnimationFrame(raf);
-}
+// // Use requestAnimationFrame to continuously update the scroll
+// function raf(time) {
+//   lenis.raf(time* 0.7);
+//   requestAnimationFrame(raf);
+// }
 
-requestAnimationFrame(raf);
+// requestAnimationFrame(raf);
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
