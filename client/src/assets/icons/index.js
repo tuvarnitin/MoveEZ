@@ -26,10 +26,11 @@ import {
     FaClock,
     FaX,
     FaGauge,
-    FaStar
+    FaStar,
+    FaPhone
 } from "react-icons/fa6"
 
-import { FaCheckCircle, FaChevronCircleRight } from 'react-icons/fa';
+import { FaCheckCircle, FaChevronCircleRight, FaChevronUp } from 'react-icons/fa';
 
 import {
     FiCheckCircle,
@@ -38,7 +39,10 @@ import {
     FiShield,
     FiPhoneOff,
     FiNavigation,
-    FiZap
+    FiNavigation2,
+    FiZap,
+    FiMessageCircle,
+    FiSend
 } from "react-icons/fi";
 
 import {
@@ -63,6 +67,7 @@ import {
 import {
     IoLocationOutline,
     IoSparklesOutline,
+    IoSparkles,
     IoLogOut,
     IoLogOutOutline
 } from "react-icons/io5";
@@ -74,6 +79,7 @@ import {
     CiLock,
     CiUser,
     CiClock1,
+    CiClock2,
     CiVideoOff,
     CiLocationOn,
     CiMapPin,
@@ -103,7 +109,8 @@ import {
     LuFilePenLine,
     LuCircleDashed,
     LuImagePlus,
-    LuIndianRupee
+    LuIndianRupee,
+    LuKeyRound
 } from "react-icons/lu";
 
 import {
@@ -114,7 +121,15 @@ import {
 } from "react-icons/gi";
 
 export {
+    LuKeyRound,
+    FiNavigation2,
+    FiMessageCircle,
+    FaPhone,
+    IoSparkles,
+    FiSend,
+    CiClock2,
     FaChevronCircleRight,
+    FaChevronUp,
     CiCalendar,
     CiWallet,
     GiBanknote,

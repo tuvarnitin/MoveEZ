@@ -7,10 +7,10 @@ import { useRef } from 'react'
 const useUpdateGeoLoc = (userId) => {
 
     const socketRef = useRef()
+    socketRef.current = getSocket()
 
     useEffect(() => {
         if (!userId || !navigator.geolocation) return
-        socketRef.current = getSocket()
         socketRef.current.emit("init", { userId })
 
         const watch = navigator.geolocation.watchPosition(({coords})=>{

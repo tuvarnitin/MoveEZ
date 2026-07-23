@@ -82,3 +82,12 @@ export const STATUS_LABEL = {
   rejected: { label: "Ride Rejected", sublabel: "Ride was rejected", dot: "bg-red-400" },
   expired: { label: "Request Expired", sublabel: "Booking timed out", dot: "bg-orange-400" },
 };
+
+export const PAYMENT_BADGE = {
+    pending: { label: "Pending", cls: "bg-amber-100 text-amber-700" },
+    started: { label: "Paid", cls: "bg-emerald-100 text-emerald-700" },
+    paid: { label: "Paid", cls: "bg-emerald-100 text-emerald-700" },
+    confirmed: { label: "Paid", cls: "bg-emerald-100 text-emerald-700" },
+    cash: { label: "Cash", cls: "bg-zinc-100 text-zinc-700" },
+    failed: { label: "Failed", cls: "bg-red-100 text-red-700" },
+};

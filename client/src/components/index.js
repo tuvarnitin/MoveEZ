@@ -19,8 +19,13 @@ import VehicleDetails from "./VehicleDetails"
 import DocsFileInput from "./DocsFileInput"
 import BankingInfo from "./BankingInfo"
 import BankInfoInput from "./BankInfoInput"
-
+import RideChat from "./RideChat"
+import RideCompleted from "./RideCompleted"
+import ActiveRidePanel from "./ActiveRidePanel"
 export {
+    RideCompleted,
+    ActiveRidePanel,
+    RideChat,
     BankInfoInput,
     BankingInfo,
     ActionCard,
