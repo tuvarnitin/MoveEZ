@@ -56,7 +56,6 @@ const CheckoutRight = ({
 
 	const handleProcedeToPayment = async () => {
 		if (!bookingId || !paymentMethod) return;
-		const socket = getSocket();
 		setPaymentLoading(true);
 		try {
 			if (paymentMethod == "online") {
@@ -82,7 +81,6 @@ const CheckoutRight = ({
 							...data,
 						});
 						if (response.success) {
-							socket.emit("checkout", { paymentMethod, paymentStatus: "paid",bookingId });
 							window.location.href = `/active-ride/${bookingId}`;
 						}
 					},
@@ -96,7 +94,6 @@ const CheckoutRight = ({
 				});
 
 				if (response.success) {
-					socket.emit("checkout", { paymentMethod, paymentStatus: "pending",bookingId });
 					setStatus("confirmed");
 					window.location.href = `/active-ride/${bookingId}`;
 				}

@@ -148,10 +148,6 @@ const PartnerActiveRide = () => {
 			setDriverPos([lat, lon]);
 		});
 
-		socket.no("checkout",(data)=>{
-			console.log(data)
-		})
-
 		return () => {
 			socket.off("join-ride");
 			socket.off("driver-location");
@@ -339,7 +335,8 @@ const PartnerActiveRide = () => {
 								animate={{ opacity: 1, y: 0 }}
 								exit={{ opacity: 0, y: -6 }}
 								onClick={handleSendPickUpOtp}
-								className="w-full bg-zinc-900 hover:bg-zinc-800 active:scale-[.97] text-white py-4 rounded-2xl font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2"
+								disabled={loadingOtp}
+								className="w-full bg-zinc-900 hover:bg-zinc-800 active:scale-[.97] text-white py-4 rounded-2xl font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
 							>
 								{loadingOtp ? (
 									<RiLoader2Line
@@ -417,7 +414,7 @@ const PartnerActiveRide = () => {
 										<button
 											onClick={verifyPickUpOtp}
 											disabled={loadingOtp || otp.length < 4}
-											className="flex-1 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 text-white py-2.5 rounded-xl text-sm font-bold active:scale-[0.97] transition-all"
+											className="flex-1 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 text-white py-2.5 rounded-xl text-sm font-bold active:scale-[0.97] transition-all cursor-pointer disabled:cursor-not-allowed"
 										>
 											{loadingOtp ? (
 												<span className="flex items-center justify-center gap-2">
@@ -438,7 +435,8 @@ const PartnerActiveRide = () => {
 								animate={{ opacity: 1, y: 0 }}
 								exit={{ opacity: 0, y: -6 }}
 								onClick={handleSendDropOtp}
-								className="w-full bg-zinc-900 hover:bg-zinc-800 active:scale-[.97] text-white py-4 rounded-2xl font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2"
+								disabled={loadingDropOtp}
+								className="w-full bg-zinc-900 hover:bg-zinc-800 active:scale-[.97] text-white py-4 rounded-2xl font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
 							>
 								{loadingDropOtp ? (
 									<RiLoader2Line
@@ -509,6 +507,7 @@ const PartnerActiveRide = () => {
 												setDropOtp("");
 												setDropOtpError("");
 											}}
+											disabled={loadingDropOtp}
 											className="flex-1 border border-zinc-200 bg-white text-zinc-700 py-2.5 rounded-xl text-sm font-semibold active:scale-[0.97] transition-all"
 										>
 											Cancel
@@ -516,7 +515,7 @@ const PartnerActiveRide = () => {
 										<button
 											onClick={verifyDropOtp}
 											disabled={loadingDropOtp || dropOtp.length < 4}
-											className="flex-1 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 text-white py-2.5 rounded-xl text-sm font-bold active:scale-[0.97] transition-all"
+											className="flex-1 bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 text-white py-2.5 rounded-xl text-sm font-bold active:scale-[0.97] transition-all cursor-pointer disabled:cursor-not-allowed"
 										>
 											{loadingDropOtp ? (
 												<span className="flex items-center justify-center gap-2">

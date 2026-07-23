@@ -72,20 +72,24 @@ const Navbar = ({ setIsSidebarOpen }) => {
 		}
 	};
 
+	const fetchPendingRequestCount = async () => {
+		const response = await partnerService.fetchPendingRequestCount();
+		if (response.success) {
+			console.log(response)
+			setPendingRequestCount(response.pendingRequestsCount);
+		}
+	};
 	useEffect(() => {
-		const fetchPendingRequestCount = async () => {
-			const response = await partnerService.fetchPendingRequestCount();
-			if (response.success) {
-				setPendingRequestCount(response.pendingRequestsCount);
-			}
-		};
 		fetchPendingRequestCount();
 	}, []);
 
 	useEffect(() => {
 		const socket = getSocket();
 		socket.on("pending-booking-count", (data) => {
-			setPendingRequestCount((prev) => prev + data);
+			fetchPendingRequestCount()
+		});
+		socket.on("cancel-ride", (data) => {
+			fetchPendingRequestCount();
 		});
 		return () => {
 			socket.off("pending-booking-count");
@@ -124,6 +128,7 @@ const Navbar = ({ setIsSidebarOpen }) => {
 							{title === "Pending Requests" && (
 								<span className="absolute -top-1 -right-3 w-4 h-4 rounded-full bg-white text-xs text-background flex items-center justify-center font-semibold">
 									{pendingRequestCount}
+									{console.log(pendingRequestCount)}
 								</span>
 							)}
 						</Link>

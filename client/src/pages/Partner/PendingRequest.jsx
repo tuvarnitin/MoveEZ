@@ -40,7 +40,14 @@ const PendingRequest = () => {
 			setBookings(prev => [data,...prev])
 		})
 
-		return ()=> socket.off("new-booking")
+		socket.on("cancel-ride",(data)=>{
+			setBookings(prev => prev.filter(b => b._id !== data.bookingId))
+		})
+		
+		return ()=> {
+			socket.off("new-booking");
+			socket.off("cancel-ride");
+		}
 	}, []);
 
 	return (
