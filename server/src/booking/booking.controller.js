@@ -108,6 +108,15 @@ export const cancleBooking = async (req, res) => {
         booking.bookingStatus = "cancelled"
         await booking.save()
 
+        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
+            event: "cancel-ride",
+            userId: booking.driver.toString(),
+            data: {
+                bookingStatus: "cancelled",
+                bookingId:booking._id
+            }
+        })
+
         return res.status(200).json({
             message: "Booking cancel",
             booking,
@@ -134,9 +143,26 @@ export const confirmBooking = async (req, res) => {
             })
         }
 
-        booking.paymentStatus = "paid"
+
+        const adminCommission = booking.fare * .1
+        const partnerAmount = booking.fare - adminCommission
+
+        booking.adminCommission = adminCommission
+        booking.partnerAmount = partnerAmount
+        booking.paymentStatus = "pending"
+        booking.paymentMethod = "cash"
         booking.bookingStatus = "confirmed"
         await booking.save()
+
+        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
+            event: "payment",
+            userId: booking.driver,
+            data: {
+                paymentMethod: "cash",
+                paymentStatus: "pending",
+                bookingStatus: "confirmed"
+            }
+        })
 
         return res.status(200).json({
             success: true

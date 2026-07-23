@@ -57,9 +57,13 @@ const bookingSchema = new mongoose.Schema({
         enum: ["idle","requested","awaiting_payment","confirmed","started","completed","cancelled","rejected","expired"],
         default:"idle"
     },
+    paymentMethod:{
+        type:String,
+        enum:["cash","online"],
+    },
     paymentStatus: {
         type: String,
-        enum: ["pending", "paid", "cash", "failed"],
+        enum: ["pending", "paid", "failed"],
         default:"pending"
     },
     adminCommission: {

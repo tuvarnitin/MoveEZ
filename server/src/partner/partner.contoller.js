@@ -124,7 +124,7 @@ export const rejectBooking = async (req, res) => {
         await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
             event: "reject-booking",
             userId: booking.user,
-            data: booking.bookingStatus
+            data: "rejected"
         })
 
         return res.status(200).json({

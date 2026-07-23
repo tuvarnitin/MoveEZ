@@ -1,6 +1,7 @@
 import bookingModel from "../booking/booking.model.js"
 import razorpay from "../razorpay/razorpay.js"
 import crypto from "crypto"
+import axios from "axios"
 export const createPayment = async (req, res) => {
     try {
         const { bookingId } = req.body;
@@ -64,12 +65,23 @@ export const verifyPayment = async (req, res) => {
         booking.adminCommission = adminCommission
         booking.partnerAmount = partnerAmount
         booking.paymentStatus = "paid"
+        booking.paymentMethod = "online"
         booking.bookingStatus = "confirmed"
         await booking.save()
 
+        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
+            event: "payment",
+            userId: booking.driver,
+            data: {
+                paymentStatus: "paid",
+                paymentMethod: "online",
+                bookingStatus : "confirmed"
+            }
+        })
+
         return res.status(200).json({
-            success:true,
-            message:"Payment successfull",
+            success: true,
+            message: "Payment successfull",
             adminCommission,
             partnerAmount
         })
