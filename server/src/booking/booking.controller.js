@@ -2,6 +2,7 @@ import { validate } from "../utlis/index.js"
 import bookingModel from "./booking.model.js";
 import userModel from "../user/user.model.js";
 import axios from "axios"
+import { sendStartOtp } from "../services/mail.service.js";
 
 export const createBooking = async (req, res) => {
     try {
@@ -43,10 +44,10 @@ export const createBooking = async (req, res) => {
             user: req.user._id, driver: driver._id, vehicle: vehicleId, pickUpLocation, dropLocation, pickUpAddress, dropAddress, fare, userMobileNumber: mobileNumber, driverMobileNumber: driver.mobileNumber, bookingStatus: "requested"
         })
 
-        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`,{
-            event:"new-booking",
-            userId:driver._id,
-            data:booking
+        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
+            event: "new-booking",
+            userId: driver._id,
+            data: booking
         })
 
         await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
@@ -153,9 +154,9 @@ export const fetchAllBookings = async (req, res) => {
     const role = req.user.role
     let bookings
     try {
-        if(role === "user"){
+        if (role === "user") {
             bookings = await bookingModel.find({ user: req.user._id }).populate("user driver vehicle").sort({ createdAt: -1 })
-        }else if(role === "partner"){
+        } else if (role === "partner") {
             bookings = await bookingModel.find({ driver: req.user._id }).populate("user driver vehicle").sort({ createdAt: -1 })
         }
         return res.status(200).json({
@@ -168,6 +169,202 @@ export const fetchAllBookings = async (req, res) => {
             success: false,
             message: "Internal server error (Fetch all bookings)",
             error
+        })
+    }
+}
+
+export const sendPickUpOtp = async (req, res) => {
+    try {
+        const { bookingId } = req.body;
+        if (!bookingId) {
+            return res.status(400).json({
+                message: "Invalid booking id",
+                success: false
+            })
+        }
+        const booking = await bookingModel.findById(bookingId).populate("user")
+
+        if (!booking) {
+            return res.status(400).json({
+                message: "Booking not found",
+                success: false
+            })
+        }
+        const otp = Math.floor(1000 + Math.random() * 9000);
+
+        booking.pickUpOtp = otp;
+        booking.pickUpOtpExpires = new Date(Date.now() + 5 * 60 * 1000)
+        await booking.save()
+
+        if (booking.user.email) {
+            await sendStartOtp(booking?.user?.name, booking?.user?.email, otp);
+        }
+
+        return res.status(201).json({
+            success: true,
+            message: "Otp sent"
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            error,
+            success: false,
+            message: "Internal server error (Send PickUp Otp)"
+        })
+    }
+}
+
+export const verifyPickUpOtp = async (req, res) => {
+    try {
+        const { bookingId, otp } = req.body;
+
+        if (!bookingId) {
+            return res.status(400).json({
+                message: "Invalid booking id",
+                success: false
+            })
+        }
+        const booking = await bookingModel.findById(bookingId).populate("user")
+
+        if (!booking) {
+            return res.status(400).json({
+                message: "Booking not found",
+                success: false
+            })
+        }
+        if (!booking.pickUpOtp) {
+            return res.status(400).json({
+                message: "Otp not generated",
+                success: false
+            })
+        }
+
+        if (booking.pickUpOtpExpires < new Date()) {
+            return res.status(400).json({
+                message: "Otp expired",
+                success: false
+            })
+        }
+
+        if (booking.pickUpOtp != otp) {
+            return res.status(400).json({
+                message: "Incorrect Otp",
+                success: false
+            })
+        }
+
+        booking.pickUpOtp = "";
+        booking.bookingStatus = "started";
+        booking.pickUpOtpExpires = 0
+        await booking.save()
+
+        return res.status(200).json({
+            success: true,
+            message: "Otp verified"
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            error,
+            success: false,
+            message: "Internal server error (Verifiy PickUp Otp)"
+        })
+    }
+}
+
+export const sendDropOtp = async (req, res) => {
+    try {
+        const { bookingId } = req.body;
+        if (!bookingId) {
+            return res.status(400).json({
+                message: "Invalid booking id",
+                success: false
+            })
+        }
+        const booking = await bookingModel.findById(bookingId).populate("user")
+
+        if (!booking) {
+            return res.status(400).json({
+                message: "Booking not found",
+                success: false
+            })
+        }
+        const otp = Math.floor(1000 + Math.random() * 9000);
+
+        booking.dropOtp = otp;
+        booking.dropOtpExpires = new Date(Date.now() + 5 * 60 * 1000)
+        await booking.save()
+
+        if (booking.user.email) {
+            await sendStartOtp(booking?.user?.name, booking?.user?.email, otp);
+        }
+
+        return res.status(201).json({
+            success: true,
+            message: "Otp sent"
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            error,
+            success: false,
+            message: "Internal server error (Send Drop Otp)"
+        })
+    }
+}
+
+export const veirfyDropOtp = async (req, res) => {
+    try {
+        const { bookingId, otp } = req.body;
+
+        if (!bookingId) {
+            return res.status(400).json({
+                message: "Invalid booking id",
+                success: false
+            })
+        }
+        const booking = await bookingModel.findById(bookingId).populate("user")
+
+        if (!booking.dropOtp) {
+            return res.status(400).json({
+                message: "Otp not generated",
+                success: false
+            })
+        }
+
+        if (booking.dropOtpExpires < new Date()) {
+            return res.status(400).json({
+                message: "Otp expired",
+                success: false
+            })
+        }
+
+        if (booking.dropOtp != otp) {
+            return res.status(400).json({
+                message: "Incorrect Otp",
+                success: false
+            })
+        }
+
+        booking.dropOtp = "";
+        booking.bookingStatus = "completed";
+        booking.dropOtpExpires = 0
+        await booking.save()
+
+        return res.status(200).json({
+            success: true,
+            message: "Otp verified"
+        })
+
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            error,
+            success: false,
+            message: "Internal server error (Verifiy Drop Otp)"
         })
     }
 }
