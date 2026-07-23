@@ -276,3 +276,517 @@ export const sendOtp = async (name, email, otp) => {
       }
     })
 }
+
+export const sendStartOtp = async (name, email, otp) => {
+  return transporter.sendMail({
+    from: process.env.EMAIL,
+    to: email,
+    subject: `Your Ride Pickup OTP - ${otp}`,
+    html: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>MoveEZ Ride Pickup OTP</title>
+</head>
+
+<body style="
+  margin:0;
+  padding:0;
+  background:#0f172a;
+  font-family:Arial, Helvetica, sans-serif;
+">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td align="center" style="padding:40px 20px;">
+
+        <!-- Main Card -->
+        <table
+          width="600"
+          cellpadding="0"
+          cellspacing="0"
+          border="0"
+          style="
+            background:#111827;
+            border:1px solid #1f2937;
+            border-radius:20px;
+            overflow:hidden;
+          "
+        >
+
+          <!-- Top Accent -->
+          <tr>
+            <td
+              style="
+                height:6px;
+                background:linear-gradient(
+                  90deg,
+                  #f97316,
+                  #fb923c,
+                  #f97316
+                );
+              "
+            ></td>
+          </tr>
+
+          <!-- Logo -->
+          <tr>
+            <td align="center" style="padding:35px 40px 15px;">
+              <img
+                src="https://res.cloudinary.com/dhm3xypip/image/upload/v1780738057/logo_kwvwtc.png"
+                alt="MoveEZ"
+                width="240"
+                style="display:block;max-width:240px;"
+              />
+            </td>
+          </tr>
+
+          <!-- Heading -->
+          <tr>
+            <td align="center" style="padding:0 40px;">
+              <h1
+                style="
+                  margin:0;
+                  color:#ffffff;
+                  font-size:32px;
+                  font-weight:700;
+                "
+              >
+                Ride Pickup OTP
+              </h1>
+
+              <p
+                style="
+                  margin-top:12px;
+                  color:#94a3b8;
+                  font-size:15px;
+                  line-height:24px;
+                "
+              >
+                Share this OTP with your driver to start your ride.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding:10px 40px 0;">
+
+              <p
+                style="
+                  color:#e5e7eb;
+                  font-size:16px;
+                  line-height:28px;
+                  margin:0;
+                "
+              >
+                Hi <strong>${name}</strong>,
+              </p>
+
+              <p
+                style="
+                  color:#94a3b8;
+                  font-size:15px;
+                  line-height:28px;
+                  margin-top:15px;
+                "
+              >
+                Your ride has been confirmed.
+                Please provide the following OTP to your driver before the trip begins.
+                The driver will verify this code to securely start your ride.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- OTP Box -->
+          <tr>
+            <td align="center" style="padding:30px 40px;">
+
+              <table
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="
+                  background:#0f172a;
+                  border:1px solid #334155;
+                  border-radius:16px;
+                "
+              >
+                <tr>
+                  <td
+                    style="
+                      padding:20px 40px;
+                      color:#f97316;
+                      font-size:40px;
+                      font-weight:700;
+                      letter-spacing:10px;
+                    "
+                  >
+                    ${otp}
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Info -->
+          <tr>
+            <td align="center" style="padding:0 40px;">
+
+              <p
+                style="
+                  margin:0;
+                  color:#cbd5e1;
+                  font-size:15px;
+                "
+              >
+                This OTP is valid for
+                <span
+                  style="
+                    color:#f97316;
+                    font-weight:bold;
+                  "
+                >
+                  5 minutes
+                </span>.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- Security Note -->
+          <tr>
+            <td style="padding:30px 40px;">
+
+              <table
+                width="100%"
+                cellpadding="0"
+                cellspacing="0"
+                style="
+                  background:#0f172a;
+                  border:1px solid #1e293b;
+                  border-radius:12px;
+                "
+              >
+                <tr>
+                  <td
+                    style="
+                      padding:18px;
+                      color:#94a3b8;
+                      font-size:14px;
+                      line-height:24px;
+                    "
+                  >
+                    <strong style="color:#f97316;">Important:</strong>
+                    Never share this OTP with anyone except your assigned
+                    MoveEZ driver at the pickup location.
+                    MoveEZ will never ask you for this OTP over phone, email,
+                    or message.
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td
+              align="center"
+              style="
+                border-top:1px solid #1f2937;
+                padding:25px 40px;
+              "
+            >
+
+              <p
+                style="
+                  margin:0;
+                  color:#64748b;
+                  font-size:13px;
+                "
+              >
+                Wishing you a safe and pleasant journey with MoveEZ.
+              </p>
+
+              <p
+                style="
+                  margin-top:8px;
+                  color:#475569;
+                  font-size:12px;
+                "
+              >
+                © 2026 MoveEZ. All rights reserved.
+              </p>
+
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>`,
+  });
+};
+
+export const sendEndOtp = async (name, email, otp) => {
+  return transporter.sendMail({
+    from: process.env.EMAIL,
+    to: email,
+    subject: `Your Ride Drop OTP - ${otp}`,
+    html: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>MoveEZ Ride Drop OTP</title>
+</head>
+
+<body style="
+  margin:0;
+  padding:0;
+  background:#0f172a;
+  font-family:Arial, Helvetica, sans-serif;
+">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td align="center" style="padding:40px 20px;">
+
+        <!-- Main Card -->
+        <table
+          width="600"
+          cellpadding="0"
+          cellspacing="0"
+          border="0"
+          style="
+            background:#111827;
+            border:1px solid #1f2937;
+            border-radius:20px;
+            overflow:hidden;
+          "
+        >
+
+          <!-- Top Accent -->
+          <tr>
+            <td
+              style="
+                height:6px;
+                background:linear-gradient(
+                  90deg,
+                  #f97316,
+                  #fb923c,
+                  #f97316
+                );
+              "
+            ></td>
+          </tr>
+
+          <!-- Logo -->
+          <tr>
+            <td align="center" style="padding:35px 40px 15px;">
+              <img
+                src="https://res.cloudinary.com/dhm3xypip/image/upload/v1780738057/logo_kwvwtc.png"
+                alt="MoveEZ"
+                width="240"
+                style="display:block;max-width:240px;"
+              />
+            </td>
+          </tr>
+
+          <!-- Heading -->
+          <tr>
+            <td align="center" style="padding:0 40px;">
+              <h1
+                style="
+                  margin:0;
+                  color:#ffffff;
+                  font-size:32px;
+                  font-weight:700;
+                "
+              >
+                Ride Drop OTP
+              </h1>
+
+              <p
+                style="
+                  margin-top:12px;
+                  color:#94a3b8;
+                  font-size:15px;
+                  line-height:24px;
+                "
+              >
+                Share this OTP with your driver when you reach your destination to complete your ride.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Content -->
+          <tr>
+            <td style="padding:10px 40px 0;">
+
+              <p
+                style="
+                  color:#e5e7eb;
+                  font-size:16px;
+                  line-height:28px;
+                  margin:0;
+                "
+              >
+                Hi <strong>${name}</strong>,
+              </p>
+
+              <p
+                style="
+                  color:#94a3b8;
+                  font-size:15px;
+                  line-height:28px;
+                  margin-top:15px;
+                "
+              >
+                You're almost there! Once you arrive at your destination,
+                provide the OTP below to your driver to securely complete your ride.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- OTP Box -->
+          <tr>
+            <td align="center" style="padding:30px 40px;">
+
+              <table
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="
+                  background:#0f172a;
+                  border:1px solid #334155;
+                  border-radius:16px;
+                "
+              >
+                <tr>
+                  <td
+                    style="
+                      padding:20px 40px;
+                      color:#f97316;
+                      font-size:40px;
+                      font-weight:700;
+                      letter-spacing:10px;
+                    "
+                  >
+                    ${otp}
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Info -->
+          <tr>
+            <td align="center" style="padding:0 40px;">
+
+              <p
+                style="
+                  margin:0;
+                  color:#cbd5e1;
+                  font-size:15px;
+                "
+              >
+                This OTP is valid for
+                <span
+                  style="
+                    color:#f97316;
+                    font-weight:bold;
+                  "
+                >
+                  5 minutes
+                </span>.
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- Security Note -->
+          <tr>
+            <td style="padding:30px 40px;">
+
+              <table
+                width="100%"
+                cellpadding="0"
+                cellspacing="0"
+                style="
+                  background:#0f172a;
+                  border:1px solid #1e293b;
+                  border-radius:12px;
+                "
+              >
+                <tr>
+                  <td
+                    style="
+                      padding:18px;
+                      color:#94a3b8;
+                      font-size:14px;
+                      line-height:24px;
+                    "
+                  >
+                    <strong style="color:#f97316;">Important:</strong>
+                    Share this OTP only with your assigned MoveEZ driver after
+                    reaching your destination. This OTP confirms that your ride
+                    has been completed successfully.
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td
+              align="center"
+              style="
+                border-top:1px solid #1f2937;
+                padding:25px 40px;
+              "
+            >
+
+              <p
+                style="
+                  margin:0;
+                  color:#64748b;
+                  font-size:13px;
+                "
+              >
+                Thank you for choosing MoveEZ. We hope you had a safe and comfortable journey.
+              </p>
+
+              <p
+                style="
+                  margin-top:8px;
+                  color:#475569;
+                  font-size:12px;
+                "
+              >
+                © 2026 MoveEZ. All rights reserved.
+              </p>
+
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>`,
+  });
+};

@@ -229,7 +229,6 @@ export const nearByVehicles = async (req, res) => {
             }
         })
 
-        console.log(partners)
 
         if(!partners.length){
             return res.status(200).json({   
@@ -240,7 +239,6 @@ export const nearByVehicles = async (req, res) => {
         }
 
         const partnerIds = partners.map(partner => partner._id)
-        console.log(partnerIds)
 
         const vehicles = await Vehicle.find({
             owner:{

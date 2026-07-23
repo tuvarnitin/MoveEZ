@@ -28,7 +28,7 @@ export const getAllMsg = async (req, res) => {
 
         const msgs = await chatModel.find({
             bookingId
-        }).sort({ createdAt: -1 })
+        })
 
         return res.status(200).json({
             msgs,

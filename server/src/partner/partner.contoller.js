@@ -149,7 +149,7 @@ export const fetchActiveBookings = async (req, res) => {
             bookingStatus: {
                 $in: ["confirmed", "started", "completed"]
             }
-        })
+        }).populate("user vehicle driver")
         if (booking) {
             return res.status(200).json({
                 success: true,
