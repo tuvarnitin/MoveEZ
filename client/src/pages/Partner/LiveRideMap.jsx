@@ -37,7 +37,7 @@ const LiveRideMap = ({
 				routes: pickUpToDrop,
 				distance: dropDistance,
 				duration: estTimeToDrop,
-			} = await handleRoute(pickUpLocation, dropLocation);
+			} = await handleRoute(driverLocation, dropLocation);
 
 			if (mapStatus === "arriving" || mapStatus === "confirmed") {
 				setPickUpToDropRoute([]);
@@ -49,8 +49,8 @@ const LiveRideMap = ({
 			onUpdate(pickUpDistance, dropDistance, estTimeToPickUp, estTimeToDrop);
 		};
 		fetchRoutes();
-	}, [dropLocation, pickUpLocation, driverLocation]);
-
+	}, [dropLocation, pickUpLocation, driverLocation,mapStatus]);
+    
 	const showDriverToPickUpRoute =
 		mapStatus === "arriving" || mapStatus === "confirmed";
 	const showPickUpToDropRoute = mapStatus === "started";
@@ -70,7 +70,7 @@ const LiveRideMap = ({
 					attribution='&copy; <a href="https://carto.com">CARTO</a> contributors'
 					url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png"
 				/>
-				{pickUpLocation && (
+				{showDriverToPickUpRoute && pickUpLocation && (
 					<Marker
 						icon={pickUpIcon}
 						position={pickUpLocation}

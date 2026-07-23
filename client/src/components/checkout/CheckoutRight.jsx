@@ -18,6 +18,7 @@ import { useState, useEffect } from "react";
 import Button from "../Button.jsx";
 import { paymentService } from "../../services/payment.service.js";
 import { bookingService } from "../../services/booking.service.js";
+import { getSocket } from "../../socket.io/socketIo.js";
 
 const CheckoutRight = ({
 	status,
@@ -55,6 +56,7 @@ const CheckoutRight = ({
 
 	const handleProcedeToPayment = async () => {
 		if (!bookingId || !paymentMethod) return;
+		const socket = getSocket();
 		setPaymentLoading(true);
 		try {
 			if (paymentMethod == "online") {
@@ -62,9 +64,11 @@ const CheckoutRight = ({
 				if (!razorpayScript) {
 					alert("Razorpay script failed to load");
 				}
+
 				const response = await paymentService.createPayment({
 					bookingId,
 				});
+
 				const options = {
 					key: import.meta.env.VITE_API_RAZORPAY_API_KEY,
 					amount: response.amount,
@@ -78,7 +82,8 @@ const CheckoutRight = ({
 							...data,
 						});
 						if (response.success) {
-							window.location.href = `/ride/${bookingId}`;
+							socket.emit("checkout", { paymentMethod, paymentStatus: "paid",bookingId });
+							window.location.href = `/active-ride/${bookingId}`;
 						}
 					},
 				};
@@ -91,8 +96,9 @@ const CheckoutRight = ({
 				});
 
 				if (response.success) {
+					socket.emit("checkout", { paymentMethod, paymentStatus: "pending",bookingId });
 					setStatus("confirmed");
-					window.location.href = `/ride/${bookingId}`;
+					window.location.href = `/active-ride/${bookingId}`;
 				}
 			}
 		} catch (error) {
@@ -441,7 +447,7 @@ const CheckoutRight = ({
 								whileTap={{ scale: 0.97 }}
 								whileHover={{ scale: 1.03 }}
 								onClick={() => {
-									window.location.href = `/ride/${bookingId}`;
+									window.location.href = `/active-ride/${bookingId}`;
 								}}
 								className="flex items-center gap-2.5 bg-zinc-900 hover:bg-black text-white font-black text-sm px-8 py-4 rounded-2xl transition-colors shadow-md cursor-pointer"
 							>

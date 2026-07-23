@@ -43,12 +43,13 @@ import { clearUserData, setUserData } from "./redux/features/userSlice.js";
 import Zego from "./zego/Zego.jsx";
 
 import { authService } from "./services/auth.service.js";
-import { getSocket } from "./socket.io/socketIo.js";
 import useUpdateGeoLoc from "./hooks/useUpdateGeoLoc.js";
 
 import Checkout from "./pages/checkout/Checkout.jsx";
 import { BookVehiclePage, UserBookingsPage } from "./pages/Booking/index.js";
-import ActiveRide from "./pages/Partner/ActiveRide.jsx";
+import PartnerActiveRide from "./pages/Partner/PartnerActiveRide.jsx";
+import UserActiveRide from "./pages/UserActiveRide.jsx";
+import { getSocket } from "./socket.io/socketIo.js";
 
 function App() {
 	const dispatch = useDispatch();
@@ -58,6 +59,12 @@ function App() {
 	const user = useSelector((state) => state.user);
 
 	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		if (!user?.data?._id) return;
+		const socket = getSocket();
+		socket.emit("init", { userId: user.data._id });
+	}, []);
 
 	useEffect(() => {
 		setIsLoading(true);
@@ -119,6 +126,10 @@ function App() {
 
 				{/* Routes only for authenticated users */}
 				<Route element={<AuthCheckerRoute />}>
+					<Route
+						path="/active-ride/:id"
+						element={<UserActiveRide />}
+					/>
 					<Route
 						path="/video-kyc/:roomId"
 						element={<Zego />}
@@ -183,7 +194,7 @@ function App() {
 					</Route>
 					<Route
 						path="/partner/active-ride"
-						element={<ActiveRide />}
+						element={<PartnerActiveRide />}
 					/>
 				</Route>
 
