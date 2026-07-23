@@ -31,12 +31,24 @@ io.on("connection", (socket) => {
     })
 
     socket.on("update-location", async ({ userId, lat, lon }) => {
-        await userModel.findByIdAndUpdate(userId,{
-            location:{
-                type:"Point",
-                coordinates:[lon,lat]
+        await userModel.findByIdAndUpdate(userId, {
+            location: {
+                type: "Point",
+                coordinates: [lon, lat]
             }
         })
+    })
+
+    socket.on("join-ride", ({ id }) => {
+        socket.join(`ride-${id}`)
+    })
+
+    socket.on("driver-location-update", ({ bookingId, lat, lon, status }) => {
+        io.to(`ride-${bookingId}`).emit("driver-location", { lat, lon })
+    })
+
+    socket.on("message", ({ msg }) => {
+        io.to(`ride-${msg?.bookingId}`).emit("message", { msg })
     })
 
     socket.on("disconnect", async () => {
@@ -45,22 +57,23 @@ io.on("connection", (socket) => {
     })
 })
 
-app.post("/emit",async (req,res)=>{
+
+
+app.post("/emit", async (req, res) => {
     try {
         const { event, userId, data } = req.body
 
         const user = await userModel.findById(userId);
-        console.log(user)
 
         io.to(user.socketId).emit(event, data)
 
         res.status(200).json({
-            success:true
+            success: true
         })
 
     } catch (error) {
         res.status(500).json({
-            success:false
+            success: false
         })
     }
 })
