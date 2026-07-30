@@ -88,6 +88,7 @@ export const PAYMENT_BADGE = {
     started: { label: "Paid", cls: "bg-emerald-100 text-emerald-700" },
     paid: { label: "Paid", cls: "bg-emerald-100 text-emerald-700" },
     confirmed: { label: "Paid", cls: "bg-emerald-100 text-emerald-700" },
-    cash: { label: "Cash", cls: "bg-zinc-100 text-zinc-700" },
+    cash: { label: "Cash", cls: "bg-zinc-700 text-zinc-100" },
+    online: { label: "Online", cls: "bg-emerald-700 text-emerald-100" },
     failed: { label: "Failed", cls: "bg-red-100 text-red-700" },
 };
