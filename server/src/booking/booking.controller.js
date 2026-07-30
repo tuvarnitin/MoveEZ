@@ -73,7 +73,7 @@ export const createBooking = async (req, res) => {
 
 export const fetchActiveBooking = async (req, res) => {
     try {
-        const booking = await bookingModel.findOne({ user: req.user._id, bookingStatus: { $in: ["awaiting_payment", "confirmed", "started", "requested"] } })
+        const booking = await bookingModel.findOne({ user: req.user._id, bookingStatus: "started" })
         if (!booking) {
             return res.status(400).json({
                 message: "Booking not found",
@@ -110,7 +110,7 @@ export const cancleBooking = async (req, res) => {
 
         await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
             event: "cancel-ride",
-            userId: booking.driver.toString(),
+            userId: booking.driver,
             data: {
                 bookingStatus: "cancelled",
                 bookingId:booking._id
@@ -143,12 +143,6 @@ export const confirmBooking = async (req, res) => {
             })
         }
 
-
-        const adminCommission = booking.fare * .1
-        const partnerAmount = booking.fare - adminCommission
-
-        booking.adminCommission = adminCommission
-        booking.partnerAmount = partnerAmount
         booking.paymentStatus = "pending"
         booking.paymentMethod = "cash"
         booking.bookingStatus = "confirmed"
@@ -285,6 +279,14 @@ export const verifyPickUpOtp = async (req, res) => {
         booking.pickUpOtpExpires = 0
         await booking.save()
 
+        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
+            event: "ride-started",
+            userId: booking.user._id,
+            data: {
+                bookingStatus: "started"
+            }
+        })
+
         return res.status(200).json({
             success: true,
             message: "Otp verified"
@@ -375,10 +377,25 @@ export const veirfyDropOtp = async (req, res) => {
             })
         }
 
+        const adminCommission = booking.fare * .1
+        const driverAmount = booking.fare - adminCommission
+
+        booking.adminCommission = Math.floor(adminCommission)
+        booking.driverAmount = Math.ceil(driverAmount)
         booking.dropOtp = "";
         booking.bookingStatus = "completed";
+        booking.paymentStatus = "paid";
         booking.dropOtpExpires = 0
         await booking.save()
+
+        await axios.post(`${process.env.SOCKET_SERVER_URL}/emit`, {
+            event: "ride-completed",
+            userId: booking.user._id,
+            data: {
+                bookingStatus: "completed",
+                paymentStatus:"paid"
+            }
+        })
 
         return res.status(200).json({
             success: true,
