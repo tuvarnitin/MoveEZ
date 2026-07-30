@@ -42,7 +42,10 @@ import {
     FiNavigation2,
     FiZap,
     FiMessageCircle,
-    FiSend
+    FiSend,
+    FiBarChart2,
+    FiTrendingDown,
+    FiTrendingUp,
 } from "react-icons/fi";
 
 import {
@@ -121,6 +124,9 @@ import {
 } from "react-icons/gi";
 
 export {
+    FiBarChart2,
+    FiTrendingDown,
+    FiTrendingUp,
     LuKeyRound,
     FiNavigation2,
     FiMessageCircle,

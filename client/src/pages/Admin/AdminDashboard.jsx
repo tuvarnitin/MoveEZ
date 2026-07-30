@@ -12,11 +12,12 @@ import {
 	CiClock1,
 	CiUser,
 	FiXCircle,
-  FaVideo
+	FaVideo,
 } from "../../assets/icons/index.js";
 
 import { adminService } from "../../services/admin.service";
 import { authService } from "../../services/auth.service";
+import AdminEarning from "../../components/Admin/AdminEarning.jsx";
 
 const AdminDashboard = () => {
 	const [stats, setStats] = useState(null);
@@ -137,6 +138,7 @@ const AdminDashboard = () => {
 						)}
 					</motion.div>
 				</AnimatePresence>
+				<AdminEarning />
 			</main>
 		</div>
 	);

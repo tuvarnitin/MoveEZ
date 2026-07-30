@@ -28,6 +28,7 @@ import {
 
 import { partnerService } from "../../services/partner.service";
 import { vehicleService } from "../../services/vehicle.service";
+import PartnerEarning from "../../components/Partner/PartnerEarning.jsx";
 
 const STEPS = [
 	{ id: 1, title: "Vehicle", route: "/partner/become-partner" },
@@ -244,11 +245,16 @@ const PartnerDashboard = () => {
 						className="w-full p-6 bg-background text-white rounded-2xl shadow-2xl"
 					>
 						<h1 className="text-2xl font-semibold">🚀 You're Live Now</h1>
-						<button className="mt-6 bg-white text-background px-6 py-3 rounded-xl font-semibold flex items-center gap-2 cursor-pointer">
+						<button
+							onClick={() => navigate("/partner/bookings")}
+							className="mt-6 bg-white text-background px-6 py-3 rounded-xl font-semibold flex items-center gap-2 cursor-pointer"
+						>
 							Go to Bookings <FaArrowRight />
 						</button>
 					</motion.div>
 				)}
+				{userData.role === "partner" &&
+					userData.onboardingStep == 7 && <PartnerEarning />}
 			</div>
 
 			{showPricingModal && (
