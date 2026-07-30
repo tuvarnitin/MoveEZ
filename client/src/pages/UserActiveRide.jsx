@@ -22,7 +22,6 @@ const UserActiveRide = () => {
 	const { id } = useParams();
 
 	const [booking, setBooking] = useState({});
-	const [bookingStatus, setBookingStatus] = useState("");
 	const [loading, setLoading] = useState(false);
 
 	const [driverPos, setDriverPos] = useState([]);
@@ -35,26 +34,20 @@ const UserActiveRide = () => {
 	const [estTimeToDrop, setEstTimeToDrop] = useState(0);
 
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [openChat, setOpenChat] = useState(false);
 
-	const currStatus = booking.bookingStatus;
-	const cfg = STATUS_LABEL[booking.bookingStatus];
+	const statusConfig = STATUS_LABEL[booking.bookingStatus];
+
 	const isActive = booking.bookingStatus === "confirmed" || "started";
 	const canChat = booking.bookingStatus === "confirmed" || "started";
-	const displayDistance =
-		booking.bookingStatus === "confirmed" ? distanceToPickUp : distanceToDrop;
+
 	const displayTime =
 		booking.bookingStatus === "confirmed" ? estTimeToPickup : estTimeToDrop;
-	const paymentStatus = STATUS_LABEL[booking.bookingStatus];
-	const [openChat, setOpenChat] = useState(false);
 
 	const driverPanelProps = {
 		isActive,
-		displayDistance: displayDistance.toFixed(1),
 		displayTime: displayTime.toFixed(1),
-		currStatus,
-		cfg,
 		booking,
-		paymentStatus,
 		canChat,
 		onChatToggle,
 		openChat,
@@ -78,7 +71,6 @@ const UserActiveRide = () => {
 					const [dropLon, dropLat] = response.booking.dropLocation.coordinates;
 					const [driverLon, driverLat] =
 						response.booking.driver.location.coordinates;
-					setBookingStatus(booking.bookingStatus);
 					setBooking(response.booking);
 					setPickUpPos([pickUpLat, pickUpLon]);
 					setDropPos([dropLat, dropLon]);
@@ -107,6 +99,23 @@ const UserActiveRide = () => {
 		};
 	}, [id]);
 
+	useEffect(() => {
+		const socket = getSocket();
+
+		socket.on("ride-started", ({ bookingStatus }) => {
+			setBooking((prev) => ({ ...prev, bookingStatus }));
+		});
+
+		socket.on("ride-completed", ({ bookingStatus, paymentStatus }) => {
+			setBooking((prev) => ({ ...prev, bookingStatus, paymentStatus }));
+		});
+
+		return () => {
+			socket.off("ride-started");
+			socket.off("ride-completed");
+		};
+	}, []);
+
 	if (loading || !pickUpPos.length || !dropPos.length) {
 		return (
 			<div className="h-screen w-full bg-zinc-950 flex items-center justify-center">
@@ -120,7 +129,7 @@ const UserActiveRide = () => {
 		);
 	}
 
-	if (currStatus === "completed" && booking) {
+	if (booking?.bookingStatus === "completed" && booking) {
 		return (
 			<RideCompleted
 				booking={booking}
@@ -156,9 +165,11 @@ const UserActiveRide = () => {
 					className="absolute top-4 left-1/2 -translate-x-1/2 z-500 pointer-events-none"
 				>
 					<div
-						className={`flex items-center gap-2 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-zinc-100 text-background`}
+						className={`flex items-center gap-2 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-zinc-100 text-zinc-700`}
 					>
-						<span>{currStatus?.label}</span>
+						<span className="sm:text-sm text-xs text-nowrap font-semibold">
+							{statusConfig?.label}
+						</span>
 					</div>
 				</motion.div>
 			</div>
@@ -193,25 +204,25 @@ const UserActiveRide = () => {
 			</motion.div>
 			<div className="lg:hidden fixed bottom-0 left-0 right-0 z-20 pointer-events-none">
 				<motion.div
-					className="bg-white rounded-t-3xl shadow-2xl pointer-events-auto overflow-hidden flex flex-col"
+					className="bg-white rounded-t-3xl shadow-2xl pointer-events-auto overflow-y-scroll flex flex-col"
 					animate={{ height: isExpanded ? "82vh" : 142 }}
 					transition={{ type: "spring", stiffness: 320, damping: 38 }}
 				>
 					<div className="shrink-0 select-none">
-						<div className="pt-3 pb-1">
+						<div className="absolute top-0 w-full pt-3 pb-1 bg-white z-1">
 							<div className="w-10 h-1 bg-zinc-200 rounded-full mx-auto" />
 						</div>
-						<div className="px-5 py-3 flex items-center justify-between">
+						<div className="px-5 py-3 pt-6 flex items-center justify-between">
 							<div className="flex items-center gap-3">
 								<span
-									className={`w-2.5 h-2.5 rounded-full shrink-0 ${cfg?.dot}`}
+									className={`w-2.5 h-2.5 rounded-full shrink-0 ${statusConfig?.dot}`}
 								/>
 								<div>
 									<p className="text-sm font-bold text-zinc-900 leading-tight">
-										{cfg?.label}
+										{statusConfig?.label}
 									</p>
 									<p className="text-xs text-zinc-400 leading-tight">
-										{cfg?.sublabel}
+										{statusConfig?.sublabel}
 									</p>
 								</div>
 							</div>
