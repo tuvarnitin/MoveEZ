@@ -169,3 +169,44 @@ export const fetchActiveBookings = async (req, res) => {
         })
     }
 }
+
+export const getTotalEarning = async (req, res) => {
+    try {
+        const user = req.user
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+        const bookings = await bookingModel.find({
+            paymentStatus: "paid",
+            createdAt: {
+                $gte: sevenDaysAgo
+            }
+        }).select("driverAmount createdAt")
+
+        const earningMap = {}
+
+        bookings.forEach(booking => {
+            const date = new Date(booking.createdAt).toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short"
+            })
+
+            if (!earningMap[date]) {
+                earningMap[date] = 0
+            }
+            earningMap[date] += booking.driverAmount || 0
+
+            const earning = Object.entries(earningMap).map(([date, earnings]) => ({ date,earnings }))
+
+            return res.status(200).json({
+                earning
+            })
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(200).json({
+            message: "internal server error (Partner earnings)",
+            error
+        })
+    }
+}

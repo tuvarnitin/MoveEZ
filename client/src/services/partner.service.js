@@ -8,4 +8,5 @@ export const partnerService = {
     fetchAllBookings: (data) => apiClient.get("/api/partner/bookings"),
     acceptBooking: (data) => apiClient.get(`/api/partner/accept-booking/${data.id}`),
     rejectBooking: (data) => apiClient.get(`/api/partner/reject-booking/${data.id}`),
+    getTotalEarning: (data) => apiClient.get(`/api/partner/earning`),
 }

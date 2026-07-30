@@ -14,5 +14,7 @@ export const adminService = {
     
     // Video KYC APIs
     startVideoKyc: (data) => apiClient.get(`/api/admin/video-kyc/start/${data.id}`, data),
-    videoKycComplete: (data) => apiClient.post(`/api/admin/video-kyc/complete`, data)
+    videoKycComplete: (data) => apiClient.post(`/api/admin/video-kyc/complete`, data),
+    //Earning
+    getTotalEarning: (data) => apiClient.get(`/api/admin/earning`, data),
 }

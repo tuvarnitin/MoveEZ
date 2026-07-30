@@ -1,7 +1,7 @@
 import { Router } from "express";
 import User from "../user/user.model.js";
 import vehicleModel from "../vehicle/vehicle.model.js";
-import { approvePartner, approveVehicle, fetchAdminData, fetchPartnerData, fetchVehicle, rejectPartner, rejectVehicle, startVideoCall, videoKycComplete } from "./admin.controller.js";
+import { approvePartner, approveVehicle, fetchAdminData, fetchPartnerData, fetchVehicle, getTotalEarning, rejectPartner, rejectVehicle, startVideoCall, videoKycComplete } from "./admin.controller.js";
 
 const adminRouter = Router()
 
@@ -17,5 +17,7 @@ adminRouter.post("/reviews/partner/reject/:id", rejectPartner)
 
 adminRouter.get("/video-kyc/start/:id", startVideoCall)
 adminRouter.post("/video-kyc/complete", videoKycComplete)
+
+adminRouter.get("/earning",getTotalEarning)
 
 export default adminRouter

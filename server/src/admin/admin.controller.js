@@ -3,6 +3,7 @@ import Docs from "../user/userDoc.model.js";
 import Bank from "../user/userBank.model.js";
 import Vehicle from "../vehicle/vehicle.model.js";
 import userModel from "../user/user.model.js";
+import bookingModel from "../booking/booking.model.js";
 
 export const fetchAdminData = async (req, res) => {
     const admin = req.user;
@@ -40,9 +41,9 @@ export const fetchAdminData = async (req, res) => {
 
         const pendingVehicles = await Vehicle.find({
             status: "pending",
-            baseFare:{$exists:true},
-            pricePerKM:{$exists:true},
-            waitingCharge:{$exists:true},
+            baseFare: { $exists: true },
+            pricePerKM: { $exists: true },
+            waitingCharge: { $exists: true },
         }).populate("owner")
 
         return res.status(200).json({
@@ -84,18 +85,18 @@ export const fetchVehicle = async (req, res) => {
             success: true,
             vehicle
         })
-        
+
     } catch (error) {
         console.log(error)
         return res.status(500).json({
-            success:false,
-            message:"Internal server error (Fetch vehicle)",
+            success: false,
+            message: "Internal server error (Fetch vehicle)",
             error
         })
     }
 }
 
-export const approveVehicle = async (req,res) => {
+export const approveVehicle = async (req, res) => {
     try {
         const vehicleId = req.params.id
         const vehicle = await Vehicle.findById(vehicleId)
@@ -142,7 +143,7 @@ export const approveVehicle = async (req,res) => {
         })
     }
 }
-export const rejectVehicle = async (req,res) => {
+export const rejectVehicle = async (req, res) => {
     try {
         const vehicleId = req.params.id
         const reason = req.body.rejectionReason
@@ -409,4 +410,45 @@ export const videoKycComplete = async (req, res) => {
         })
     }
 
+}
+
+export const getTotalEarning = async (req, res) => {
+    try {
+        const user = req.user
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+        const bookings = await bookingModel.find({
+            paymentStatus: "paid",
+            createdAt: {
+                $gte: sevenDaysAgo
+            }
+        }).select("adminCommission createdAt")
+
+        const earningMap = {}
+
+        bookings.forEach(booking => {
+            const date = new Date(booking.createdAt).toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short"
+            })
+
+            if (!earningMap[date]) {
+                earningMap[date] = 0
+            }
+            earningMap[date] += booking.adminCommission || 0
+
+            const earning = Object.entries(earningMap).map(([date, earnings]) => ({ date,earnings }))
+
+            return res.status(200).json({
+                earning
+            })
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(200).json({
+            message: "internal server error (Admin earnings)",
+            error
+        })
+    }
 }

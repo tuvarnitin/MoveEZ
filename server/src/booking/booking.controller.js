@@ -385,6 +385,7 @@ export const veirfyDropOtp = async (req, res) => {
         booking.dropOtp = "";
         booking.bookingStatus = "completed";
         booking.paymentStatus = "paid";
+        booking.paymentMethod = "cash";
         booking.dropOtpExpires = 0
         await booking.save()
 
@@ -393,7 +394,8 @@ export const veirfyDropOtp = async (req, res) => {
             userId: booking.user._id,
             data: {
                 bookingStatus: "completed",
-                paymentStatus:"paid"
+                paymentStatus:"paid",
+                paymentMethod:"cash",
             }
         })
 

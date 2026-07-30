@@ -60,7 +60,7 @@ export const verifyPayment = async (req, res) => {
         }
 
         const adminCommission = booking.fare * .1
-        const drivertnerAmount = Math.round(booking.fare - adminCommission)
+        const driverAmount = Math.round(booking.fare - adminCommission)
 
         booking.adminCommission = Math.floor(adminCommission)
         booking.driverAmount = Math.ceil(driverAmount)
@@ -83,10 +83,11 @@ export const verifyPayment = async (req, res) => {
             success: true,
             message: "Payment successfull",
             adminCommission,
-            partnerAmount
+            driverAmount
         })
 
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             message: "Internal server error (Verify Payment)",
             success: false,
