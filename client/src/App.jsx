@@ -5,7 +5,6 @@ import { AnimatePresence } from "motion/react";
 
 import {
 	Navbar,
-	SideBar,
 	VehicleDetails,
 	UploadDocuments,
 	BankingInfo,
@@ -108,9 +107,6 @@ function App() {
 	return (
 		<div className={`w-full min-h-screen bg-background`}>
 			{/* Sidebar */}
-			<AnimatePresence>
-				{isSidebarOpen && <SideBar setIsSidebarOpen={setIsSidebarOpen} />}
-			</AnimatePresence>
 			{/* Auth modal */}
 			<AnimatePresence>{isAuthModalOpen && <AuthModal />}</AnimatePresence>
 			<Routes>

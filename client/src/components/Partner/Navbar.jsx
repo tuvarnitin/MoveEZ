@@ -31,7 +31,7 @@ import { getSocket } from "../../socket.io/socketIo.js";
 const NAV_LINKS = [
 	{
 		title: "Home",
-		to: "/",
+		to: "/partner",
 	},
 	{
 		title: "Pending Requests",
@@ -40,11 +40,7 @@ const NAV_LINKS = [
 	{
 		title: "Bookings",
 		to: "/partner/bookings",
-	},
-	{
-		title: "Active Ride",
-		to: "/partner/active-ride",
-	},
+	}
 ];
 
 const Navbar = ({ setIsSidebarOpen }) => {
@@ -57,6 +53,10 @@ const Navbar = ({ setIsSidebarOpen }) => {
 	const navigate = useNavigate();
 
 	const [pendingRequestCount, setPendingRequestCount] = useState(0);
+
+	useEffect(()=>{
+		setCurrpath(window.location.pathname)
+	},[window.location.pathname])
 
 	const handleLogout = async () => {
 		try {

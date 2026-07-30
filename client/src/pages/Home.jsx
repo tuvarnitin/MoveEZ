@@ -5,13 +5,36 @@ import { Hero, VehicleCategories } from "../components/Home/index.js";
 import { AdminDashboard } from "./Admin/index.js";
 import { PartnerPage } from "./Partner/index.js";
 
-import { Footer, Navbar } from "../components/index.js";
+import { Footer, Navbar, SideBar } from "../components/index.js";
 
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
+import { useState } from "react";
+import { AnimatePresence } from "motion/react";
 
-const Home = ({ setIsSidebarOpen }) => {
+const NAV_LINKS = [
+	{
+		title: "Home",
+		to: "/",
+	},
+	{
+		title: "Bookings",
+		to: "/bookings",
+	},
+	{
+		title: "About US",
+		to: "/about-us",
+	},
+	{
+		title: "Contact US",
+		to: "/contact",
+	},
+];
+
+const Home = () => {
 	const role = useSelector((state) => state.user?.data?.role);
+
+	const [isSidebarOpen,setIsSidebarOpen] = useState(false)
 
 	return (
 		<>
@@ -21,7 +44,15 @@ const Home = ({ setIsSidebarOpen }) => {
 				<Navigate to={"/partner"} />
 			) : (
 				<>
-				<Navbar setIsSidebarOpen={setIsSidebarOpen} />
+					<AnimatePresence mode="popLayout">
+						{isSidebarOpen && (
+							<SideBar
+								links={NAV_LINKS}
+								setIsSidebarOpen={setIsSidebarOpen}
+							/>
+						)}
+					</AnimatePresence>
+					<Navbar setIsSidebarOpen={setIsSidebarOpen} />
 					<Hero />
 					<VehicleCategories />
 					<Footer />

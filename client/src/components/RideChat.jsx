@@ -38,8 +38,8 @@ const RideChat = ({ currentRole, bookingId, userName, driverName }) => {
 				text,
 				bookingId,
 			});
-			socket.emit("message", { msg: response.msg });
 			setText("");
+			socket.emit("message", { msg: response.msg });
 		} catch (error) {
 			console.log(error);
 		}

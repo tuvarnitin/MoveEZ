@@ -97,7 +97,6 @@ const PartnerActiveRide = () => {
 				}
 			} catch (error) {
 				navigate("/partner/bookings");
-				console.log(error);
 			} finally {
 				setLoading(false);
 			}
