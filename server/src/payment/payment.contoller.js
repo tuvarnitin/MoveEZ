@@ -60,10 +60,10 @@ export const verifyPayment = async (req, res) => {
         }
 
         const adminCommission = booking.fare * .1
-        const partnerAmount = booking.fare - adminCommission
+        const drivertnerAmount = Math.round(booking.fare - adminCommission)
 
-        booking.adminCommission = adminCommission
-        booking.partnerAmount = partnerAmount
+        booking.adminCommission = Math.floor(adminCommission)
+        booking.driverAmount = Math.ceil(driverAmount)
         booking.paymentStatus = "paid"
         booking.paymentMethod = "online"
         booking.bookingStatus = "confirmed"

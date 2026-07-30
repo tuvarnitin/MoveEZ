@@ -147,17 +147,21 @@ export const fetchActiveBookings = async (req, res) => {
         const booking = await bookingModel.findOne({
             driver: user._id,
             bookingStatus: {
-                $in: ["confirmed", "started", "completed"]
+                $in: ["confirmed", "started"]
             }
         }).populate("user vehicle driver")
-        if (booking) {
-            return res.status(200).json({
-                success: true,
-                booking
+        if (!booking) {
+            return res.status(400).json({
+                success: false,
+                message: "No active booking"
             })
         }
-    } catch (error) {
         return res.status(200).json({
+            success: true,
+            booking
+        })
+    } catch (error) {
+        return res.status(500).json({
             success: false,
             booking: [],
             message: "Internal server error (Fetch Acitve Booking)",

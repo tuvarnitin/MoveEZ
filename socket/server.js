@@ -53,7 +53,7 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", async () => {
         if (!socket.userId) return
-        await userModel.findByIdAndUpdate(socket.userId, { socketId: "", isOnline: false })
+        await userModel.findByIdAndUpdate(socket.userId, { isOnline: false })
     })
 })
 
