@@ -69,7 +69,7 @@ const RideCompleted = ({ booking, role }) => {
 							<span
 								className={`px-2.5 py-1 rounded-full font-semibold text-[11px] ${PAYMENT_BADGE[booking.paymentStatus]?.cls ?? "bg-zinc-700 text-zinc-300"}`}
 							>
-								{PAYMENT_BADGE[booking.paymentStatus].label}
+								{booking.paymentStatus}
 							</span>
 						</div>
 					</div>

@@ -56,9 +56,7 @@ const BookingCard = ({b,i}) => {
 	useEffect(() => {
 		const socket = getSocket();
 		socket.on("payment", (data) => {
-			// if(!booking)
             if(!booking) return ;
-            console.log(data)
             setBooking(prev => ({...prev,paymentMethod:data.paymentMethod,paymentStatus:data.paymentStatus,bookingStatus:data.bookingStatus}))
 		});
 

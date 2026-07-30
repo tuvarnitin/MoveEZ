@@ -21,6 +21,7 @@ import { ActiveRidePanel, RideCompleted } from "../../components/index.js";
 import { bookingService } from "../../services/booking.service.js";
 import { getSocket } from "../../socket.io/socketIo.js";
 import { partnerService } from "../../services/partner.service.js";
+import { useNavigate } from "react-router-dom";
 
 const PartnerActiveRide = () => {
 	const [booking, setBooking] = useState({});
@@ -50,8 +51,7 @@ const PartnerActiveRide = () => {
 	const [loadingDropOtp, setLoadingDropOtp] = useState(false);
 	const [dropOtpError, setDropOtpError] = useState("");
 
-	const currStatus = booking.bookingStatus;
-	const cfg = STATUS_LABEL[booking.bookingStatus];
+	const statusConfig = STATUS_LABEL[booking.bookingStatus];
 
 	const isActive =
 		booking.bookingStatus === "confirmed" ||
@@ -60,22 +60,15 @@ const PartnerActiveRide = () => {
 		booking.bookingStatus === "confirmed" ||
 		booking.bookingStatus === "started";
 
-	const displayDistance =
-		booking.bookingStatus === "confirmed" ? distanceToPickUp : distanceToDrop;
-
 	const displayTime =
 		booking.bookingStatus === "confirmed" ? estTimeToPickup : estTimeToDrop;
 
-	const paymentStatus = STATUS_LABEL[booking.bookingStatus];
+	const navigate = useNavigate();
 
 	const driverPanelProps = {
 		isActive,
-		displayDistance: displayDistance?.toFixed(1),
 		displayTime: displayTime?.toFixed(1),
-		currStatus: bookingStatus,
-		cfg,
 		booking,
-		paymentStatus,
 		canChat,
 		onChatToggle,
 		openChat,
@@ -99,8 +92,11 @@ const PartnerActiveRide = () => {
 					setBooking(response.booking);
 					setPickUpPos([pickUpLat, pickUpLon]);
 					setDropPos([dropLat, dropLon]);
+				} else {
+					navigate("/partner/bookings")
 				}
 			} catch (error) {
+				navigate("/partner/bookings");
 				console.log(error);
 			} finally {
 				setLoading(false);
@@ -121,7 +117,7 @@ const PartnerActiveRide = () => {
 					bookingId: booking._id,
 					lat,
 					lon,
-					status: currStatus,
+					status: booking.bookingStatus,
 				});
 			},
 			(error) => {
@@ -161,7 +157,6 @@ const PartnerActiveRide = () => {
 				bookingId: booking._id,
 			});
 			setOtpMode(true);
-			console.log(response);
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -176,7 +171,6 @@ const PartnerActiveRide = () => {
 				bookingId: booking._id,
 			});
 			setDropOtpMode(true);
-			console.log(response);
 		} catch (error) {
 			console.log(error);
 		} finally {
@@ -225,9 +219,7 @@ const PartnerActiveRide = () => {
 			});
 			setDropOtpMode(false);
 			setDropOtpError("");
-			setBooking((prev) =>
-				prev ? { ...prev, bookingStatus: "completed" } : prev,
-			);
+			setBooking(prev => ({ ...prev, bookingStatus: "completed" }));
 			setBookingStatus("completed");
 		} catch (error) {
 			console.log(error);
@@ -292,9 +284,11 @@ const PartnerActiveRide = () => {
 					className="absolute top-4 left-1/2 -translate-x-1/2 z-500 pointer-events-none"
 				>
 					<div
-						className={`flex items-center gap-2 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-zinc-100 text-background`}
+						className={`flex items-center gap-2 bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-zinc-100 text-zinc-700`}
 					>
-						<span>{currStatus.label}</span>
+						<span className="sm:text-sm text-xs text-nowrap font-semibold">
+							{statusConfig?.sublabel}
+						</span>
 					</div>
 				</motion.div>
 			</div>
@@ -534,25 +528,25 @@ const PartnerActiveRide = () => {
 			</motion.div>
 			<div className="lg:hidden fixed bottom-0 left-0 right-0 z-20 pointer-events-none">
 				<motion.div
-					className="bg-white rounded-t-3xl shadow-2xl pointer-events-auto overflow-hidden flex flex-col"
+					className="bg-white rounded-t-3xl shadow-2xl pointer-events-auto overflow-y-scroll flex flex-col"
 					animate={{ height: isExpanded ? "82vh" : 142 }}
 					transition={{ type: "spring", stiffness: 320, damping: 38 }}
 				>
 					<div className="shrink-0 select-none">
-						<div className="pt-3 pb-1">
+						<div className="pt-3 pb-1 absolute w-full top-0 z-1 bg-white">
 							<div className="w-10 h-1 bg-zinc-200 rounded-full mx-auto" />
 						</div>
-						<div className="px-5 py-3 flex items-center justify-between">
+						<div className="px-5 py-3 pt-6 flex items-center justify-between">
 							<div className="flex items-center gap-3">
 								<span
-									className={`w-2.5 h-2.5 rounded-full shrink-0 ${cfg.dot}`}
+									className={`w-2.5 h-2.5 rounded-full shrink-0 ${statusConfig.dot}`}
 								/>
 								<div>
 									<p className="text-sm font-bold text-zinc-900 leading-tight">
-										{cfg.label}
+										{statusConfig.label}
 									</p>
 									<p className="text-xs text-zinc-400 leading-tight">
-										{cfg.sublabel}
+										{statusConfig.sublabel}
 									</p>
 								</div>
 							</div>

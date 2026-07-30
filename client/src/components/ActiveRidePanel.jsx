@@ -14,21 +14,19 @@ import {
 
 import { useSelector } from "react-redux";
 import { RideChat } from "../components/index.js";
+import { PAYMENT_BADGE, STATUS_LABEL } from "../constant/index.js";
 
 const ActiveRidePanel = ({
 	isActive,
-	displayDistance,
 	displayTime,
-	currStatus,
-	cfg,
 	booking,
-	paymentStatus,
 	canChat,
 	openChat,
 	onChatToggle,
 	currentRole,
 }) => {
 	const user = useSelector((state) => state.user.data);
+	const paymentStatus = PAYMENT_BADGE[booking?.paymentStatus]
 
 	const getVehicleIcon = (vehicleType) => {
 		switch (vehicleType?.toLowerCase()) {
@@ -67,6 +65,7 @@ const ActiveRidePanel = ({
 
 	return (
 		<div className="flex flex-col pt-5 pb-4 gap-3 text-background">
+			<style>{`div::-webkit-scrollbar { display: none; }`}</style>
 			{isActive && (
 				<div className="mx-5 lg:mx-6 grid grid-cols-2 gap-2">
 					<div className="bg-zinc-50 border border-zinc-100 rounded-2xl p-4 flex items-center gap-3">
@@ -138,8 +137,13 @@ const ActiveRidePanel = ({
 									</span>
 								</div>
 							</div>
-							{booking?.paymentStatus && (
+							{booking?.paymentMethod && (
 								<div className="flex items-center gap-2 mt-1.5">
+									<span
+										className={`text-[10px] px-2 py-0.5 rounded-full font-semibold bg-zinc-700 text-zinc-300`}
+									>
+										{booking?.paymentMethod}
+									</span>
 									<span
 										className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${paymentStatus?.cls || "bg-zinc-700 text-zinc-300"}`}
 									>

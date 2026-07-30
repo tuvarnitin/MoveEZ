@@ -75,7 +75,6 @@ const Navbar = ({ setIsSidebarOpen }) => {
 	const fetchPendingRequestCount = async () => {
 		const response = await partnerService.fetchPendingRequestCount();
 		if (response.success) {
-			console.log(response)
 			setPendingRequestCount(response.pendingRequestsCount);
 		}
 	};
@@ -128,7 +127,6 @@ const Navbar = ({ setIsSidebarOpen }) => {
 							{title === "Pending Requests" && (
 								<span className="absolute -top-1 -right-3 w-4 h-4 rounded-full bg-white text-xs text-background flex items-center justify-center font-semibold">
 									{pendingRequestCount}
-									{console.log(pendingRequestCount)}
 								</span>
 							)}
 						</Link>

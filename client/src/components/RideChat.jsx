@@ -108,7 +108,7 @@ const RideChat = ({ currentRole, bookingId, userName, driverName }) => {
 				className="flex-1 h-screen overflow-y-scroll px-4 py-4 space-y-3 bg-zinc-50"
 				style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
 			>
-				<style>{`div::-webkit-scrollbar { display: none; }`}</style>
+				
 				{messages.length === 0 && (
 					<div className="flex flex-col items-center justify-center h-full gap-3 py-16">
 						<div className="w-12 h-12 rounded-2xl bg-zinc-100 flex items-center justify-center">
