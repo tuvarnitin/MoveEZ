@@ -51,17 +51,17 @@ const PartnerActiveRide = () => {
 	const [loadingDropOtp, setLoadingDropOtp] = useState(false);
 	const [dropOtpError, setDropOtpError] = useState("");
 
-	const statusConfig = STATUS_LABEL[booking.bookingStatus];
+	const statusConfig = STATUS_LABEL[booking?.bookingStatus];
 
 	const isActive =
-		booking.bookingStatus === "confirmed" ||
-		booking.bookingStatus === "started";
+		booking?.bookingStatus === "confirmed" ||
+		booking?.bookingStatus === "started";
 	const canChat =
-		booking.bookingStatus === "confirmed" ||
-		booking.bookingStatus === "started";
+		booking?.bookingStatus === "confirmed" ||
+		booking?.bookingStatus === "started";
 
 	const displayTime =
-		booking.bookingStatus === "confirmed" ? estTimeToPickup : estTimeToDrop;
+		booking?.bookingStatus === "confirmed" ? estTimeToPickup : estTimeToDrop;
 
 	const navigate = useNavigate();
 
@@ -93,10 +93,10 @@ const PartnerActiveRide = () => {
 					setPickUpPos([pickUpLat, pickUpLon]);
 					setDropPos([dropLat, dropLon]);
 				} else {
-					navigate("/partner/bookings")
+					setBooking(null);
 				}
 			} catch (error) {
-				navigate("/partner/bookings");
+				setBooking(null);
 			} finally {
 				setLoading(false);
 			}
@@ -131,7 +131,7 @@ const PartnerActiveRide = () => {
 		return () => {
 			navigator.geolocation.clearWatch(watchId);
 		};
-	}, [booking._id]);
+	}, [booking?._id]);
 
 	useEffect(() => {
 		if (!booking?._id) return;
@@ -218,7 +218,7 @@ const PartnerActiveRide = () => {
 			});
 			setDropOtpMode(false);
 			setDropOtpError("");
-			setBooking(prev => ({ ...prev, bookingStatus: "completed" }));
+			setBooking((prev) => ({ ...prev, bookingStatus: "completed" }));
 			setBookingStatus("completed");
 		} catch (error) {
 			console.log(error);
@@ -227,6 +227,14 @@ const PartnerActiveRide = () => {
 			setLoadingDropOtp(false);
 		}
 	};
+	
+	if (booking == null) {
+		return (
+			<div className="w-full h-screen bg-background text-white text-xl lg:text-3xl flex items-center justify-center">
+				No active booking found !
+			</div>
+		);
+	}
 
 	if (
 		loading ||

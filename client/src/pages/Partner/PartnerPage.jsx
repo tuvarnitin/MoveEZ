@@ -1,7 +1,8 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 
-import { Footer, SideBar } from "../../components/index.js";
+import { Footer } from "../../components/index.js";
+import { SideBar } from "../../components/Partner/index.js";
 import { Navbar } from "../../components/Partner/index.js";
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
@@ -18,6 +19,10 @@ const NAV_LINKS = [
 	{
 		title: "Bookings",
 		to: "/partner/bookings",
+	},
+	{
+		title: "Active Ride",
+		to: "/partner/active-ride",
 	}
 ];
 

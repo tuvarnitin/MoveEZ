@@ -5,7 +5,7 @@ import {
 	FiTrendingDown,
 	FiTrendingUp,
 	FiZap,
-	FaStaar,
+	FaStar,
 } from "../../assets/icons/index.js";
 import {
 	ResponsiveContainer,

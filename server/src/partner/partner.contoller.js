@@ -180,10 +180,12 @@ export const getTotalEarning = async (req, res) => {
             paymentStatus: "paid",
             createdAt: {
                 $gte: sevenDaysAgo
-            }
+            },
+            driver:user._id
         }).select("driverAmount createdAt")
 
         const earningMap = {}
+        let earning = []
 
         bookings.forEach(booking => {
             const date = new Date(booking.createdAt).toLocaleDateString("en-IN", {
@@ -196,11 +198,11 @@ export const getTotalEarning = async (req, res) => {
             }
             earningMap[date] += booking.driverAmount || 0
 
-            const earning = Object.entries(earningMap).map(([date, earnings]) => ({ date,earnings }))
+            earning = Object.entries(earningMap).map(([date, earnings]) => ({ date,earnings }))
 
-            return res.status(200).json({
-                earning
-            })
+        })
+        return res.status(200).json({
+            earning
         })
     } catch (error) {
         console.log(error)

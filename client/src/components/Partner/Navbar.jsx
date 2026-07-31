@@ -40,7 +40,11 @@ const NAV_LINKS = [
 	{
 		title: "Bookings",
 		to: "/partner/bookings",
-	}
+	},
+	{
+		title: "Active Ride",
+		to: "/partner/active-ride",
+	},
 ];
 
 const Navbar = ({ setIsSidebarOpen }) => {
@@ -92,6 +96,7 @@ const Navbar = ({ setIsSidebarOpen }) => {
 		});
 		return () => {
 			socket.off("pending-booking-count");
+			socket.off("cancel-ride");
 		};
 	}, []);
 
