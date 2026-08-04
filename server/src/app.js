@@ -25,10 +25,17 @@ const app = express()
 
 await connectDB()
 
-app.use(cors({
-    origin: true,
-    credentials: true
-}));
+const allowedOrigins = [
+  "https://moveez-jnwq.onrender.com",
+  "https://moveezzz.vercel.app"
+];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 
 dotenv.config()
 
